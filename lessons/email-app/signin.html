@@ -108,8 +108,14 @@
             <label for="keep-signed-in">Keep me signed in</label>
           </div>
 
-          <button type="submit" class="btn btn-primary">Sign in</button>
+          <button type="submit" class="btn btn-primary" style="margin-bottom:12px;">Sign in</button>
         </form>
+
+        <div style="text-align:center;padding-top:12px;border-top:1px solid #eee;margin-top:8px;">
+          <p style="font-size:12px;color:#888;margin-bottom:8px;">No account yet?</p>
+          <button class="btn btn-secondary" id="demo-btn" style="width:100%;margin-bottom:8px;">🚀 Quick Demo — Sign in with a demo account</button>
+          <a href="register.html" style="font-size:14px;">Create a new account</a>
+        </div>
 
         <div class="links-row">
           <button class="back-link" id="forgot-pw-link">Forgot password?</button>
@@ -225,6 +231,27 @@
           window.location.href = 'inbox.html';
         }
       })();
+
+      // Demo account button
+      document.getElementById('demo-btn').addEventListener('click', function() {
+        if (!MailboxStore.accountExists('demo.user')) {
+          MailboxStore.createAccount({
+            firstName: 'Demo',
+            lastName: 'User',
+            username: 'demo.user',
+            password: 'DemoPass1',
+            recoveryEmail: 'demo@example.com',
+            phone: '',
+            country: 'Other',
+            language: 'en',
+            dob: { day: 1, month: 1, year: 2000 },
+            agreedToTerms: true
+          });
+        }
+        document.getElementById('signin-email').value = 'demo.user@mailbox.example';
+        document.getElementById('signin-password').value = 'DemoPass1';
+        document.getElementById('signin-form').dispatchEvent(new Event('submit'));
+      });
 
       document.getElementById('show-password-signin').addEventListener('change', function() {
         document.getElementById('signin-password').type = this.checked ? 'text' : 'password';
