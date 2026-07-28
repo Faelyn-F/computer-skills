@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Cards — Email Practice</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .tasks-container{max-width:800px;margin:0 auto;padding:var(--spacing-lg) var(--spacing-md)}
+    .section-title{font-size:var(--font-size-xl);font-weight:700;color:var(--color-accent);margin:var(--spacing-lg) 0 var(--spacing-md);padding-bottom:8px;border-bottom:3px solid var(--color-accent)}
+    .task-card{background:#fff;border-radius:var(--border-radius);padding:var(--spacing-lg);margin-bottom:var(--spacing-md);box-shadow:0 2px 8px rgba(0,0,0,0.08);border-left:6px solid #1a73e8}
+    .task-card.done{border-left-color:var(--color-success);opacity:0.65}
+    .task-card .task-id{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .task-card .task-goal-en{font-size:var(--font-size-lg);font-weight:700;color:#202124;margin-bottom:4px}
+    .task-card .task-goal-fa{font-size:var(--font-size-lg);font-weight:700;color:#555;font-family:var(--font-family-fa);direction:rtl;text-align:right;margin-bottom:12px}
+    .task-card .task-detail{font-size:var(--font-size-base);color:#5f6368;line-height:1.6}
+    .task-card .task-detail-fa{font-size:var(--font-size-base);color:#888;font-family:var(--font-family-fa);direction:rtl;text-align:right;line-height:1.6;margin-top:4px}
+    .task-card .complete-row{margin-top:var(--spacing-sm);padding-top:var(--spacing-sm);border-top:1px solid #eee;display:flex;align-items:center;gap:8px}
+    .task-card .complete-row input{width:22px;height:22px;accent-color:var(--color-success);cursor:pointer}
+    .open-app-btn{display:inline-block;margin:8px 0 24px;padding:14px 28px;background:#1a73e8;color:#fff;font-size:18px;font-weight:700;text-decoration:none;border-radius:8px;transition:background 0.2s}
+    .open-app-btn:hover{background:#1557b0}
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <header class="page-header">
+    <h1>📋 Email Task Cards</h1>
+    <p class="subtitle" lang="fa" dir="rtl" style="font-family:var(--font-family-fa);">کارت‌های تمرین ایمیل</p>
+  </header>
+
+  <main id="main-content" class="tasks-container">
+
+    <p style="text-align:center;margin-bottom:8px;font-size:var(--font-size-lg);color:#555;">
+      Complete each task using the MailBox app. Tasks describe <strong>what</strong> to do — not which button to click.
+    </p>
+    <p style="text-align:center;margin-bottom:24px;font-size:var(--font-size-lg);color:#888;font-family:var(--font-family-fa);direction:rtl;">
+      هر کار را با استفاده از برنامه MailBox کامل کنید. کارها <strong>نتیجه</strong> را توصیف می‌کنند — نه اینکه کدام دکمه را کلیک کنید.
+    </p>
+
+    <div style="text-align:center;">
+      <a href="register.html" class="open-app-btn" target="_blank">📧 Open MailBox App</a>
+    </div>
+
+    <!-- ACCOUNT CREATION -->
+    <h2 class="section-title">🔑 Account Creation — ایجاد حساب</h2>
+
+    <div class="task-card" id="task-1">
+      <div class="task-id">Task 1</div>
+      <div class="task-goal-en">Create an email account using this identity:</div>
+      <div class="task-goal-fa" lang="fa">با استفاده از این مشخصات یک حساب ایمیل ایجاد کنید:</div>
+      <div class="task-detail">
+        <strong>First name:</strong> Maryam<br>
+        <strong>Last name:</strong> Ahmadi<br>
+        <strong>Country:</strong> Iran<br>
+        <strong>Language:</strong> English + فارسی
+      </div>
+      <div class="task-detail-fa" lang="fa">
+        <strong>نام:</strong> Maryam<br>
+        <strong>نام خانوادگی:</strong> Ahmadi<br>
+        <strong>کشور:</strong> Iran<br>
+        <strong>زبان:</strong> English + فارسی
+      </div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-1" class="step-checkbox" data-step="task-1">
+        <label for="cb-task-1">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-2">
+      <div class="task-id">Task 2</div>
+      <div class="task-goal-en">Choose an available username that includes your name.</div>
+      <div class="task-goal-fa" lang="fa">یک نام کاربری موجود انتخاب کنید که شامل نام شما باشد.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-2" class="step-checkbox" data-step="task-2">
+        <label for="cb-task-2">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-3">
+      <div class="task-id">Task 3</div>
+      <div class="task-goal-en">Create a secure practice password. Do NOT use your real password.</div>
+      <div class="task-goal-fa" lang="fa">یک رمز عبور تمرینی امن ایجاد کنید. از رمز عبور واقعی خود استفاده نکنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-3" class="step-checkbox" data-step="task-3">
+        <label for="cb-task-3">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-4">
+      <div class="task-id">Task 4</div>
+      <div class="task-goal-en">Add a recovery email address (optional).</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل بازیابی اضافه کنید (اختیاری).</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-4" class="step-checkbox" data-step="task-4">
+        <label for="cb-task-4">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- SIGNING IN -->
+    <h2 class="section-title">🔐 Signing In — ورود</h2>
+
+    <div class="task-card" id="task-5">
+      <div class="task-id">Task 5</div>
+      <div class="task-goal-en">Sign in using the account you created.</div>
+      <div class="task-goal-fa" lang="fa">با استفاده از حسابی که ایجاد کردید وارد شوید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-5" class="step-checkbox" data-step="task-5">
+        <label for="cb-task-5">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-6">
+      <div class="task-id">Task 6</div>
+      <div class="task-goal-en">Sign out when finished. Then sign in again.</div>
+      <div class="task-goal-fa" lang="fa">وقتی کارتان تمام شد خارج شوید. سپس دوباره وارد شوید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-6" class="step-checkbox" data-step="task-6">
+        <label for="cb-task-6">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-7">
+      <div class="task-id">Task 7</div>
+      <div class="task-goal-en">Try the password recovery process. Reset your password.</div>
+      <div class="task-goal-fa" lang="fa">فرآیند بازیابی رمز عبور را امتحان کنید. رمز عبور خود را بازنشانی کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-7" class="step-checkbox" data-step="task-7">
+        <label for="cb-task-7">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- SENDING -->
+    <h2 class="section-title">📤 Sending Email — ارسال ایمیل</h2>
+
+    <div class="task-card" id="task-8">
+      <div class="task-id">Task 8</div>
+      <div class="task-goal-en">Send an email to your teacher at <strong>teacher@school.example</strong>. Add the subject "Homework Question". Write a short message asking about the homework.</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل به معلم خود به آدرس <strong>teacher@school.example</strong> ارسال کنید. موضوع "Homework Question" را اضافه کنید. یک پیام کوتاه برای پرسیدن درباره تکلیف بنویسید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-8" class="step-checkbox" data-step="task-8">
+        <label for="cb-task-8">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-9">
+      <div class="task-id">Task 9</div>
+      <div class="task-goal-en">Send another email to <strong>classmate@example.com</strong>. Add <strong>teacher@school.example</strong> in the CC field. The subject is "Group Project".</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل دیگر به <strong>classmate@example.com</strong> ارسال کنید. <strong>teacher@school.example</strong> را در قسمت CC اضافه کنید. موضوع "Group Project" باشد.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-9" class="step-checkbox" data-step="task-9">
+        <label for="cb-task-9">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-10">
+      <div class="task-id">Task 10</div>
+      <div class="task-goal-en">Send an email to anyone. Attach the timetable file. Write a message about your class schedule.</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل به هر کسی ارسال کنید. فایل timetable را پیوست کنید. یک پیام درباره برنامه کلاسی خود بنویسید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-10" class="step-checkbox" data-step="task-10">
+        <label for="cb-task-10">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- READING -->
+    <h2 class="section-title">📖 Reading Email — خواندن ایمیل</h2>
+
+    <div class="task-card" id="task-11">
+      <div class="task-id">Task 11</div>
+      <div class="task-goal-en">Find the appointment confirmation email. Open it and download the attachment.</div>
+      <div class="task-goal-fa" lang="fa">ایمیل تأیید قرار ملاقات را پیدا کنید. آن را باز کنید و فایل پیوست را دانلود کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-11" class="step-checkbox" data-step="task-11">
+        <label for="cb-task-11">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-12">
+      <div class="task-id">Task 12</div>
+      <div class="task-goal-en">Find the email from Mrs. Lisa Chen. Reply to confirm you will attend the first class.</div>
+      <div class="task-goal-fa" lang="fa">ایمیل Mrs. Lisa Chen را پیدا کنید. پاسخ دهید تا تأیید کنید در اولین کلاس شرکت خواهید کرد.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-12" class="step-checkbox" data-step="task-12">
+        <label for="cb-task-12">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- MANAGING -->
+    <h2 class="section-title">🗂️ Managing Email — مدیریت ایمیل</h2>
+
+    <div class="task-card" id="task-13">
+      <div class="task-id">Task 13</div>
+      <div class="task-goal-en">Use Search to find the message about the "library".</div>
+      <div class="task-goal-fa" lang="fa">از جستجو برای پیدا کردن پیام مربوط به "library" استفاده کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-13" class="step-checkbox" data-step="task-13">
+        <label for="cb-task-13">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-14">
+      <div class="task-id">Task 14</div>
+      <div class="task-goal-en">Find an email you do not need. Move it to Trash.</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل که نیاز ندارید پیدا کنید. آن را به سطل زباله منتقل کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-14" class="step-checkbox" data-step="task-14">
+        <label for="cb-task-14">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-15">
+      <div class="task-id">Task 15</div>
+      <div class="task-goal-en">Go to Trash. Find the email you deleted. Restore it to Inbox.</div>
+      <div class="task-goal-fa" lang="fa">به سطل زباله بروید. ایمیل حذف شده را پیدا کنید. آن را به صندوق ورودی بازگردانید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-15" class="step-checkbox" data-step="task-15">
+        <label for="cb-task-15">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-16">
+      <div class="task-id">Task 16</div>
+      <div class="task-goal-en">Star the email from the Community Centre. Then find it in the Starred folder.</div>
+      <div class="task-goal-fa" lang="fa">ایمیل Community Centre را ستاره‌دار کنید. سپس آن را در پوشه Starred پیدا کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-16" class="step-checkbox" data-step="task-16">
+        <label for="cb-task-16">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- SAFETY -->
+    <h2 class="section-title">🛡️ Email Safety — امنیت ایمیل</h2>
+
+    <div class="task-card" id="task-17">
+      <div class="task-id">Task 17</div>
+      <div class="task-goal-en">Look through your inbox. Find a message that looks suspicious. What makes it suspicious?</div>
+      <div class="task-goal-fa" lang="fa">صندوق ورودی خود را بررسی کنید. یک پیام مشکوک پیدا کنید. چه چیزی آن را مشکوک می‌کند؟</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-17" class="step-checkbox" data-step="task-17">
+        <label for="cb-task-17">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-18">
+      <div class="task-id">Task 18</div>
+      <div class="task-goal-en">Decide what to do with the suspicious email. Take action.</div>
+      <div class="task-goal-fa" lang="fa">تصمیم بگیرید با ایمیل مشکوک چه کار کنید. اقدام کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-18" class="step-checkbox" data-step="task-18">
+        <label for="cb-task-18">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <div class="task-card" id="task-19">
+      <div class="task-id">Task 19</div>
+      <div class="task-goal-en">Report the suspicious message as spam.</div>
+      <div class="task-goal-fa" lang="fa">پیام مشکوک را به عنوان هرزنامه گزارش دهید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-19" class="step-checkbox" data-step="task-19">
+        <label for="cb-task-19">Done / انجام شد</label>
+      </div>
+    </div>
+
+    <!-- PERSIAN PRACTICE -->
+    <h2 class="section-title">📝 Persian Practice — تمرین فارسی</h2>
+
+    <div class="task-card" id="task-20">
+      <div class="task-id">Task 20</div>
+      <div class="task-goal-en">Send an email with the subject "سلام از تمرین". Write a message in Persian. Include your name in English.</div>
+      <div class="task-goal-fa" lang="fa">یک ایمیل با موضوع "سلام از تمرین" ارسال کنید. یک پیام به فارسی بنویسید. نام خود را به انگلیسی وارد کنید.</div>
+      <div class="complete-row">
+        <input type="checkbox" id="cb-task-20" class="step-checkbox" data-step="task-20">
+        <label for="cb-task-20">Done / انجام شد</label>
+      </div>
+    </div>
+
+  </main>
+
+  <nav class="nav-bar">
+    <a href="inbox.html" class="nav-btn prev">📧 Open MailBox</a>
+    <a href="../../index.html" class="nav-btn home">🏠 Home</a>
+    <a href="teacher.html" class="nav-btn next">Teacher Panel ▶</a>
+  </nav>
+
+  <footer class="site-footer"><p>Computer Skills Website — Task Cards — Practice Simulation</p></footer>
+  <script src="../../js/main.js"></script>
+</body>
+</html>
