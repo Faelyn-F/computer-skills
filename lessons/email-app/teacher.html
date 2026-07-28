@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Review Panel — MailBox</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    .panel-container{max-width:900px;margin:0 auto;padding:var(--spacing-lg) var(--spacing-md)}
+    .section-title{font-size:var(--font-size-xl);font-weight:700;color:var(--color-accent);margin:var(--spacing-lg) 0 var(--spacing-md);padding-bottom:8px;border-bottom:3px solid var(--color-accent)}
+
+    /* Lock screen */
+    .lock-screen{text-align:center;padding:80px 20px}
+    .lock-screen input{padding:14px 20px;font-size:20px;border:2px solid #dadce0;border-radius:8px;text-align:center;font-family:monospace;letter-spacing:4px;width:200px}
+    .lock-screen .btn{margin-top:12px;padding:12px 32px;font-size:16px;font-weight:700;background:var(--color-accent);color:#1a1a2e;border:none;border-radius:8px;cursor:pointer}
+    .lock-error{color:#d93025;margin-top:8px;font-size:14px;display:none}
+    .lock-error.visible{display:block}
+
+    /* Data cards */
+    .data-card{background:#fff;border-radius:var(--border-radius);padding:var(--spacing-lg);margin-bottom:var(--spacing-md);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .data-card h3{font-size:var(--font-size-lg);margin-bottom:12px;color:#202124}
+    .data-table{width:100%;border-collapse:collapse;font-size:14px}
+    .data-table th{text-align:left;padding:8px 10px;background:#f1f3f4;font-weight:600;font-size:13px;color:#5f6368;border-bottom:2px solid #dadce0}
+    .data-table td{padding:8px 10px;border-bottom:1px solid #f1f3f4;vertical-align:top}
+    .data-table tr:hover td{background:#f8f9fa}
+    .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+    .badge-green{background:#e8f5e9;color:#2e7d32}
+    .badge-red{background:#fce4ec;color:#c62828}
+    .badge-blue{background:#e8f0fe;color:#1a73e8}
+    .badge-yellow{background:#fff8e1;color:#f57f17}
+    .no-data{padding:20px;text-align:center;color:#888;font-size:14px}
+
+    /* Action buttons */
+    .action-group{display:flex;gap:10px;flex-wrap:wrap;margin:var(--spacing-md) 0}
+    .action-btn{padding:10px 20px;font-size:14px;font-weight:600;border:2px solid #dadce0;border-radius:8px;cursor:pointer;background:#fff;color:#5f6368;transition:all 0.15s}
+    .action-btn:hover{border-color:#666;color:#333}
+    .action-btn.danger{color:#d93025;border-color:#fce4ec}
+    .action-btn.danger:hover{background:#fce4ec;border-color:#d93025}
+    .action-btn.primary{color:#1a73e8;border-color:#e8f0fe}
+    .action-btn.primary:hover{background:#e8f0fe;border-color:#1a73e8}
+
+    /* Email preview */
+    .email-preview-box{background:#f8f9fa;border-radius:8px;padding:12px;margin:4px 0;font-size:13px;line-height:1.5;white-space:pre-wrap;max-height:150px;overflow-y:auto}
+    .summary-stat{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#f8f9fa;border-radius:20px;font-size:14px;font-weight:600;margin:4px}
+
+    @media print{
+      .nav-bar,.site-footer,.action-group,.lock-screen{display:none}
+      .data-card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <header class="page-header">
+    <h1>🔍 Teacher Review Panel</h1>
+    <p class="subtitle" style="font-size:14px;">MailBox Practice — Data Review</p>
+  </header>
+
+  <main id="main-content">
+
+    <!-- Lock Screen -->
+    <div class="lock-screen" id="lock-screen">
+      <h2 style="margin-bottom:16px;">Enter access code</h2>
+      <input type="password" id="access-code-input" placeholder="••••" maxlength="20" autocomplete="off">
+      <br>
+      <button class="btn" id="unlock-btn">Unlock</button>
+      <div class="lock-error" id="lock-error">Incorrect access code.</div>
+    </div>
+
+    <!-- Panel Content -->
+    <div class="panel-container" id="panel-content" style="display:none;">
+
+      <!-- Summary -->
+      <h2 class="section-title">📊 Summary</h2>
+      <div class="data-card" id="summary-card"></div>
+
+      <!-- Account Info -->
+      <h2 class="section-title">👤 Account Information</h2>
+      <div class="data-card" id="account-card"></div>
+
+      <!-- Sent Messages -->
+      <h2 class="section-title">📤 Sent Messages</h2>
+      <div class="data-card" id="sent-card"></div>
+
+      <!-- Drafts -->
+      <h2 class="section-title">📝 Draft Messages</h2>
+      <div class="data-card" id="drafts-card"></div>
+
+      <!-- Spam & Trash -->
+      <h2 class="section-title">🚫 Spam & Trash</h2>
+      <div class="data-card" id="spam-trash-card"></div>
+
+      <!-- Tasks -->
+      <h2 class="section-title">✅ Completed Tasks</h2>
+      <div class="data-card" id="tasks-card"></div>
+
+      <!-- Actions -->
+      <h2 class="section-title">⚙️ Actions</h2>
+      <div class="data-card">
+        <p style="font-size:14px;color:#888;margin-bottom:12px;">These actions cannot be undone. Use with care.</p>
+        <div class="action-group">
+          <button class="action-btn primary" id="export-btn">📥 Export data as JSON</button>
+          <button class="action-btn primary" id="print-btn">🖨️ Print summary</button>
+        </div>
+        <div class="action-group">
+          <button class="action-btn danger" id="reset-inbox-btn">🔄 Reset inbox (restore pre‑loaded emails)</button>
+        </div>
+        <div class="action-group">
+          <button class="action-btn danger" id="reset-account-btn">🗑️ Delete all accounts</button>
+          <button class="action-btn danger" id="reset-all-btn">⚠️ Reset all practice data</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <nav class="nav-bar">
+    <a href="tasks.html" class="nav-btn prev">◀ Task Cards</a>
+    <a href="../../index.html" class="nav-btn home">🏠 Home</a>
+    <span class="nav-btn next disabled">▶</span>
+  </nav>
+
+  <footer class="site-footer"><p>Teacher Panel — Not secure authentication — For practice use only</p></footer>
+
+  <script src="js/mailbox-store.js"></script>
+  <script src="../../js/main.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      // ============================================================
+      //  ACCESS CONTROL
+      // ============================================================
+      var unlocked = false;
+      var lockScreen = document.getElementById('lock-screen');
+      var panelContent = document.getElementById('panel-content');
+
+      document.getElementById('unlock-btn').addEventListener('click', function() {
+        var code = document.getElementById('access-code-input').value.trim();
+        var correctCode = MailboxStore.getTeacherCode();
+        if (code === correctCode) {
+          unlocked = true;
+          lockScreen.style.display = 'none';
+          panelContent.style.display = '';
+          renderAll();
+        } else {
+          document.getElementById('lock-error').classList.add('visible');
+        }
+      });
+
+      document.getElementById('access-code-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('unlock-btn').click();
+      });
+
+      // Set default code if not set
+      if (!localStorage.getItem('mailbox_teacher_code')) {
+        localStorage.setItem('mailbox_teacher_code', 'teacher123');
+      }
+
+      // ============================================================
+      //  RENDER
+      // ============================================================
+      function renderAll() {
+        var data = MailboxStore.getAllPracticeData();
+        renderSummary(data);
+        renderAccounts(data);
+        renderSent(data);
+        renderDrafts(data);
+        renderSpamTrash(data);
+        renderTasks();
+      }
+
+      function renderSummary(data) {
+        var totalAccounts = data.length;
+        var totalEmails = 0, totalSent = 0, totalDrafts = 0, totalSpam = 0, totalTrash = 0;
+        data.forEach(function(d) {
+          totalEmails += d.emailCount;
+          totalSent += d.sentCount;
+          totalDrafts += d.draftCount;
+          totalSpam += d.spamCount;
+          totalTrash += d.trashCount;
+        });
+        document.getElementById('summary-card').innerHTML =
+          '<span class="summary-stat">👤 Accounts: <strong>' + totalAccounts + '</strong></span> ' +
+          '<span class="summary-stat">📬 Total emails: <strong>' + totalEmails + '</strong></span> ' +
+          '<span class="summary-stat">📤 Sent: <strong>' + totalSent + '</strong></span> ' +
+          '<span class="summary-stat">📝 Drafts: <strong>' + totalDrafts + '</strong></span> ' +
+          '<span class="summary-stat">🚫 Spam: <strong>' + totalSpam + '</strong></span> ' +
+          '<span class="summary-stat">🗑️ Trash: <strong>' + totalTrash + '</strong></span>';
+      }
+
+      function renderAccounts(data) {
+        if (data.length === 0) {
+          document.getElementById('account-card').innerHTML = '<div class="no-data">No accounts created yet.</div>';
+          return;
+        }
+        var html = '';
+        data.forEach(function(d) {
+          var a = d.account;
+          html += '<h3>' + escHtml(a.firstName + ' ' + a.lastName) + '</h3>';
+          html += '<table class="data-table"><tr><th>Field</th><th>Value</th></tr>';
+          html += '<tr><td>Email</td><td><strong>' + escHtml(a.email) + '</strong></td></tr>';
+          html += '<tr><td>Created</td><td>' + formatDate(a.createdAt) + '</td></tr>';
+          html += '<tr><td>Last sign in</td><td>' + (a.lastSignIn ? formatDate(a.lastSignIn) : 'Never') + '</td></tr>';
+          html += '<tr><td>Country</td><td>' + escHtml(a.country) + '</td></tr>';
+          html += '<tr><td>Language</td><td>' + escHtml(a.language) + '</td></tr>';
+          html += '<tr><td>Recovery email</td><td>' + (a.recoveryEmail || '—') + '</td></tr>';
+          html += '<tr><td>Phone</td><td>' + (a.phone || '—') + '</td></tr>';
+          html += '<tr><td>Account completed</td><td><span class="badge badge-green">✓ Yes</span></td></tr>';
+          html += '</table>';
+        });
+        document.getElementById('account-card').innerHTML = html;
+      }
+
+      function renderSent(data) {
+        var html = '';
+        var hasAny = false;
+        data.forEach(function(d) {
+          var sent = d.emails.filter(function(e){return e.folder==='sent';});
+          if (sent.length === 0) return;
+          hasAny = true;
+          html += '<h3>' + escHtml(d.account.email) + ' (' + sent.length + ' sent)</h3>';
+          html += '<table class="data-table"><tr><th>Recipient</th><th>Subject</th><th>Content</th><th>Attachments</th><th>Date</th></tr>';
+          sent.forEach(function(e) {
+            html += '<tr>' +
+              '<td>' + escHtml(e.to) + '</td>' +
+              '<td>' + escHtml(e.subject) + '</td>' +
+              '<td><div class="email-preview-box">' + escHtml((e.body||'').substring(0,200)) + '</div></td>' +
+              '<td>' + (e.attachments && e.attachments.length ? e.attachments.join(', ') : '—') + '</td>' +
+              '<td style="white-space:nowrap">' + formatDate(e.date) + '</td>' +
+            '</tr>';
+          });
+          html += '</table>';
+        });
+        if (!hasAny) html = '<div class="no-data">No sent messages.</div>';
+        document.getElementById('sent-card').innerHTML = html;
+      }
+
+      function renderDrafts(data) {
+        var html = '';
+        var hasAny = false;
+        data.forEach(function(d) {
+          var drafts = d.emails.filter(function(e){return e.folder==='drafts';});
+          if (drafts.length === 0) return;
+          hasAny = true;
+          html += '<h3>' + escHtml(d.account.email) + ' (' + drafts.length + ' drafts)</h3>';
+          html += '<table class="data-table"><tr><th>To</th><th>Subject</th><th>Content</th></tr>';
+          drafts.forEach(function(e) {
+            html += '<tr>' +
+              '<td>' + escHtml(e.to || '—') + '</td>' +
+              '<td>' + escHtml(e.subject || '(no subject)') + '</td>' +
+              '<td><div class="email-preview-box">' + escHtml((e.body||'').substring(0,200)) + '</div></td>' +
+            '</tr>';
+          });
+          html += '</table>';
+        });
+        if (!hasAny) html = '<div class="no-data">No draft messages.</div>';
+        document.getElementById('drafts-card').innerHTML = html;
+      }
+
+      function renderSpamTrash(data) {
+        var html = '';
+        var hasAny = false;
+        data.forEach(function(d) {
+          var spamTrash = d.emails.filter(function(e){return e.folder==='spam' || e.folder==='trash';});
+          if (spamTrash.length === 0) return;
+          hasAny = true;
+          html += '<h3>' + escHtml(d.account.email) + '</h3>';
+          html += '<table class="data-table"><tr><th>Folder</th><th>From</th><th>Subject</th><th>Date</th></tr>';
+          spamTrash.forEach(function(e) {
+            html += '<tr>' +
+              '<td><span class="badge ' + (e.folder==='spam'?'badge-red':'badge-yellow') + '">' + e.folder + '</span></td>' +
+              '<td>' + escHtml(e.fromName||e.from) + '</td>' +
+              '<td>' + escHtml(e.subject) + '</td>' +
+              '<td>' + formatDate(e.date) + '</td>' +
+            '</tr>';
+          });
+          html += '</table>';
+        });
+        if (!hasAny) html = '<div class="no-data">No spam or trash messages.</div>';
+        document.getElementById('spam-trash-card').innerHTML = html;
+      }
+
+      function renderTasks() {
+        var tasks = MailboxStore.getTasks();
+        var taskKeys = Object.keys(tasks);
+        if (taskKeys.length === 0) {
+          document.getElementById('tasks-card').innerHTML = '<div class="no-data">No tasks completed yet. Tasks can be marked on the Task Cards page.</div>';
+          return;
+        }
+        var html = '<p style="margin-bottom:12px;"><span class="badge badge-green">' + taskKeys.length + ' tasks completed</span></p>';
+        html += '<table class="data-table"><tr><th>Task</th><th>Completed</th></tr>';
+        taskKeys.forEach(function(k) {
+          html += '<tr><td>' + escHtml(k) + '</td><td>' + formatDate(tasks[k].completedAt) + '</td></tr>';
+        });
+        html += '</table>';
+        document.getElementById('tasks-card').innerHTML = html;
+      }
+
+      // ============================================================
+      //  ACTIONS
+      // ============================================================
+      document.getElementById('export-btn').addEventListener('click', function() {
+        var json = MailboxStore.exportDataJSON();
+        var blob = new Blob([json], {type:'application/json'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = 'mailbox-practice-data-' + new Date().toISOString().slice(0,10) + '.json';
+        a.click(); URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('print-btn').addEventListener('click', function() {
+        window.print();
+      });
+
+      document.getElementById('reset-inbox-btn').addEventListener('click', function() {
+        if (!confirm('Reset inbox for ALL accounts? Pre-loaded emails will be restored. Sent and draft messages will be kept.')) return;
+        var accounts = MailboxStore.getAllAccounts();
+        for (var u in accounts) { if (accounts.hasOwnProperty(u)) MailboxStore.resetInbox(u); }
+        renderAll();
+        alert('Inbox reset complete.');
+      });
+
+      document.getElementById('reset-account-btn').addEventListener('click', function() {
+        if (!confirm('Delete ALL simulated accounts? This cannot be undone.')) return;
+        MailboxStore.resetAllData();
+        renderAll();
+        alert('All accounts deleted.');
+      });
+
+      document.getElementById('reset-all-btn').addEventListener('click', function() {
+        if (!confirm('⚠️ Reset ALL practice data? This includes accounts, emails, tasks, and drafts. This cannot be undone.')) return;
+        MailboxStore.resetAllData();
+        renderAll();
+        alert('All practice data has been reset.');
+      });
+
+      // ============================================================
+      //  HELPERS
+      // ============================================================
+      function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function formatDate(d) { if (!d) return '—'; var dt = new Date(d); if (isNaN(dt.getTime())) return d; return dt.toLocaleString(); }
+
+    })();
+  </script>
+</body>
+</html>
