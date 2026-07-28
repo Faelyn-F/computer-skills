@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — MailBox</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;background:#f0f2f5;min-height:100vh;display:flex;flex-direction:column;color:#1d1d1d}
+    a{color:#1a73e8;text-decoration:none}a:hover{text-decoration:underline}
+
+    .header{background:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dadce0}
+    .logo{font-size:24px;font-weight:700;color:#1a73e8;display:flex;align-items:center;gap:8px}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1a73e8,#4285f4);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+
+    .main{flex:1;display:flex;justify-content:center;padding:32px 16px}
+    .card{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:40px;max-width:420px;width:100%}
+    .card h1{font-size:24px;font-weight:600;margin-bottom:4px;color:#202124;text-align:center}
+    .card .subtitle{font-size:14px;color:#5f6368;margin-bottom:28px;text-align:center}
+
+    .form-group{margin-bottom:18px}
+    .form-group label{display:block;font-size:14px;font-weight:500;color:#202124;margin-bottom:6px}
+
+    input[type="text"],input[type="password"],input[type="email"]{width:100%;padding:12px;font-size:15px;border:1px solid #dadce0;border-radius:4px;background:#fff;font-family:inherit;transition:border-color 0.2s}
+    input:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,0.15)}
+    input.error{border-color:#d93025}
+    .error-msg{display:none;font-size:12px;color:#d93025;margin-top:4px}
+    .error-msg.visible{display:block}
+
+    .general-error{display:none;padding:10px 14px;background:#fce8e6;border-radius:4px;font-size:13px;color:#c5221f;margin-bottom:16px}
+    .general-error.visible{display:block}
+
+    .checkbox-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .checkbox-row input[type="checkbox"]{width:18px;height:18px;accent-color:#1a73e8}
+    .checkbox-row label{font-size:14px;color:#5f6368;margin-bottom:0}
+
+    .btn{padding:12px 24px;font-size:15px;font-weight:600;border:none;border-radius:4px;cursor:pointer;transition:background 0.2s;display:inline-block;text-align:center}
+    .btn-primary{background:#1a73e8;color:#fff;width:100%}
+    .btn-primary:hover{background:#1557b0}
+    .btn-secondary{background:#fff;color:#1a73e8;border:1px solid #dadce0;padding:10px 20px;font-size:14px}
+
+    .links-row{display:flex;justify-content:space-between;margin-top:20px;font-size:14px}
+    .divider{margin:24px 0;text-align:center;font-size:13px;color:#888;border-top:1px solid #eee;padding-top:16px}
+
+    /* Recovery flow */
+    .recovery-view{display:none}
+    .recovery-view.visible{display:block}
+    .signin-view.visible{display:block}
+    .signin-view.hidden{display:none}
+
+    .recovery-step{display:none}
+    .recovery-step.active{display:block}
+
+    .code-display{background:#e8f5e9;border:2px dashed #4caf50;border-radius:8px;padding:20px;text-align:center;margin:16px 0}
+    .code-display .big-code{font-size:32px;font-weight:700;color:#2e7d32;letter-spacing:8px;font-family:monospace}
+    .code-display .code-note{font-size:12px;color:#666;margin-top:4px}
+
+    .method-option{display:block;width:100%;padding:14px;margin-bottom:8px;background:#fff;border:2px solid #dadce0;border-radius:8px;cursor:pointer;text-align:left;font-size:15px;transition:border-color 0.2s}
+    .method-option:hover{border-color:#1a73e8}
+    .method-option.selected{border-color:#1a73e8;background:#e8f0fe}
+
+    .back-link{display:inline-block;margin-top:16px;font-size:14px;cursor:pointer;color:#1a73e8;background:none;border:none;padding:0}
+    .back-link:hover{text-decoration:underline}
+
+    .success-box{text-align:center;display:none}
+    .success-box.visible{display:block}
+    .success-box .check{font-size:48px;margin-bottom:12px}
+
+    @media(max-width:480px){.card{padding:24px 20px}}
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><span class="logo-icon">✉</span>MailBox</div>
+  </header>
+
+  <div class="main">
+
+    <!-- ============ SIGN IN VIEW ============ -->
+    <div class="signin-view visible" id="signin-view">
+      <div class="card">
+        <h1>Sign in</h1>
+        <p class="subtitle">to continue to MailBox</p>
+
+        <div class="general-error" id="signin-error"></div>
+
+        <form id="signin-form" novalidate autocomplete="off">
+          <div class="form-group">
+            <label for="signin-email">Email address</label>
+            <input type="text" id="signin-email" placeholder="you@mailbox.example" dir="ltr" autocomplete="off">
+            <span class="error-msg" id="err-signin-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="signin-password">Password</label>
+            <input type="password" id="signin-password" autocomplete="off">
+            <span class="error-msg" id="err-signin-password"></span>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="show-password-signin">
+            <label for="show-password-signin">Show password</label>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="keep-signed-in" checked>
+            <label for="keep-signed-in">Keep me signed in</label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+
+        <div class="links-row">
+          <button class="back-link" id="forgot-pw-link">Forgot password?</button>
+          <a href="register.html">Create account</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ RECOVERY VIEW ============ -->
+    <div class="recovery-view" id="recovery-view">
+      <div class="card">
+
+        <!-- Step 1: Enter email -->
+        <div class="recovery-step active" id="recovery-step-1">
+          <h1>Forgot password?</h1>
+          <p class="subtitle">Enter your email address to recover your account.</p>
+
+          <div class="general-error" id="recovery-error-1"></div>
+
+          <div class="form-group">
+            <label for="recovery-email-input">Email address</label>
+            <input type="text" id="recovery-email-input" placeholder="you@mailbox.example" dir="ltr">
+          </div>
+          <button class="btn btn-primary" id="recovery-next-btn">Next</button>
+          <button class="back-link" id="back-to-signin">← Back to sign in</button>
+        </div>
+
+        <!-- Step 2: Select recovery method -->
+        <div class="recovery-step" id="recovery-step-2">
+          <h1>Verify your identity</h1>
+          <p class="subtitle">Choose how to receive a verification code.</p>
+
+          <div class="general-error" id="recovery-error-2"></div>
+          <div id="recovery-methods"></div>
+          <button class="btn btn-primary" id="recovery-send-code-btn" style="margin-top:12px;">Send code</button>
+          <button class="back-link" id="back-to-step-1">← Try a different email</button>
+        </div>
+
+        <!-- Step 3: Enter verification code -->
+        <div class="recovery-step" id="recovery-step-3">
+          <h1>Enter verification code</h1>
+          <p class="subtitle">A code has been generated for this simulation.</p>
+
+          <div class="general-error" id="recovery-error-3"></div>
+
+          <!-- In simulation we show the code -->
+          <div class="code-display">
+            <div style="font-size:13px;color:#666;margin-bottom:8px;">Simulation verification code:</div>
+            <div class="big-code" id="displayed-code">------</div>
+            <div class="code-note">In a real service, this code would be sent to your recovery email or phone. Here it is shown for practice.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="recovery-code-input">Enter the 6-digit code</label>
+            <input type="text" id="recovery-code-input" placeholder="000000" maxlength="6" dir="ltr">
+          </div>
+          <button class="btn btn-primary" id="verify-code-btn">Verify</button>
+          <button class="back-link" id="back-to-step-2">← Back</button>
+        </div>
+
+        <!-- Step 4: Create new password -->
+        <div class="recovery-step" id="recovery-step-4">
+          <h1>Create a new password</h1>
+          <p class="subtitle">Choose a new password for your account.</p>
+
+          <div class="general-error" id="recovery-error-4"></div>
+
+          <div class="form-group">
+            <label for="new-pw">New password</label>
+            <input type="password" id="new-pw">
+            <span class="error-msg" id="err-new-pw"></span>
+          </div>
+          <div class="form-group">
+            <label for="new-pw-confirm">Confirm new password</label>
+            <input type="password" id="new-pw-confirm">
+            <span class="error-msg" id="err-new-pw-confirm"></span>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="show-new-pw">
+            <label for="show-new-pw">Show password</label>
+          </div>
+
+          <button class="btn btn-primary" id="reset-pw-btn">Reset password</button>
+          <button class="back-link" id="back-to-step-3">← Back</button>
+        </div>
+
+        <!-- Success -->
+        <div class="success-box" id="recovery-success">
+          <div class="check">✅</div>
+          <h2>Password reset successful</h2>
+          <p style="margin:12px 0;color:#5f6368;">You can now sign in with your new password.</p>
+          <button class="btn btn-primary" id="go-to-signin">Go to sign in</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/mailbox-store.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      // ============================================================
+      //  SIGN IN
+      // ============================================================
+
+      // Auto-redirect if already signed in
+      (function() {
+        var session = MailboxStore.getSession();
+        if (session && session.currentUser && session.keepSignedIn) {
+          window.location.href = 'inbox.html';
+        }
+      })();
+
+      document.getElementById('show-password-signin').addEventListener('change', function() {
+        document.getElementById('signin-password').type = this.checked ? 'text' : 'password';
+      });
+
+      document.getElementById('signin-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('signin-error').classList.remove('visible');
+        document.getElementById('err-signin-email').classList.remove('visible');
+        document.getElementById('err-signin-password').classList.remove('visible');
+
+        var email = document.getElementById('signin-email').value.trim();
+        var password = document.getElementById('signin-password').value;
+
+        // Extract username from email (remove @mailbox.example)
+        var username = email;
+        if (email.indexOf('@mailbox.example') !== -1) {
+          username = email.replace('@mailbox.example', '');
+        }
+
+        if (!email) {
+          document.getElementById('err-signin-email').textContent = 'Please enter your email address.';
+          document.getElementById('err-signin-email').classList.add('visible');
+          return;
+        }
+
+        if (!password) {
+          document.getElementById('err-signin-password').textContent = 'Please enter your password.';
+          document.getElementById('err-signin-password').classList.add('visible');
+          return;
+        }
+
+        var result = MailboxStore.signIn(username, password);
+
+        if (result.success) {
+          window.location.href = 'inbox.html';
+        } else {
+          var errEl = document.getElementById('signin-error');
+          errEl.textContent = result.error;
+          errEl.classList.add('visible');
+        }
+      });
+
+      // ============================================================
+      //  FORGOT PASSWORD FLOW
+      // ============================================================
+
+      var recoveryState = { username: '', selectedMethod: null, code: '' };
+
+      // Navigate to recovery
+      document.getElementById('forgot-pw-link').addEventListener('click', function() {
+        document.getElementById('signin-view').classList.add('hidden');
+        document.getElementById('signin-view').classList.remove('visible');
+        document.getElementById('recovery-view').classList.add('visible');
+        showRecoveryStep(1);
+      });
+
+      document.getElementById('back-to-signin').addEventListener('click', function() {
+        document.getElementById('recovery-view').classList.remove('visible');
+        document.getElementById('signin-view').classList.remove('hidden');
+        document.getElementById('signin-view').classList.add('visible');
+        resetRecovery();
+      });
+
+      function showRecoveryStep(n) {
+        for (var i = 1; i <= 4; i++) {
+          var step = document.getElementById('recovery-step-' + i);
+          step.classList.remove('active');
+        }
+        var target = document.getElementById('recovery-step-' + n);
+        if (target) target.classList.add('active');
+        var success = document.getElementById('recovery-success');
+        if (success) success.classList.remove('visible');
+      }
+
+      function resetRecovery() {
+        recoveryState = { username: '', selectedMethod: null, code: '' };
+        document.getElementById('recovery-email-input').value = '';
+        document.getElementById('recovery-code-input').value = '';
+        document.getElementById('new-pw').value = '';
+        document.getElementById('new-pw-confirm').value = '';
+        document.getElementById('displayed-code').textContent = '------';
+        document.getElementById('recovery-error-1').classList.remove('visible');
+        document.getElementById('recovery-error-2').classList.remove('visible');
+        document.getElementById('recovery-error-3').classList.remove('visible');
+      }
+
+      // Step 1 → Step 2
+      document.getElementById('recovery-next-btn').addEventListener('click', function() {
+        var email = document.getElementById('recovery-email-input').value.trim();
+        var username = email.replace('@mailbox.example', '');
+        var err = document.getElementById('recovery-error-1');
+
+        if (!email) { err.textContent = 'Please enter your email address.'; err.classList.add('visible'); return; }
+
+        var result = MailboxStore.requestPasswordReset(username);
+        if (!result.success) {
+          err.textContent = result.error; err.classList.add('visible');
+          if (result.noRecovery) {
+            // No recovery methods — stay on step 1 but show message
+            return;
+          }
+          return;
+        }
+
+        err.classList.remove('visible');
+        recoveryState.username = username;
+        recoveryState.code = result.code;
+        document.getElementById('displayed-code').textContent = result.code;
+
+        // Render recovery methods
+        var methodsContainer = document.getElementById('recovery-methods');
+        methodsContainer.innerHTML = '';
+        for (var i = 0; i < result.methods.length; i++) {
+          var m = result.methods[i];
+          var icon = m.type === 'email' ? '📧' : '📱';
+          var label = m.type === 'email' ? 'Email to ' : 'Text message to ';
+          var masked = m.type === 'email' ? m.value : m.value.replace(/(\d{2})\d+(\d{2})/, '$1•••$2');
+          methodsContainer.innerHTML += '<button type="button" class="method-option" data-type="' + m.type + '" data-value="' + m.value + '">' +
+            icon + ' ' + label + '<strong>' + masked + '</strong></button>';
+        }
+
+        // Select first by default
+        var firstMethod = methodsContainer.querySelector('.method-option');
+        if (firstMethod) { firstMethod.classList.add('selected'); recoveryState.selectedMethod = firstMethod.getAttribute('data-type'); }
+
+        methodsContainer.querySelectorAll('.method-option').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            methodsContainer.querySelectorAll('.method-option').forEach(function(b){b.classList.remove('selected');});
+            this.classList.add('selected');
+            recoveryState.selectedMethod = this.getAttribute('data-type');
+          });
+        });
+
+        showRecoveryStep(2);
+      });
+
+      // Step 2 → Step 3
+      document.getElementById('recovery-send-code-btn').addEventListener('click', function() {
+        if (!recoveryState.selectedMethod) {
+          document.getElementById('recovery-error-2').textContent = 'Please select a recovery method.';
+          document.getElementById('recovery-error-2').classList.add('visible');
+          return;
+        }
+        showRecoveryStep(3);
+        document.getElementById('recovery-code-input').focus();
+      });
+
+      // Step 3 → Step 4
+      document.getElementById('verify-code-btn').addEventListener('click', function() {
+        var code = document.getElementById('recovery-code-input').value.trim();
+        var result = MailboxStore.verifyResetCode(recoveryState.username, code);
+        if (result.success) {
+          showRecoveryStep(4);
+        } else {
+          document.getElementById('recovery-error-3').textContent = result.error;
+          document.getElementById('recovery-error-3').classList.add('visible');
+        }
+      });
+
+      // Step 4 → Success
+      document.getElementById('reset-pw-btn').addEventListener('click', function() {
+        var pw = document.getElementById('new-pw').value;
+        var pwConfirm = document.getElementById('new-pw-confirm').value;
+        var hasErr = false;
+
+        document.getElementById('err-new-pw').classList.remove('visible');
+        document.getElementById('err-new-pw-confirm').classList.remove('visible');
+
+        if (!pw) { document.getElementById('err-new-pw').textContent = 'Please enter a new password.'; document.getElementById('err-new-pw').classList.add('visible'); hasErr = true; }
+        else if (pw.length < 8) { document.getElementById('err-new-pw').textContent = 'Password must be at least 8 characters.'; document.getElementById('err-new-pw').classList.add('visible'); hasErr = true; }
+        else if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) { document.getElementById('err-new-pw').textContent = 'Password must contain at least one letter and one number.'; document.getElementById('err-new-pw').classList.add('visible'); hasErr = true; }
+
+        if (pw !== pwConfirm) { document.getElementById('err-new-pw-confirm').textContent = 'Passwords do not match.'; document.getElementById('err-new-pw-confirm').classList.add('visible'); hasErr = true; }
+
+        if (hasErr) return;
+
+        var result = MailboxStore.resetPassword(recoveryState.username, pw);
+        if (result.success) {
+          showRecoveryStep(0);
+          document.getElementById('recovery-success').classList.add('visible');
+        }
+      });
+
+      document.getElementById('go-to-signin').addEventListener('click', function() {
+        document.getElementById('recovery-view').classList.remove('visible');
+        document.getElementById('signin-view').classList.remove('hidden');
+        document.getElementById('signin-view').classList.add('visible');
+        resetRecovery();
+        document.getElementById('recovery-success').classList.remove('visible');
+      });
+
+      // Back buttons
+      document.getElementById('back-to-step-1').addEventListener('click', function(){ showRecoveryStep(1); });
+      document.getElementById('back-to-step-2').addEventListener('click', function(){ showRecoveryStep(2); });
+      document.getElementById('back-to-step-3').addEventListener('click', function(){ showRecoveryStep(3); });
+
+      // Show new password toggle
+      document.getElementById('show-new-pw').addEventListener('change', function() {
+        var type = this.checked ? 'text' : 'password';
+        document.getElementById('new-pw').type = type;
+        document.getElementById('new-pw-confirm').type = type;
+      });
+
+    })();
+  </script>
+</body>
+</html>
