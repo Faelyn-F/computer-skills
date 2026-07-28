@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Docs Practice — تمرین گوگل داکس</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* --- Shared Simulation Styles --- */
+    .step-indicator {
+      display: flex; justify-content: center; gap: 8px;
+      margin: var(--spacing-md) 0; flex-wrap: wrap;
+    }
+    .step-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #ccc; color: #fff; font-weight: 700; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .step-dot.active { background: var(--color-accent); transform: scale(1.2); box-shadow: 0 0 12px rgba(240,165,0,0.5); }
+    .step-dot.done { background: var(--color-success); }
+
+    .sim-wrapper {
+      max-width: 950px; margin: 0 auto var(--spacing-lg);
+      background: #fff; border-radius: var(--border-radius);
+      overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+
+    .highlight-target {
+      animation: pulse-glow 0.8s ease-in-out infinite;
+      outline: 4px solid var(--color-accent) !important;
+      outline-offset: 4px; z-index: 10; position: relative;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(240,165,0,0.4); }
+      50% { box-shadow: 0 0 24px rgba(240,165,0,0.9); }
+    }
+
+    /* --- Feedback Toast --- */
+    .feedback-toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      padding: 14px 28px; border-radius: 12px; font-size: 20px; font-weight: 700;
+      z-index: 999; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease; text-align: center; max-width: 90vw;
+    }
+    .feedback-toast.show { opacity: 1; }
+    .feedback-toast.success { background: #e8f5e9; color: #2e7d32; border: 3px solid #4caf50; }
+    .feedback-toast.error { background: #fce4ec; color: #c62828; border: 3px solid #ef5350; }
+
+    .instruction-panel {
+      max-width: 950px; margin: 0 auto var(--spacing-lg);
+      background: #fff; border-radius: var(--border-radius);
+      padding: var(--spacing-lg); border-left: 8px solid var(--color-accent);
+    }
+    .instruction-panel .inst-en { font-size: var(--font-size-lg); font-weight: 700; color: var(--color-text); margin-bottom: 4px; direction: ltr; }
+    .instruction-panel .inst-fa { font-size: var(--font-size-lg); font-weight: 700; color: #555; direction: rtl; font-family: var(--font-family-fa); text-align: right; }
+
+    .action-row {
+      display: flex; justify-content: center; gap: var(--spacing-md);
+      flex-wrap: wrap; margin: var(--spacing-md) auto; max-width: 950px;
+    }
+    .restart-btn {
+      padding: 14px 32px; font-size: var(--font-size-lg); font-weight: 700;
+      background: #fff; color: var(--color-text); border: 3px solid #ccc;
+      border-radius: var(--border-radius); cursor: pointer;
+    }
+    .restart-btn:hover { border-color: var(--color-accent); background: #fff8e1; }
+
+    /* ============================================================
+       Google Docs Simulation Styles
+       ============================================================ */
+
+    .docs-toolbar {
+      background: #f8f9fa; padding: 8px 16px;
+      border-bottom: 1px solid #dadce0; display: flex;
+      align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .docs-toolbar .toolbar-btn {
+      padding: 6px 10px; background: transparent; border: 1px solid transparent;
+      border-radius: 4px; cursor: pointer; font-size: 15px;
+      color: #444; display: flex; align-items: center; gap: 4px;
+      transition: background 0.15s;
+    }
+    .docs-toolbar .toolbar-btn:hover { background: #e8eaed; }
+    .docs-toolbar .toolbar-sep { width: 1px; height: 24px; background: #dadce0; margin: 0 4px; }
+    .docs-toolbar .bold-btn { font-weight: 700; font-size: 16px; min-width: 28px; justify-content: center; }
+
+    .docs-menubar {
+      background: #f8f9fa; padding: 4px 16px; display: flex;
+      align-items: center; gap: 12px; border-bottom: 1px solid #eee;
+      font-size: 14px; color: #444;
+    }
+    .docs-menubar .menu-item {
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .docs-menubar .menu-item:hover { background: #e8eaed; }
+
+    .docs-title-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px; border-bottom: 1px solid #eee;
+    }
+    .docs-title-input {
+      font-size: 18px; color: #222; border: 1px solid transparent;
+      padding: 4px 8px; border-radius: 4px; background: transparent;
+      cursor: default; min-width: 200px;
+    }
+    .docs-title-input.editable { border-color: #dadce0; cursor: text; background: #fff; }
+
+    .docs-page {
+      background: #fff; padding: 40px 60px; min-height: 300px;
+      margin: 20px 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .docs-cursor {
+      display: none; width: 2px; height: 20px;
+      background: #1a73e8; position: absolute;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .docs-cursor.visible { display: inline-block; }
+
+    .docs-text {
+      font-size: 16px; color: #222; line-height: 1.6;
+      min-height: 24px;
+    }
+    .docs-text.has-content::after { content: ''; }
+    .docs-text .selected-text {
+      background: #c2e7ff; padding: 2px 0;
+    }
+
+    .docs-saved-indicator {
+      display: none; align-items: center; gap: 6px;
+      font-size: 13px; color: #5f6368; margin-left: auto;
+    }
+    .docs-saved-indicator.visible { display: flex; }
+
+    /* Download / Print dropdown simulation */
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; left: 0;
+      background: #fff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      min-width: 220px; z-index: 50; padding: 8px 0;
+    }
+    .dropdown-menu.visible { display: block; }
+    .dropdown-item {
+      padding: 10px 20px; cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .dropdown-item:hover { background: #f1f3f4; }
+
+    /* Success overlay */
+    .done-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 1000;
+      justify-content: center; align-items: center;
+    }
+    .done-overlay.visible { display: flex; }
+    .done-card {
+      background: #fff; border-radius: 20px; padding: 48px 32px;
+      text-align: center; max-width: 500px; margin: 20px;
+    }
+    .done-card .done-icon { font-size: 72px; margin-bottom: 16px; }
+    .done-card h2 { color: #2e7d32; margin-bottom: 8px; }
+    .done-card .fa-text { font-family: var(--font-family-fa); direction: rtl; font-size: var(--font-size-lg); color: #555; margin-bottom: var(--spacing-md); }
+
+    @media (max-width: 600px) {
+      .docs-page { margin: 10px; padding: 20px; }
+      .docs-toolbar { gap: 2px; }
+      .step-dot { width: 28px; height: 28px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to practice / رفتن به تمرین</a>
+
+  <header class="page-header">
+    <h1>📄 Google Docs Practice</h1>
+    <p class="subtitle" lang="fa" dir="rtl" style="font-family: var(--font-family-fa);">
+      تمرین گوگل داکس
+    </p>
+  </header>
+
+  <!-- Step Dots -->
+  <div class="step-indicator" aria-label="Progress"><span class="step-dot active" id="dot-1">1</span><span class="step-dot" id="dot-2">2</span><span class="step-dot" id="dot-3">3</span><span class="step-dot" id="dot-4">4</span><span class="step-dot" id="dot-5">5</span><span class="step-dot" id="dot-6">6</span><span class="step-dot" id="dot-7">7</span><span class="step-dot" id="dot-8">8</span><span class="step-dot" id="dot-9">9</span></div>
+
+  <main id="main-content" tabindex="-1">
+
+    <!-- Instruction Panel -->
+    <div class="instruction-panel" id="instruction-panel">
+      <p class="inst-en" id="inst-en">Click the <strong>+ Blank</strong> button to open Google Docs and create a new document.</p>
+      <p class="inst-fa" id="inst-fa" lang="fa">روی دکمه <strong>+ Blank</strong> کلیک کنید تا Google Docs باز شود و یک سند جدید ایجاد کنید.</p>
+    </div>
+
+    <!-- Docs Simulation -->
+    <div class="sim-wrapper">
+      <!-- Menu bar -->
+      <div class="docs-menubar">
+        <span class="menu-item" id="menu-file" style="position:relative;">
+          File
+          <div class="dropdown-menu" id="file-dropdown">
+            <div class="dropdown-item">📄 New</div>
+            <div class="dropdown-item">📂 Open</div>
+            <div class="dropdown-item" id="dropdown-download">⬇️ Download &rarr; Microsoft Word (.docx)</div>
+            <div class="dropdown-item" id="dropdown-print">🖨️ Print</div>
+          </div>
+        </span>
+        <span class="menu-item">Edit</span>
+        <span class="menu-item">View</span>
+        <span class="menu-item">Insert</span>
+        <span class="menu-item">Format</span>
+        <span class="menu-item">Tools</span>
+        <span style="color:#aaa;font-size:12px;margin-left:auto;">(practice)</span>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="docs-toolbar">
+        <button class="toolbar-btn">↩ Undo</button>
+        <button class="toolbar-btn">↪ Redo</button>
+        <span class="toolbar-sep"></span>
+        <button class="toolbar-btn bold-btn" id="bold-btn" aria-label="Bold">B</button>
+        <button class="toolbar-btn" style="font-style:italic;">I</button>
+        <button class="toolbar-btn" style="text-decoration:underline;">U</button>
+        <span class="toolbar-sep"></span>
+        <button class="toolbar-btn">🔗 Link</button>
+        <span class="docs-saved-indicator" id="saved-indicator">☁️ Saved to Drive</span>
+      </div>
+
+      <!-- Title bar -->
+      <div class="docs-title-bar">
+        <span style="font-size:22px;">📄</span>
+        <input type="text" class="docs-title-input" id="docs-title" value="Untitled document" readonly>
+        <span style="font-size:13px;color:#888;">⭐</span>
+      </div>
+
+      <!-- Document page -->
+      <div class="docs-page" id="docs-page">
+        <div class="docs-text" id="docs-text">
+          <span class="docs-cursor" id="docs-cursor"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <button class="restart-btn" id="restart-btn">🔄 Restart Lesson</button>
+      <span style="font-family: var(--font-family-fa); font-size: var(--font-size-base); color: #888; align-self: center;" lang="fa" dir="rtl">شروع دوباره درس</span>
+    </div>
+
+  </main>
+
+  <!-- Feedback Toast -->
+  <div class="feedback-toast" id="feedback-toast" aria-live="polite"></div>
+
+  <!-- Done Overlay -->
+  <div class="done-overlay" id="done-overlay" role="dialog">
+    <div class="done-card">
+      <div class="done-icon">🎉</div>
+      <h2>Document Complete!</h2>
+      <p class="fa-text" lang="fa" dir="rtl">سند کامل شد!</p>
+      <p style="color:#666;margin-bottom:24px;">You practiced creating and editing a Google Doc.<br>
+        <span lang="fa" dir="rtl" style="font-family: var(--font-family-fa); display: inline-block; margin-top: 4px;">
+          شما ایجاد و ویرایش یک سند Google Docs را تمرین کردید.
+        </span>
+      </p>
+      <button style="padding:14px 32px;font-size:18px;font-weight:700;background:var(--color-accent);color:#1a1a2e;border:none;border-radius:12px;cursor:pointer;" id="close-overlay-btn">👍 Great! / !عالی</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar" aria-label="Lesson navigation">
+    <a href="document.html" class="nav-btn prev">◀ Back to Document Lesson</a>
+    <a href="../index.html" class="nav-btn home">🏠 Home</a>
+    <a href="drive.html" class="nav-btn next">Next ▶</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Computer Skills Website — Practice Simulation — No real files are created</p>
+  </footer>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var currentStep = 1, totalSteps = 9, toastTimer = null;
+
+      // DOM
+      var docsPage = document.getElementById('docs-page');
+      var docsText = document.getElementById('docs-text');
+      var docsCursor = document.getElementById('docs-cursor');
+      var docsTitle = document.getElementById('docs-title');
+      var boldBtn = document.getElementById('bold-btn');
+      var savedIndicator = document.getElementById('saved-indicator');
+      var menuFile = document.getElementById('menu-file');
+      var fileDropdown = document.getElementById('file-dropdown');
+      var dropdownDownload = document.getElementById('dropdown-download');
+      var dropdownPrint = document.getElementById('dropdown-print');
+      var feedbackToast = document.getElementById('feedback-toast');
+      var doneOverlay = document.getElementById('done-overlay');
+      var instEn = document.getElementById('inst-en');
+      var instFa = document.getElementById('inst-fa');
+
+      // Step definitions
+      var steps = {
+        1: {
+          en: 'Click the <strong>+ Blank</strong> area on the document page to start.',
+          fa: 'روی قسمت <strong>+ Blank</strong> در صفحه سند کلیک کنید تا شروع کنید.',
+          highlight: 'docs-page',
+          target: function(el) { return el === docsPage || (el && el.closest && el.closest('#docs-page')); },
+          onComplete: function() {
+            docsCursor.classList.add('visible');
+            docsText.innerHTML = 'Type your text here... <span class="docs-cursor visible" id="docs-cursor-2"></span>';
+            docsCursor = document.getElementById('docs-cursor-2') || docsCursor;
+          }
+        },
+        2: {
+          en: 'Click on the document page to place your cursor and <strong>type text</strong>.',
+          fa: 'روی صفحه سند کلیک کنید تا نشانگر را قرار دهید و <strong>متن تایپ کنید</strong>.',
+          highlight: 'docs-page',
+          target: function(el) { return el === docsPage || (el && el.closest && el.closest('#docs-page')); },
+          onComplete: function() {
+            docsText.innerHTML = 'Hello! This is my first document. I am learning Google Docs step by step.<span class="docs-cursor" id="docs-cursor-3"></span>';
+            docsCursor = document.getElementById('docs-cursor-3') || docsCursor;
+          }
+        },
+        3: {
+          en: 'Click the document text to <strong>select</strong> it. The text will highlight in blue.',
+          fa: 'روی متن سند کلیک کنید تا آن را <strong>انتخاب</strong> کنید. متن با رنگ آبی مشخص می‌شود.',
+          highlight: 'docs-page',
+          target: function(el) { return el === docsPage || (el && el.closest && el.closest('#docs-page')); },
+          onComplete: function() {
+            docsText.innerHTML = '<span class="selected-text">Hello! This is my first document. I am learning Google Docs step by step.</span>';
+          }
+        },
+        4: {
+          en: 'Click the <strong>B</strong> (Bold) button in the toolbar to make the selected text bold.',
+          fa: 'روی دکمه <strong>B</strong> (پررنگ) در نوار ابزار کلیک کنید تا متن انتخاب شده پررنگ شود.',
+          highlight: 'bold-btn',
+          target: function(el) { return el === boldBtn || boldBtn.contains(el); },
+          onComplete: function() {
+            docsText.innerHTML = '<strong class="selected-text">Hello! This is my first document. I am learning Google Docs step by step.</strong>';
+            boldBtn.style.background = '#e8eaed';
+          }
+        },
+        5: {
+          en: 'Look at the top right — Google Docs <strong>saves automatically</strong>. Notice the "Saved to Drive" indicator.',
+          fa: 'به بالای سمت راست نگاه کنید — Google Docs <strong>به طور خودکار ذخیره می‌کند</strong>. نشانگر "Saved to Drive" را ببینید.',
+          highlight: 'saved-indicator',
+          target: function(el) { return el === savedIndicator || (el && el.closest && el.closest('#saved-indicator')); },
+          onComplete: function() {
+            savedIndicator.classList.add('visible');
+          }
+        },
+        6: {
+          en: 'Click the <strong>document title</strong> at the top to rename it.',
+          fa: 'روی <strong>عنوان سند</strong> در بالا کلیک کنید تا نام آن را تغییر دهید.',
+          highlight: 'docs-title',
+          target: function(el) { return el === docsTitle || (el && el.closest && el.closest('.docs-title-bar')); },
+          onComplete: function() {
+            docsTitle.value = 'My Practice Document';
+            docsTitle.style.color = '#222';
+            docsTitle.classList.remove('editable');
+          }
+        },
+        7: {
+          en: 'Click <strong>File</strong> in the menu bar, then click <strong>Download → Microsoft Word (.docx)</strong>.',
+          fa: 'روی <strong>File</strong> در نوار منو کلیک کنید، سپس روی <strong>Download → Microsoft Word (.docx)</strong> کلیک کنید.',
+          highlight: 'menu-file',
+          target: function(el) {
+            if (fileDropdown.classList.contains('visible')) {
+              return el === dropdownDownload || (el && el.closest && el.closest('#dropdown-download'));
+            }
+            return el === menuFile || (el && el.closest && el.closest('#menu-file'));
+          },
+          onComplete: function() {
+            fileDropdown.classList.remove('visible');
+            showToast('📥 Downloaded as Word document! / !سند Word دانلود شد', 'success');
+          }
+        },
+        8: {
+          en: 'Click <strong>File</strong> again, then click <strong>Print</strong> to print the document.',
+          fa: 'دوباره روی <strong>File</strong> کلیک کنید، سپس روی <strong>Print</strong> کلیک کنید تا سند را چاپ کنید.',
+          highlight: 'menu-file',
+          target: function(el) {
+            if (fileDropdown.classList.contains('visible')) {
+              return el === dropdownPrint || (el && el.closest && el.closest('#dropdown-print'));
+            }
+            return el === menuFile || (el && el.closest && el.closest('#menu-file'));
+          },
+          onComplete: function() {
+            fileDropdown.classList.remove('visible');
+            showToast('🖨️ Print dialog opened! / !پنجره چاپ باز شد', 'success');
+          }
+        },
+        9: {
+          en: '🎉 You completed all steps! The document is ready.',
+          fa: '🎉 تمام مراحل را کامل کردید! سند آماده است.',
+          highlight: '',
+          target: function() { return false; },
+          onComplete: function() { /* handled by advance */ }
+        }
+      };
+
+      // Helpers
+      function clearHighlight() {
+        var all = document.querySelectorAll('.highlight-target');
+        for (var i = 0; i < all.length; i++) all[i].classList.remove('highlight-target');
+      }
+      function applyHighlight(id) { clearHighlight(); if (id) { var el = document.getElementById(id); if (el) el.classList.add('highlight-target'); } }
+      function showToast(msg, type) {
+        if (toastTimer) clearTimeout(toastTimer);
+        feedbackToast.textContent = msg;
+        feedbackToast.className = 'feedback-toast ' + type + ' show';
+        toastTimer = setTimeout(function() { feedbackToast.classList.remove('show'); }, 2000);
+      }
+      function updateInstruction(n) {
+        var s = steps[n]; instEn.innerHTML = s.en; instFa.innerHTML = s.fa;
+        applyHighlight(s.highlight);
+      }
+      function updateDots(n) {
+        for (var i = 1; i <= totalSteps; i++) {
+          var dot = document.getElementById('dot-' + i);
+          dot.classList.remove('active', 'done');
+          if (i < n) dot.classList.add('done');
+          if (i === n) dot.classList.add('active');
+        }
+      }
+
+      function advanceStep() {
+        var s = steps[currentStep];
+        if (s.onComplete) s.onComplete();
+        if (currentStep === 7 && !fileDropdown.classList.contains('visible')) {
+          // Step 7: first click opens dropdown, second click selects Download
+          if (!fileDropdown._openedForStep7) {
+            fileDropdown.classList.add('visible');
+            fileDropdown._openedForStep7 = true;
+            applyHighlight(null); // remove highlight from menu-file
+            // Manually highlight download item
+            dropdownDownload.style.background = '#fff8e1';
+            dropdownDownload.style.outline = '3px solid var(--color-accent)';
+            return; // don't advance yet
+          }
+          dropdownDownload.style.background = '';
+          dropdownDownload.style.outline = '';
+          fileDropdown._openedForStep7 = false;
+        }
+        if (currentStep === 8 && !fileDropdown.classList.contains('visible')) {
+          if (!fileDropdown._openedForStep8) {
+            fileDropdown.classList.add('visible');
+            fileDropdown._openedForStep8 = true;
+            applyHighlight(null);
+            dropdownPrint.style.background = '#fff8e1';
+            dropdownPrint.style.outline = '3px solid var(--color-accent)';
+            return;
+          }
+          dropdownPrint.style.background = '';
+          dropdownPrint.style.outline = '';
+          fileDropdown._openedForStep8 = false;
+        }
+
+        updateDots(currentStep);
+        if (currentStep < totalSteps) {
+          var delay = (currentStep === 5) ? 300 : 400;
+          setTimeout(function() {
+            currentStep++;
+            updateInstruction(currentStep);
+            updateDots(currentStep);
+            if (currentStep === 9) {
+              setTimeout(function() { doneOverlay.classList.add('visible'); }, 500);
+              instEn.innerHTML = '<strong>🎉 All done!</strong> You completed the Google Docs practice.';
+              instFa.innerHTML = '<strong>🎉 تمام شد!</strong> شما تمرین Google Docs را کامل کردید.';
+              clearHighlight();
+            }
+          }, delay);
+        }
+      }
+
+      // Click handler
+      document.addEventListener('click', function(e) {
+        if (currentStep > totalSteps) return;
+        var target = e.target;
+        var s = steps[currentStep];
+
+        if (currentStep === 7 && fileDropdown.classList.contains('visible') && target !== menuFile && !(target.closest && target.closest('#menu-file')) && !(target.closest && target.closest('#dropdown-download'))) {
+          fileDropdown.classList.remove('visible');
+          dropdownDownload.style.background = ''; dropdownDownload.style.outline = '';
+          applyHighlight('menu-file');
+          fileDropdown._openedForStep7 = false;
+          return;
+        }
+        if (currentStep === 8 && fileDropdown.classList.contains('visible') && target !== menuFile && !(target.closest && target.closest('#menu-file')) && !(target.closest && target.closest('#dropdown-print'))) {
+          fileDropdown.classList.remove('visible');
+          dropdownPrint.style.background = ''; dropdownPrint.style.outline = '';
+          applyHighlight('menu-file');
+          fileDropdown._openedForStep8 = false;
+          return;
+        }
+
+        if (s.target(target)) {
+          showToast('✓ Correct! / !درست', 'success');
+          advanceStep();
+        } else {
+          var simWrapper = document.querySelector('.sim-wrapper');
+          if (simWrapper && simWrapper.contains(target)) {
+            var navBar = document.querySelector('.nav-bar');
+            if (!(navBar && navBar.contains(target))) {
+              showToast('✗ Try again! Click the highlighted area / دوباره تلاش کنید!', 'error');
+            }
+          }
+        }
+      });
+
+      // Menu File toggle for manual open
+      menuFile.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 7 || currentStep === 8) {
+          if (!fileDropdown.classList.contains('visible')) {
+            fileDropdown.classList.add('visible');
+            if (currentStep === 7) {
+              dropdownDownload.style.background = '#fff8e1';
+              dropdownDownload.style.outline = '3px solid var(--color-accent)';
+              fileDropdown._openedForStep7 = true;
+            } else {
+              dropdownPrint.style.background = '#fff8e1';
+              dropdownPrint.style.outline = '3px solid var(--color-accent)';
+              fileDropdown._openedForStep8 = true;
+            }
+            applyHighlight(null);
+          }
+        }
+      });
+
+      // Step 7 & 8 target check: if clicking menu-file opens dropdown, that count as correct
+      var origTarget7 = steps[7].target;
+      steps[7].target = function(el) {
+        if (el === menuFile || (el && el.closest && el.closest('#menu-file'))) return true;
+        if (fileDropdown.classList.contains('visible') && (el === dropdownDownload || (el && el.closest && el.closest('#dropdown-download')))) return true;
+        return false;
+      };
+      var origTarget8 = steps[8].target;
+      steps[8].target = function(el) {
+        if (el === menuFile || (el && el.closest && el.closest('#menu-file'))) return true;
+        if (fileDropdown.classList.contains('visible') && (el === dropdownPrint || (el && el.closest && el.closest('#dropdown-print')))) return true;
+        return false;
+      };
+
+      // Bold button direct handler
+      boldBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 4) { showToast('✓ Bold applied! / !پررنگ شد', 'success'); advanceStep(); }
+      });
+
+      // Title direct handler
+      docsTitle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 6) { showToast('✓ Title selected! / !عنوان انتخاب شد', 'success'); advanceStep(); }
+      });
+
+      // Saved indicator direct handler
+      savedIndicator.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 5) { showToast('✓ Auto-save noticed! / !ذخیره خودکار دیده شد', 'success'); advanceStep(); }
+      });
+
+      // Dropdown items
+      dropdownDownload.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 7 && fileDropdown.classList.contains('visible')) {
+          showToast('✓ Correct! / !درست', 'success'); advanceStep();
+        }
+      });
+      dropdownPrint.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 8 && fileDropdown.classList.contains('visible')) {
+          showToast('✓ Correct! / !درست', 'success'); advanceStep();
+        }
+      });
+
+      // Restart
+      document.getElementById('restart-btn').addEventListener('click', function() {
+        currentStep = 1;
+        docsText.innerHTML = '<span class="docs-cursor" id="docs-cursor"></span>';
+        docsCursor = document.getElementById('docs-cursor');
+        docsTitle.value = 'Untitled document'; docsTitle.style.color = '';
+        boldBtn.style.background = '';
+        savedIndicator.classList.remove('visible');
+        fileDropdown.classList.remove('visible');
+        fileDropdown._openedForStep7 = false;
+        fileDropdown._openedForStep8 = false;
+        dropdownDownload.style.background = ''; dropdownDownload.style.outline = '';
+        dropdownPrint.style.background = ''; dropdownPrint.style.outline = '';
+        doneOverlay.classList.remove('visible');
+        clearHighlight();
+        updateInstruction(1); updateDots(1);
+        showToast('🔄 Lesson restarted / !درس دوباره شروع شد', 'success');
+      });
+
+      document.getElementById('close-overlay-btn').addEventListener('click', function() {
+        doneOverlay.classList.remove('visible');
+      });
+
+      // Init
+      updateInstruction(1); updateDots(1);
+    })();
+  </script>
+</body>
+</html>

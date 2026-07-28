@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Practice — تمرین گوگل درایو</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* --- Shared Simulation Styles --- */
+    .step-indicator {
+      display: flex; justify-content: center; gap: 8px;
+      margin: var(--spacing-md) 0; flex-wrap: wrap;
+    }
+    .step-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #ccc; color: #fff; font-weight: 700; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .step-dot.active { background: var(--color-accent); transform: scale(1.2); box-shadow: 0 0 12px rgba(240,165,0,0.5); }
+    .step-dot.done { background: var(--color-success); }
+
+    .sim-wrapper {
+      max-width: 950px; margin: 0 auto var(--spacing-lg);
+      background: #fff; border-radius: var(--border-radius);
+      overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+
+    .highlight-target {
+      animation: pulse-glow 0.8s ease-in-out infinite;
+      outline: 4px solid var(--color-accent) !important;
+      outline-offset: 4px; z-index: 10; position: relative;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(240,165,0,0.4); }
+      50% { box-shadow: 0 0 24px rgba(240,165,0,0.9); }
+    }
+
+    .feedback-toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      padding: 14px 28px; border-radius: 12px; font-size: 20px; font-weight: 700;
+      z-index: 999; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease; text-align: center; max-width: 90vw;
+    }
+    .feedback-toast.show { opacity: 1; }
+    .feedback-toast.success { background: #e8f5e9; color: #2e7d32; border: 3px solid #4caf50; }
+    .feedback-toast.error { background: #fce4ec; color: #c62828; border: 3px solid #ef5350; }
+
+    .instruction-panel {
+      max-width: 950px; margin: 0 auto var(--spacing-lg);
+      background: #fff; border-radius: var(--border-radius);
+      padding: var(--spacing-lg); border-left: 8px solid var(--color-accent);
+    }
+    .instruction-panel .inst-en { font-size: var(--font-size-lg); font-weight: 700; color: var(--color-text); margin-bottom: 4px; direction: ltr; }
+    .instruction-panel .inst-fa { font-size: var(--font-size-lg); font-weight: 700; color: #555; direction: rtl; font-family: var(--font-family-fa); text-align: right; }
+
+    .action-row {
+      display: flex; justify-content: center; gap: var(--spacing-md);
+      flex-wrap: wrap; margin: var(--spacing-md) auto; max-width: 950px;
+    }
+    .restart-btn {
+      padding: 14px 32px; font-size: var(--font-size-lg); font-weight: 700;
+      background: #fff; color: var(--color-text); border: 3px solid #ccc;
+      border-radius: var(--border-radius); cursor: pointer;
+    }
+    .restart-btn:hover { border-color: var(--color-accent); background: #fff8e1; }
+
+    /* ============================================================
+       Google Drive Simulation Styles
+       ============================================================ */
+
+    .drive-header {
+      background: #f8f9fa; padding: 12px 20px;
+      border-bottom: 1px solid #dadce0; display: flex;
+      align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .drive-logo { font-size: 22px; font-weight: 600; color: #5f6368; display: flex; align-items: center; gap: 8px; }
+    .drive-logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #4285f4, #34a853, #fbbc04); border-radius: 6px; }
+
+    .drive-search {
+      flex: 1; max-width: 500px; padding: 10px 16px;
+      border: 1px solid #dadce0; border-radius: 24px; font-size: 15px;
+      background: #fff; cursor: default; color: #5f6368;
+    }
+
+    .new-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; background: #fff; border: 1px solid #dadce0;
+      border-radius: 24px; font-size: 15px; font-weight: 600;
+      cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s; position: relative;
+    }
+    .new-btn:hover { background: #f1f3f4; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+
+    .new-dropdown {
+      display: none; position: absolute; top: 110%; left: 0;
+      background: #fff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      min-width: 200px; z-index: 50; padding: 8px 0;
+    }
+    .new-dropdown.visible { display: block; }
+    .new-dropdown-item {
+      padding: 10px 20px; cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .new-dropdown-item:hover { background: #f1f3f4; }
+
+    /* File list */
+    .drive-file-list {
+      padding: 12px 20px; min-height: 280px;
+    }
+    .file-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-bottom: 1px solid #f1f3f4;
+      cursor: default; border-radius: 4px;
+    }
+    .file-row:hover { background: #f8f9fa; }
+    .file-icon { font-size: 24px; }
+    .file-name { font-size: 15px; font-weight: 500; color: #222; }
+    .file-date { font-size: 13px; color: #888; margin-left: auto; }
+
+    /* Context menu */
+    .context-menu {
+      display: none; position: fixed;
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      min-width: 200px; z-index: 100; padding: 8px 0;
+    }
+    .context-menu.visible { display: block; }
+    .context-item {
+      padding: 10px 20px; cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .context-item:hover { background: #f1f3f4; }
+
+    /* Share dialog */
+    .share-dialog {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4); z-index: 200;
+      justify-content: center; align-items: center;
+    }
+    .share-dialog.visible { display: flex; }
+    .share-card {
+      background: #fff; border-radius: 16px; padding: 32px;
+      max-width: 480px; width: 90%; text-align: center;
+    }
+    .share-card h3 { margin-bottom: 16px; }
+    .share-card input {
+      width: 100%; padding: 12px; font-size: 16px;
+      border: 2px solid #dadce0; border-radius: 8px; margin-bottom: 12px;
+    }
+    .share-permission {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .perm-option {
+      padding: 8px 16px; border: 2px solid #dadce0; border-radius: 20px;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+    }
+    .perm-option.selected { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; }
+    .share-send-btn {
+      padding: 12px 32px; font-size: 16px; font-weight: 700;
+      background: #1a73e8; color: #fff; border: none;
+      border-radius: 24px; cursor: pointer;
+    }
+
+    /* Done overlay */
+    .done-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 1000;
+      justify-content: center; align-items: center;
+    }
+    .done-overlay.visible { display: flex; }
+    .done-card {
+      background: #fff; border-radius: 20px; padding: 48px 32px;
+      text-align: center; max-width: 500px; margin: 20px;
+    }
+    .done-card .done-icon { font-size: 72px; margin-bottom: 16px; }
+    .done-card h2 { color: #2e7d32; margin-bottom: 8px; }
+    .done-card .fa-text { font-family: var(--font-family-fa); direction: rtl; font-size: var(--font-size-lg); color: #555; margin-bottom: var(--spacing-md); }
+
+    .upload-badge {
+      display: none; align-items: center; gap: 4px;
+      background: #e8f5e9; color: #2e7d32; font-size: 12px;
+      padding: 2px 8px; border-radius: 12px; font-weight: 600;
+    }
+    .upload-badge.visible { display: inline-flex; }
+
+    @media (max-width: 600px) {
+      .drive-header { gap: 8px; }
+      .step-dot { width: 28px; height: 28px; font-size: 13px; }
+      .file-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to practice / رفتن به تمرین</a>
+
+  <header class="page-header">
+    <h1>☁️ Google Drive Practice</h1>
+    <p class="subtitle" lang="fa" dir="rtl" style="font-family: var(--font-family-fa);">
+      تمرین گوگل درایو
+    </p>
+  </header>
+
+  <!-- Step Dots -->
+  <div class="step-indicator" aria-label="Progress"><span class="step-dot active" id="dot-1">1</span><span class="step-dot" id="dot-2">2</span><span class="step-dot" id="dot-3">3</span><span class="step-dot" id="dot-4">4</span><span class="step-dot" id="dot-5">5</span><span class="step-dot" id="dot-6">6</span></div>
+
+  <main id="main-content" tabindex="-1">
+
+    <!-- Instruction Panel -->
+    <div class="instruction-panel" id="instruction-panel">
+      <p class="inst-en" id="inst-en">Click the <strong>+ New</strong> button to see what you can create in Google Drive.</p>
+      <p class="inst-fa" id="inst-fa" lang="fa">روی دکمه <strong>+ New</strong> کلیک کنید تا ببینید چه چیزهایی می‌توانید در Google Drive ایجاد کنید.</p>
+    </div>
+
+    <!-- Drive Simulation -->
+    <div class="sim-wrapper">
+      <!-- Header -->
+      <div class="drive-header">
+        <div class="drive-logo">
+          <span class="drive-logo-icon" aria-hidden="true"></span>
+          Drive <span style="font-size:13px;color:#888;font-weight:400;">(practice)</span>
+        </div>
+        <div class="drive-search" id="drive-search">🔍 Search Drive</div>
+        <div style="position:relative;">
+          <button class="new-btn" id="new-btn">＋ New</button>
+          <div class="new-dropdown" id="new-dropdown">
+            <div class="new-dropdown-item" id="new-folder">📁 New folder</div>
+            <div class="new-dropdown-item" id="new-upload">📤 File upload</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File List -->
+      <div class="drive-file-list" id="file-list">
+        <div class="file-row" id="file-my-doc" data-file="doc">
+          <span class="file-icon">📄</span>
+          <span class="file-name">My Document</span>
+          <span class="file-date">Today</span>
+        </div>
+        <div class="file-row" id="file-photo" data-file="photo">
+          <span class="file-icon">🖼️</span>
+          <span class="file-name">Vacation Photo.jpg</span>
+          <span class="file-date">Yesterday</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <button class="restart-btn" id="restart-btn">🔄 Restart Lesson</button>
+      <span style="font-family: var(--font-family-fa); font-size: var(--font-size-base); color: #888; align-self: center;" lang="fa" dir="rtl">شروع دوباره درس</span>
+    </div>
+
+  </main>
+
+  <!-- Context Menu -->
+  <div class="context-menu" id="context-menu">
+    <div class="context-item" id="ctx-open">📂 Open</div>
+    <div class="context-item" id="ctx-share">🔗 Share</div>
+    <div class="context-item">⬇️ Download</div>
+    <div class="context-item">🗑️ Remove</div>
+  </div>
+
+  <!-- Share Dialog -->
+  <div class="share-dialog" id="share-dialog">
+    <div class="share-card">
+      <h3>📤 Share "My Document"</h3>
+      <p lang="fa" dir="rtl" style="font-family:var(--font-family-fa); color:#555; margin-bottom:12px;">اشتراک‌گذاری "My Document"</p>
+      <input type="text" id="share-email-input" placeholder="Enter email address" autocomplete="off" value="friend@gmail.com" readonly>
+      <p style="font-size:14px;font-weight:600;margin-bottom:8px;">Permission / دسترسی:</p>
+      <div class="share-permission" id="share-perms">
+        <span class="perm-option selected" data-perm="viewer">👁️ Viewer (safe)</span>
+        <span class="perm-option" data-perm="editor">✏️ Editor</span>
+      </div>
+      <button class="share-send-btn" id="share-send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- Feedback Toast -->
+  <div class="feedback-toast" id="feedback-toast" aria-live="polite"></div>
+
+  <!-- Done Overlay -->
+  <div class="done-overlay" id="done-overlay" role="dialog">
+    <div class="done-card">
+      <div class="done-icon">✅</div>
+      <h2>Drive Practice Complete!</h2>
+      <p class="fa-text" lang="fa" dir="rtl">تمرین درایو کامل شد!</p>
+      <p style="color:#666;margin-bottom:24px;">You practiced using Google Drive to organize and share files.<br>
+        <span lang="fa" dir="rtl" style="font-family: var(--font-family-fa); display: inline-block; margin-top: 4px;">
+          شما استفاده از Google Drive برای سازماندهی و اشتراک‌گذاری فایل‌ها را تمرین کردید.
+        </span>
+      </p>
+      <button style="padding:14px 32px;font-size:18px;font-weight:700;background:var(--color-accent);color:#1a1a2e;border:none;border-radius:12px;cursor:pointer;" id="close-overlay-btn">👍 Great! / !عالی</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar" aria-label="Lesson navigation">
+    <a href="drive.html" class="nav-btn prev">◀ Back to Drive Lesson</a>
+    <a href="../index.html" class="nav-btn home">🏠 Home</a>
+    <a href="internet.html" class="nav-btn next">Next ▶</a>
+  </nav>
+
+  <footer class="site-footer">
+    <p>Computer Skills Website — Practice Simulation — No real files are created</p>
+  </footer>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var currentStep = 1, totalSteps = 6, toastTimer = null;
+
+      // DOM
+      var newBtn = document.getElementById('new-btn');
+      var newDropdown = document.getElementById('new-dropdown');
+      var newFolder = document.getElementById('new-folder');
+      var newUpload = document.getElementById('new-upload');
+      var driveSearch = document.getElementById('drive-search');
+      var fileList = document.getElementById('file-list');
+      var fileMyDoc = document.getElementById('file-my-doc');
+      var contextMenu = document.getElementById('context-menu');
+      var ctxOpen = document.getElementById('ctx-open');
+      var ctxShare = document.getElementById('ctx-share');
+      var shareDialog = document.getElementById('share-dialog');
+      var shareSendBtn = document.getElementById('share-send-btn');
+      var feedbackToast = document.getElementById('feedback-toast');
+      var doneOverlay = document.getElementById('done-overlay');
+      var instEn = document.getElementById('inst-en');
+      var instFa = document.getElementById('inst-fa');
+
+      var folderCreated = false;
+      var fileUploaded = false;
+
+      // Step definitions
+      var steps = {
+        1: {
+          en: 'Click the <strong>＋ New</strong> button to see options for creating new items.',
+          fa: 'روی دکمه <strong>＋ New</strong> کلیک کنید تا گزینه‌های ایجاد آیتم‌های جدید را ببینید.',
+          highlight: 'new-btn',
+          target: function(el) { return el === newBtn || (el && el.closest && el.closest('#new-btn')); },
+          onComplete: function() {
+            newDropdown.classList.add('visible');
+          }
+        },
+        2: {
+          en: 'Click <strong>📁 New folder</strong> in the dropdown to create a folder.',
+          fa: 'روی <strong>📁 New folder</strong> در منوی کشویی کلیک کنید تا یک پوشه ایجاد کنید.',
+          highlight: 'new-folder',
+          target: function(el) { return el === newFolder || (el && el.closest && el.closest('#new-folder')); },
+          onComplete: function() {
+            newDropdown.classList.remove('visible');
+            // Add folder to file list
+            var folderRow = document.createElement('div');
+            folderRow.className = 'file-row';
+            folderRow.id = 'file-new-folder';
+            folderRow.setAttribute('data-file', 'folder');
+            folderRow.innerHTML = '<span class="file-icon">📁</span><span class="file-name">New Folder</span><span class="file-date">Just now</span>';
+            fileList.insertBefore(folderRow, fileList.firstChild);
+            folderCreated = true;
+          }
+        },
+        3: {
+          en: 'Click <strong>＋ New</strong> again, then click <strong>📤 File upload</strong> to upload a file.',
+          fa: 'دوباره روی <strong>＋ New</strong> کلیک کنید، سپس روی <strong>📤 File upload</strong> کلیک کنید تا یک فایل آپلود کنید.',
+          highlight: 'new-btn',
+          target: function(el) {
+            if (newDropdown.classList.contains('visible')) {
+              return el === newUpload || (el && el.closest && el.closest('#new-upload'));
+            }
+            return el === newBtn || (el && el.closest && el.closest('#new-btn'));
+          },
+          onComplete: function() {
+            if (!newDropdown.classList.contains('visible') && !newDropdown._openedForStep3) {
+              newDropdown.classList.add('visible');
+              newDropdown._openedForStep3 = true;
+              applyHighlight('new-upload');
+              newUpload.style.outline = '4px solid var(--color-accent)';
+              newUpload.style.outlineOffset = '4px';
+              newUpload.style.background = '#fff8e1';
+              return; // don't advance yet
+            }
+            newDropdown.classList.remove('visible');
+            newDropdown._openedForStep3 = false;
+            newUpload.style.outline = '';
+            newUpload.style.background = '';
+            // Add uploaded file
+            var upRow = document.createElement('div');
+            upRow.className = 'file-row';
+            upRow.id = 'file-uploaded';
+            upRow.setAttribute('data-file', 'uploaded');
+            upRow.innerHTML = '<span class="file-icon">📄</span><span class="file-name">uploaded-report.pdf <span class="upload-badge visible">Uploaded ✓</span></span><span class="file-date">Just now</span>';
+            fileList.insertBefore(upRow, fileList.firstChild);
+            fileUploaded = true;
+          }
+        },
+        4: {
+          en: 'Click the <strong>🔍 Search Drive</strong> bar and find a file by typing its name.',
+          fa: 'روی نوار <strong>🔍 Search Drive</strong> کلیک کنید و با تایپ نام فایل، آن را پیدا کنید.',
+          highlight: 'drive-search',
+          target: function(el) { return el === driveSearch || (el && el.closest && el.closest('#drive-search')); },
+          onComplete: function() {
+            driveSearch.textContent = '🔍 My Document';
+            driveSearch.style.color = '#222';
+            driveSearch.style.fontWeight = '500';
+            // Highlight matching file
+            fileMyDoc.style.background = '#fff8e1';
+          }
+        },
+        5: {
+          en: '<strong>Right-click</strong> on "My Document" in the file list to see more options. Then click <strong>Open</strong>.',
+          fa: 'روی "My Document" در لیست فایل‌ها <strong>راست‌کلیک</strong> کنید تا گزینه‌های بیشتر را ببینید. سپس روی <strong>Open</strong> کلیک کنید.',
+          highlight: 'file-my-doc',
+          target: function(el) {
+            if (contextMenu.classList.contains('visible')) {
+              return el === ctxOpen || (el && el.closest && el.closest('#ctx-open'));
+            }
+            // We accept both left-click (for accessibility) and right-click on the file
+            return el === fileMyDoc || (el && el.closest && el.closest('#file-my-doc'));
+          },
+          onComplete: function() {
+            contextMenu.classList.remove('visible');
+            fileMyDoc.style.background = '#e8f5e9';
+            showToast('📂 File opened! / !فایل باز شد', 'success');
+          }
+        },
+        6: {
+          en: '<strong>Right-click</strong> on "My Document" again, then click <strong>🔗 Share</strong>. In the dialog, keep <strong>Viewer</strong> selected and click Send.',
+          fa: 'دوباره روی "My Document" <strong>راست‌کلیک</strong> کنید، سپس روی <strong>🔗 Share</strong> کلیک کنید. در پنجره، <strong>Viewer</strong> را انتخاب نگه دارید و روی Send کلیک کنید.',
+          highlight: 'file-my-doc',
+          target: function(el) {
+            if (contextMenu.classList.contains('visible') && contextMenu._forShare) {
+              return el === ctxShare || (el && el.closest && el.closest('#ctx-share'));
+            }
+            if (shareDialog.classList.contains('visible')) {
+              return el === shareSendBtn || (el && el.closest && el.closest('#share-send-btn'));
+            }
+            return el === fileMyDoc || (el && el.closest && el.closest('#file-my-doc'));
+          },
+          onComplete: function() {
+            if (contextMenu.classList.contains('visible') && contextMenu._forShare) {
+              contextMenu.classList.remove('visible');
+              contextMenu._forShare = false;
+              shareDialog.classList.add('visible');
+              showToast('📤 Sharing settings opened / !تنظیمات اشتراک‌گذاری باز شد', 'success');
+              // update instruction for final sub-step
+              instEn.innerHTML = 'Click the blue <strong>Send</strong> button to share the file safely. Permission is set to Viewer ✅';
+              instFa.innerHTML = 'روی دکمه آبی <strong>Send</strong> کلیک کنید تا فایل را به صورت امن به اشتراک بگذارید. دسترسی روی Viewer تنظیم شده است ✅';
+              applyHighlight('share-send-btn');
+              // Don't advance the step counter yet
+              // Override advance logic for this special case
+              steps[6]._shareDialogOpen = true;
+              return false;
+            }
+            if (shareDialog.classList.contains('visible')) {
+              shareDialog.classList.remove('visible');
+              doneOverlay.classList.add('visible');
+              updateDots(6);
+              instEn.innerHTML = '<strong>🎉 All done!</strong> You completed the Google Drive practice.';
+              instFa.innerHTML = '<strong>🎉 تمام شد!</strong> شما تمرین Google Drive را کامل کردید.';
+              clearHighlight();
+              steps[6]._shareDialogOpen = false;
+              return true;
+            }
+            return false;
+          }
+        }
+      };
+
+      // Helpers
+      function clearHighlight() {
+        var all = document.querySelectorAll('.highlight-target');
+        for (var i = 0; i < all.length; i++) all[i].classList.remove('highlight-target');
+      }
+      function applyHighlight(id) { clearHighlight(); if (id) { var el = document.getElementById(id); if (el) el.classList.add('highlight-target'); } }
+      function showToast(msg, type) {
+        if (toastTimer) clearTimeout(toastTimer);
+        feedbackToast.textContent = msg;
+        feedbackToast.className = 'feedback-toast ' + type + ' show';
+        toastTimer = setTimeout(function() { feedbackToast.classList.remove('show'); }, 2000);
+      }
+      function updateInstruction(n) {
+        var s = steps[n]; instEn.innerHTML = s.en; instFa.innerHTML = s.fa;
+        applyHighlight(s.highlight);
+      }
+      function updateDots(n) {
+        for (var i = 1; i <= totalSteps; i++) {
+          var dot = document.getElementById('dot-' + i);
+          dot.classList.remove('active', 'done');
+          if (i < n) dot.classList.add('done');
+          if (i === n) dot.classList.add('active');
+        }
+      }
+
+      function advanceStep() {
+        var s = steps[currentStep];
+        if (s.onComplete) {
+          var result = s.onComplete();
+          if (result === false) return; // multi-step within same number
+        }
+
+        updateDots(currentStep);
+
+        if (currentStep === 3 && !newDropdown.classList.contains('visible') && !newDropdown._openedForStep3) {
+          // Handled inside onComplete
+        }
+
+        if (currentStep < totalSteps) {
+          if (currentStep === 6 && steps[6]._shareDialogOpen) return; // wait for share send
+
+          var delay = 400;
+          setTimeout(function() {
+            currentStep++;
+            updateInstruction(currentStep);
+            updateDots(currentStep);
+          }, delay);
+        }
+      }
+
+      // Click handler
+      document.addEventListener('click', function(e) {
+        if (currentStep > totalSteps) return;
+        var target = e.target;
+        var s = steps[currentStep];
+
+        // Close dropdowns/menus on outside click
+        if (newDropdown.classList.contains('visible') && currentStep === 2 && !target.closest('#new-btn') && !target.closest('#new-dropdown')) {
+          newDropdown.classList.remove('visible');
+        }
+        if (contextMenu.classList.contains('visible') && !target.closest('#context-menu') && !target.closest('#file-my-doc')) {
+          contextMenu.classList.remove('visible');
+          contextMenu._forShare = false;
+        }
+
+        if (s.target(target)) {
+          showToast('✓ Correct! / !درست', 'success');
+          advanceStep();
+        } else {
+          var simWrapper = document.querySelector('.sim-wrapper');
+          if (simWrapper && simWrapper.contains(target)) {
+            var navBar = document.querySelector('.nav-bar');
+            if (!(navBar && navBar.contains(target))) {
+              showToast('✗ Try again! Click the highlighted area / دوباره تلاش کنید!', 'error');
+            }
+          }
+        }
+      });
+
+      // Right-click handler for file
+      fileMyDoc.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        if (currentStep === 5 || currentStep === 6) {
+          contextMenu.style.top = e.clientY + 'px';
+          contextMenu.style.left = e.clientX + 'px';
+          contextMenu.classList.add('visible');
+          contextMenu._forOpen = (currentStep === 5);
+          contextMenu._forShare = (currentStep === 6);
+        }
+      });
+
+      // New button direct
+      newBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 1) { showToast('✓ Correct! / !درست', 'success'); advanceStep(); }
+      });
+
+      // New folder direct
+      newFolder.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 2 && newDropdown.classList.contains('visible')) {
+          showToast('✓ Folder created! / !پوشه ایجاد شد', 'success'); advanceStep();
+        }
+      });
+
+      // New upload direct
+      newUpload.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 3 && newDropdown.classList.contains('visible')) {
+          showToast('✓ File uploaded! / !فایل آپلود شد', 'success'); advanceStep();
+        }
+      });
+
+      // Search direct
+      driveSearch.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 4) { showToast('✓ Searching... / !در حال جستجو', 'success'); advanceStep(); }
+      });
+
+      // Context menu items
+      ctxOpen.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 5 && contextMenu.classList.contains('visible')) {
+          showToast('✓ Correct! / !درست', 'success'); advanceStep();
+        }
+      });
+      ctxShare.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 6 && contextMenu.classList.contains('visible') && contextMenu._forShare) {
+          advanceStep();
+        }
+      });
+
+      // Share send
+      shareSendBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentStep === 6 && shareDialog.classList.contains('visible')) {
+          showToast('✓ Shared safely! / !به صورت امن به اشتراک گذاشته شد', 'success');
+          advanceStep();
+        }
+      });
+
+      // Restart
+      document.getElementById('restart-btn').addEventListener('click', function() {
+        currentStep = 1;
+        folderCreated = false; fileUploaded = false;
+        newDropdown.classList.remove('visible');
+        newDropdown._openedForStep3 = false;
+        newUpload.style.outline = ''; newUpload.style.background = '';
+        contextMenu.classList.remove('visible');
+        contextMenu._forShare = false;
+        shareDialog.classList.remove('visible');
+        doneOverlay.classList.remove('visible');
+        driveSearch.textContent = '🔍 Search Drive';
+        driveSearch.style.color = ''; driveSearch.style.fontWeight = '';
+        fileMyDoc.style.background = '';
+        // Remove created files
+        var toRemove = document.querySelectorAll('#file-new-folder, #file-uploaded');
+        toRemove.forEach(function(el) { el.remove(); });
+        steps[6]._shareDialogOpen = false;
+        clearHighlight();
+        updateInstruction(1); updateDots(1);
+        showToast('🔄 Lesson restarted / !درس دوباره شروع شد', 'success');
+      });
+
+      document.getElementById('close-overlay-btn').addEventListener('click', function() {
+        doneOverlay.classList.remove('visible');
+      });
+
+      // Init
+      updateInstruction(1); updateDots(1);
+    })();
+  </script>
+</body>
+</html>
