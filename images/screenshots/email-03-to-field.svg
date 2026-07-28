@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.2"/></filter></defs></defs>
+  <rect width="800" height="450" fill="#f0f2f5" rx="12"/>
+  <!-- Compose popup -->
+  <rect x="120" y="40" width="560" height="370" fill="#fff" rx="8" stroke="#dadce0" filter="url(#shadow)"/>
+  <rect x="120" y="40" width="560" height="44" fill="#f2f6fc" rx="8 8 0 0"/>
+  <text x="140" y="68" font-family="Segoe UI, sans-serif" font-size="16" font-weight="600" fill="#222">New Message</text>
+  <!-- To field - HIGHLIGHTED -->
+  <rect x="135" y="100" width="530" height="36" rx="4" fill="#fff8e1" stroke="#f0a500" stroke-width="3"/>
+  <rect x="135" y="100" width="530" height="36" rx="4" fill="none" stroke="#f0a500" stroke-width="3" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+  <text x="148" y="123" font-family="Segoe UI, sans-serif" font-size="14" fill="#888">To</text>
+  <text x="180" y="123" font-family="Segoe UI, sans-serif" font-size="14" fill="#aaa">|</text>
+  <text x="200" y="123" font-family="Segoe UI, sans-serif" font-size="14" fill="#1a73e8" font-weight="600">friend@gmail.com</text>
+  <!-- Arrow -->
+  <text x="350" y="92" font-family="Segoe UI, sans-serif" font-size="22" fill="#f0a500">👆 Click and type</text>
+  <!-- Subject field -->
+  <rect x="135" y="146" width="530" height="32" rx="4" fill="#fff" stroke="#eee"/>
+  <text x="148" y="167" font-family="Segoe UI, sans-serif" font-size="14" fill="#888">Subject</text>
+  <text x="180" y="167" font-family="Segoe UI, sans-serif" font-size="14" fill="#aaa">|</text>
+  <!-- Body -->
+  <rect x="135" y="188" width="530" height="170" fill="#fafafa" rx="4" stroke="#eee"/>
+  <text x="148" y="208" font-family="Segoe UI, sans-serif" font-size="13" fill="#ccc">Write your message...</text>
+  <!-- Bottom bar -->
+  <rect x="135" y="370" width="530" height="30" fill="#fafafa" rx="0 0 8 8"/>
+  <circle cx="155" cy="385" r="10" fill="#1a73e8"/>
+  <text x="155" y="390" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" fill="#fff" font-weight="700">S</text>
+  <text x="172" y="390" font-family="Segoe UI, sans-serif" font-size="13" fill="#1a73e8" font-weight="600">Send</text>
+  <!-- @ symbol illustration -->
+  <text x="560" y="118" font-family="monospace" font-size="36" fill="#f0a500" opacity="0.5">@</text>
+</svg>
