@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create your MailBox account</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;background:#f0f2f5;min-height:100vh;display:flex;flex-direction:column;color:#1d1d1d}
+    a{color:#1a73e8;text-decoration:none}a:hover{text-decoration:underline}
+
+    /* Header */
+    .header{background:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dadce0}
+    .logo{font-size:24px;font-weight:700;color:#1a73e8;display:flex;align-items:center;gap:8px}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1a73e8,#4285f4);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+    .header-links a{font-size:14px;margin-left:20px;color:#5f6368}
+
+    /* Main */
+    .main{flex:1;display:flex;justify-content:center;padding:32px 16px}
+
+    /* Simulation warning (OUTSIDE the form) */
+    .sim-notice{max-width:480px;margin:0 auto 16px;padding:12px 16px;background:#fff8e1;border:1px solid #f0a500;border-radius:8px;font-size:13px;color:#5d4037;line-height:1.5}
+    .sim-notice strong{color:#e65100}
+
+    /* Card */
+    .card{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:40px;max-width:500px;width:100%}
+    .card h1{font-size:24px;font-weight:600;margin-bottom:4px;color:#202124}
+    .card .subtitle{font-size:14px;color:#5f6368;margin-bottom:24px}
+
+    /* Form */
+    .form-group{margin-bottom:20px}
+    .form-group label{display:block;font-size:14px;font-weight:500;color:#202124;margin-bottom:6px}
+    .form-group .hint{font-size:12px;color:#5f6368;margin-top:2px}
+    .form-row{display:flex;gap:16px}
+    .form-row .form-group{flex:1}
+
+    input[type="text"],input[type="password"],input[type="email"],input[type="tel"],select{width:100%;padding:10px 12px;font-size:15px;border:1px solid #dadce0;border-radius:4px;background:#fff;transition:border-color 0.2s;font-family:inherit}
+    input:focus,select:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,0.15)}
+    input.error,select.error{border-color:#d93025}
+    .error-msg{display:none;font-size:12px;color:#d93025;margin-top:4px}
+    .error-msg.visible{display:block}
+
+    /* Username with domain */
+    .username-wrap{display:flex;align-items:center;border:1px solid #dadce0;border-radius:4px;overflow:hidden;transition:border-color 0.2s}
+    .username-wrap:focus-within{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,0.15)}
+    .username-wrap input{border:none;box-shadow:none;flex:1;min-width:0}
+    .username-wrap input:focus{box-shadow:none}
+    .domain-suffix{padding:10px 12px;font-size:15px;color:#5f6368;background:#f1f3f4;white-space:nowrap;border-left:1px solid #dadce0}
+
+    /* Email preview */
+    .email-preview{font-size:13px;color:#1a73e8;margin-top:4px;display:none}
+    .email-preview.visible{display:block}
+
+    /* Username suggestions */
+    .username-suggestions{display:none;margin-top:6px;padding:8px 12px;background:#f8f9fa;border-radius:4px;font-size:13px}
+    .username-suggestions.visible{display:block}
+    .username-suggestions .sug-link{display:inline-block;margin:2px 4px;padding:2px 8px;background:#e8f0fe;border-radius:12px;color:#1a73e8;cursor:pointer;font-weight:500}
+    .username-suggestions .sug-link:hover{background:#d2e3fc}
+
+    /* Password strength */
+    .pw-strength{height:4px;border-radius:2px;margin-top:6px;background:#eee;overflow:hidden}
+    .pw-strength-bar{height:100%;width:0;transition:width 0.3s,background 0.3s}
+    .pw-strength-bar.weak{width:25%;background:#d93025}
+    .pw-strength-bar.fair{width:50%;background:#f9ab00}
+    .pw-strength-bar.good{width:75%;background:#188038}
+    .pw-strength-bar.strong{width:100%;background:#188038}
+    .pw-text{font-size:12px;margin-top:2px}
+
+    /* DOB dropdowns */
+    .dob-row{display:flex;gap:10px}
+    .dob-row select{flex:1}
+
+    /* Checkbox */
+    .checkbox-row{display:flex;align-items:flex-start;gap:10px}
+    .checkbox-row input[type="checkbox"]{margin-top:3px;width:18px;height:18px;accent-color:#1a73e8}
+    .checkbox-row label{font-size:14px;color:#5f6368;margin-bottom:0}
+    .checkbox-row label.error-text{color:#d93025}
+
+    /* Buttons */
+    .btn{padding:12px 24px;font-size:15px;font-weight:600;border:none;border-radius:4px;cursor:pointer;transition:background 0.2s,box-shadow 0.2s}
+    .btn-primary{background:#1a73e8;color:#fff;width:100%}
+    .btn-primary:hover{background:#1557b0;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+    .btn-secondary{background:#fff;color:#1a73e8;border:1px solid #dadce0}
+    .btn-text{background:none;color:#1a73e8;padding:6px 0;font-size:13px;font-weight:500;border:none;cursor:pointer}
+    .btn-text:hover{text-decoration:underline}
+
+    /* Privacy warning */
+    .privacy-warning{max-width:480px;margin:16px auto 0;padding:12px 16px;background:#fce4ec;border:1px solid #ef9a9a;border-radius:8px;font-size:12px;color:#b71c1c;line-height:1.5}
+
+    /* Success */
+    .success-card{display:none;text-align:center;padding:48px 24px}
+    .success-card.visible{display:block}
+    .success-card .check{font-size:64px;margin-bottom:16px}
+    .success-card h2{font-size:22px;font-weight:600;margin-bottom:8px;color:#188038}
+    .success-card .new-email{font-size:18px;color:#1a73e8;margin-bottom:8px;font-weight:500}
+    .success-card p{font-size:14px;color:#5f6368;margin-bottom:24px}
+
+    @media(max-width:540px){
+      .card{padding:24px 20px}
+      .form-row{flex-direction:column;gap:0}
+      .dob-row{flex-wrap:wrap}
+    }
+
+    /* Spinner */
+    .spinner{display:none;width:20px;height:20px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn-primary.loading .btn-text-content{display:none}
+    .btn-primary.loading .spinner{display:inline-block}
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">✉</span>
+      MailBox
+    </div>
+    <div class="header-links">
+      <a href="signin.html">Sign in</a>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- Form View -->
+    <div id="form-view" style="width:100%;max-width:540px;">
+
+      <!-- Simulation notice OUTSIDE the form -->
+      <div class="sim-notice">
+        <strong>⚠ Practice environment</strong><br>
+        This is a simulated email registration. No real account is created. No information is sent anywhere. All data stays only in your browser.
+      </div>
+
+      <div class="card">
+        <h1>Create your MailBox account</h1>
+        <p class="subtitle">One account for all MailBox services</p>
+
+        <form id="reg-form" novalidate autocomplete="off">
+
+          <!-- Name -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="first-name">First name</label>
+              <input type="text" id="first-name" name="firstName" maxlength="50" autocomplete="off">
+              <span class="error-msg" id="err-first-name"></span>
+            </div>
+            <div class="form-group">
+              <label for="last-name">Last name</label>
+              <input type="text" id="last-name" name="lastName" maxlength="50" autocomplete="off">
+              <span class="error-msg" id="err-last-name"></span>
+            </div>
+          </div>
+
+          <!-- Username -->
+          <div class="form-group">
+            <label for="username">Choose your email address</label>
+            <div class="username-wrap">
+              <input type="text" id="username" name="username" maxlength="30" placeholder="your.name" autocomplete="off" dir="ltr">
+              <span class="domain-suffix">@mailbox.example</span>
+            </div>
+            <div class="email-preview" id="email-preview"></div>
+            <span class="error-msg" id="err-username"></span>
+            <div class="username-suggestions" id="username-suggestions">
+              <span style="color:#5f6368;">Suggested usernames:</span>
+              <span id="suggestion-list"></span>
+            </div>
+            <span class="hint">Letters, numbers, dots, and underscores. 3–30 characters.</span>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" maxlength="100" autocomplete="new-password">
+            <span class="error-msg" id="err-password"></span>
+            <div class="pw-strength"><div class="pw-strength-bar" id="pw-strength-bar"></div></div>
+            <span class="pw-text" id="pw-text"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm-password">Confirm password</label>
+            <input type="password" id="confirm-password" name="confirmPassword" maxlength="100" autocomplete="new-password">
+            <span class="error-msg" id="err-confirm-password"></span>
+          </div>
+
+          <!-- Show password -->
+          <div class="checkbox-row" style="margin-bottom:12px;">
+            <input type="checkbox" id="show-password">
+            <label for="show-password">Show password</label>
+          </div>
+
+          <!-- Suggest password -->
+          <button type="button" class="btn-text" id="suggest-pw-btn" style="margin-bottom:16px;">Suggest a strong password</button>
+
+          <!-- DOB -->
+          <div class="form-group">
+            <label>Date of birth</label>
+            <div class="dob-row">
+              <select id="dob-day" name="dobDay"><option value="">Day</option></select>
+              <select id="dob-month" name="dobMonth"><option value="">Month</option></select>
+              <select id="dob-year" name="dobYear"><option value="">Year</option></select>
+            </div>
+            <span class="error-msg" id="err-dob"></span>
+          </div>
+
+          <!-- Country -->
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" name="country">
+              <option value="">Select your country</option>
+            </select>
+            <span class="error-msg" id="err-country"></span>
+          </div>
+
+          <!-- Language -->
+          <div class="form-group">
+            <label for="language">Language preference</label>
+            <select id="language" name="language">
+              <option value="en">English</option>
+              <option value="fa">فارسی (Persian)</option>
+              <option value="en-fa">English + فارسی</option>
+            </select>
+          </div>
+
+          <!-- Recovery email (optional) -->
+          <div class="form-group">
+            <label for="recovery-email">Recovery email <span style="font-weight:400;color:#888;">(optional)</span></label>
+            <input type="email" id="recovery-email" name="recoveryEmail" autocomplete="off" dir="ltr">
+            <span class="hint">Useful if you ever forget your password.</span>
+          </div>
+
+          <!-- Phone (optional) -->
+          <div class="form-group">
+            <label for="phone">Mobile phone number <span style="font-weight:400;color:#888;">(optional)</span></label>
+            <input type="tel" id="phone" name="phone" autocomplete="off" dir="ltr" placeholder="+1 234 567 8900">
+            <span class="hint">For account recovery. No real number required in this practice.</span>
+          </div>
+
+          <!-- Terms -->
+          <div class="checkbox-row" style="margin-bottom:8px;">
+            <input type="checkbox" id="agree-terms" name="agreeTerms">
+            <label for="agree-terms">
+              I have read and agree to the
+              <a href="terms.html" target="_blank" id="terms-link">Terms of Service</a>
+              and
+              <a href="terms.html#privacy" target="_blank">Privacy Policy</a>.
+            </label>
+          </div>
+          <span class="error-msg" id="err-terms"></span>
+
+          <!-- Submit -->
+          <button type="submit" class="btn btn-primary" id="submit-btn" style="margin-top:24px;">
+            <span class="spinner" id="submit-spinner"></span>
+            <span class="btn-text-content">Create account</span>
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Privacy warning OUTSIDE the form -->
+      <div class="privacy-warning">
+        <strong>🔒 Privacy reminder:</strong> Do NOT use a real password you use elsewhere. This is a practice simulation — create a simple practice password like <em>MyPractice1</em>.
+      </div>
+    </div>
+
+    <!-- Success View -->
+    <div class="card success-card" id="success-view">
+      <div class="check">✅</div>
+      <h2>Your email account has been created.</h2>
+      <p class="new-email" id="created-email-display"></p>
+      <p>Your account is ready. You can now sign in to your inbox.</p>
+      <a href="signin.html" class="btn btn-primary" style="display:inline-block;text-align:center;">Continue to sign in</a>
+    </div>
+
+  </div>
+
+  <script src="js/mailbox-store.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      // --- Populate DOB dropdowns ---
+      function populateDOB() {
+        var daySel = document.getElementById('dob-day');
+        var monthSel = document.getElementById('dob-month');
+        var yearSel = document.getElementById('dob-year');
+
+        for (var d = 1; d <= 31; d++) {
+          daySel.innerHTML += '<option value="' + d + '">' + d + '</option>';
+        }
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        for (var m = 0; m < 12; m++) {
+          monthSel.innerHTML += '<option value="' + (m+1) + '">' + months[m] + '</option>';
+        }
+        var currentYear = new Date().getFullYear();
+        for (var y = currentYear; y >= 1940; y--) {
+          yearSel.innerHTML += '<option value="' + y + '">' + y + '</option>';
+        }
+      }
+
+      // --- Populate countries ---
+      function populateCountries() {
+        var countries = [
+          'Afghanistan','Australia','Bangladesh','Brazil','Canada','China','Egypt','France','Germany',
+          'India','Indonesia','Iran','Iraq','Italy','Japan','Malaysia','Mexico','Netherlands','New Zealand',
+          'Nigeria','Pakistan','Philippines','Russia','Saudi Arabia','South Africa','South Korea','Spain',
+          'Sweden','Syria','Thailand','Turkey','United Arab Emirates','United Kingdom','United States','Other'
+        ];
+        var sel = document.getElementById('country');
+        for (var i = 0; i < countries.length; i++) {
+          sel.innerHTML += '<option value="' + countries[i] + '">' + countries[i] + '</option>';
+        }
+      }
+
+      populateDOB();
+      populateCountries();
+
+      // --- DOM refs ---
+      var form = document.getElementById('reg-form');
+      var usernameInput = document.getElementById('username');
+      var emailPreview = document.getElementById('email-preview');
+      var usernameSuggestions = document.getElementById('username-suggestions');
+      var suggestionList = document.getElementById('suggestion-list');
+      var pwStrengthBar = document.getElementById('pw-strength-bar');
+      var pwText = document.getElementById('pw-text');
+      var formView = document.getElementById('form-view');
+      var successView = document.getElementById('success-view');
+
+      // --- Show/hide password ---
+      document.getElementById('show-password').addEventListener('change', function() {
+        var type = this.checked ? 'text' : 'password';
+        document.getElementById('password').type = type;
+        document.getElementById('confirm-password').type = type;
+      });
+
+      // --- Suggest password ---
+      document.getElementById('suggest-pw-btn').addEventListener('click', function() {
+        var adj = ['Happy','Blue','Quick','Calm','Bright','Warm','Safe','Kind','Fresh','Green'];
+        var noun = ['River','Mountain','Garden','Forest','Ocean','Star','Moon','Sun','Lake','Bird'];
+        var pw = adj[Math.floor(Math.random()*10)] + noun[Math.floor(Math.random()*10)] + Math.floor(Math.random()*900+100);
+        document.getElementById('password').value = pw;
+        document.getElementById('confirm-password').value = pw;
+        document.getElementById('password').type = 'text';
+        document.getElementById('confirm-password').type = 'text';
+        document.getElementById('show-password').checked = true;
+        updatePasswordStrength();
+      });
+
+      // --- Username live preview ---
+      usernameInput.addEventListener('input', function() {
+        var val = this.value.trim();
+        if (val.length >= 3) {
+          emailPreview.classList.add('visible');
+          emailPreview.textContent = 'Your email: ' + val + '@mailbox.example';
+        } else {
+          emailPreview.classList.remove('visible');
+        }
+        // Check availability on blur
+        usernameSuggestions.classList.remove('visible');
+        clearError('username');
+      });
+
+      usernameInput.addEventListener('blur', function() {
+        var val = this.value.trim();
+        if (val.length >= 3 && /^[a-zA-Z0-9._]+$/.test(val)) {
+          if (MailboxStore.accountExists(val)) {
+            showError('username', 'This email address is already taken.');
+            var first = document.getElementById('first-name').value;
+            var last = document.getElementById('last-name').value;
+            var suggestions = MailboxStore.suggestUsernames(val, first, last);
+            if (suggestions.length > 0) {
+              suggestionList.innerHTML = '';
+              for (var i = 0; i < suggestions.length; i++) {
+                suggestionList.innerHTML += '<span class="sug-link" data-username="' + suggestions[i] + '">' + suggestions[i] + '</span>';
+              }
+              usernameSuggestions.classList.add('visible');
+              // Click handler
+              suggestionList.querySelectorAll('.sug-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                  usernameInput.value = this.getAttribute('data-username');
+                  usernameSuggestions.classList.remove('visible');
+                  clearError('username');
+                  emailPreview.classList.add('visible');
+                  emailPreview.textContent = 'Your email: ' + usernameInput.value + '@mailbox.example';
+                });
+              });
+            }
+          }
+        }
+      });
+
+      // --- Password strength ---
+      document.getElementById('password').addEventListener('input', updatePasswordStrength);
+
+      function updatePasswordStrength() {
+        var pw = document.getElementById('password').value;
+        pwStrengthBar.className = 'pw-strength-bar';
+        pwText.textContent = '';
+        if (pw.length === 0) return;
+        if (pw.length < 8) {
+          pwStrengthBar.classList.add('weak'); pwText.textContent = 'Too short'; pwText.style.color = '#d93025';
+        } else if (pw.length >= 8 && /[a-zA-Z]/.test(pw) && /[0-9]/.test(pw)) {
+          if (pw.length >= 12 && /[^a-zA-Z0-9]/.test(pw)) {
+            pwStrengthBar.classList.add('strong'); pwText.textContent = 'Strong password'; pwText.style.color = '#188038';
+          } else if (pw.length >= 10) {
+            pwStrengthBar.classList.add('good'); pwText.textContent = 'Good password'; pwText.style.color = '#188038';
+          } else {
+            pwStrengthBar.classList.add('fair'); pwText.textContent = 'Fair password'; pwText.style.color = '#f9ab00';
+          }
+        } else {
+          pwStrengthBar.classList.add('weak'); pwText.textContent = 'Must contain letters and numbers'; pwText.style.color = '#d93025';
+        }
+      }
+
+      // --- Error helpers ---
+      function showError(id, msg) {
+        var el = document.getElementById('err-' + id);
+        if (el) { el.textContent = msg; el.classList.add('visible'); }
+        var input = document.getElementById(id);
+        if (input) input.classList.add('error');
+      }
+
+      function clearError(id) {
+        var el = document.getElementById('err-' + id);
+        if (el) { el.textContent = ''; el.classList.remove('visible'); }
+        var input = document.getElementById(id);
+        if (input) input.classList.remove('error');
+      }
+
+      function clearAllErrors() {
+        var ids = ['first-name','last-name','username','password','confirm-password','dob','country','terms'];
+        ids.forEach(clearError);
+      }
+
+      // --- Terms link tracking ---
+      var termsOpened = false;
+      document.getElementById('terms-link').addEventListener('click', function() {
+        termsOpened = true;
+      });
+
+      // --- Submit ---
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearAllErrors();
+
+        var data = {
+          firstName: document.getElementById('first-name').value,
+          lastName: document.getElementById('last-name').value,
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value,
+          confirmPassword: document.getElementById('confirm-password').value,
+          dob: {
+            day: document.getElementById('dob-day').value,
+            month: document.getElementById('dob-month').value,
+            year: document.getElementById('dob-year').value
+          },
+          country: document.getElementById('country').value,
+          language: document.getElementById('language').value,
+          recoveryEmail: document.getElementById('recovery-email').value,
+          phone: document.getElementById('phone').value,
+          agreedToTerms: document.getElementById('agree-terms').checked
+        };
+
+        // Validations
+        var hasError = false;
+
+        if (!data.firstName) { showError('first-name', 'Please enter your first name.'); hasError = true; }
+        if (!data.lastName) { showError('last-name', 'Please enter your last name.'); hasError = true; }
+
+        if (!data.username) { showError('username', 'Please enter a username.'); hasError = true; }
+        else if (!/^[a-zA-Z0-9._]+$/.test(data.username)) { showError('username', 'Username can only contain letters, numbers, dots, and underscores.'); hasError = true; }
+        else if (data.username.length < 3) { showError('username', 'Username must be at least 3 characters.'); hasError = true; }
+        else if (MailboxStore.accountExists(data.username)) { showError('username', 'This email address is already taken.'); hasError = true; }
+
+        if (!data.password) { showError('password', 'Please enter a password.'); hasError = true; }
+        else if (data.password.length < 8) { showError('password', 'Password must be at least 8 characters.'); hasError = true; }
+        else if (!/[a-zA-Z]/.test(data.password) || !/[0-9]/.test(data.password)) { showError('password', 'Password must contain at least one letter and one number.'); hasError = true; }
+
+        if (!data.confirmPassword) { showError('confirm-password', 'Please confirm your password.'); hasError = true; }
+        else if (data.password !== data.confirmPassword) { showError('confirm-password', 'Passwords do not match.'); hasError = true; }
+
+        if (!data.dob.day || !data.dob.month || !data.dob.year) { showError('dob', 'Please enter your date of birth.'); hasError = true; }
+        else {
+          var d = parseInt(data.dob.day), m = parseInt(data.dob.month), y = parseInt(data.dob.year);
+          var daysInMonth = new Date(y, m, 0).getDate();
+          if (d > daysInMonth) { showError('dob', 'Please enter a valid date of birth.'); hasError = true; }
+        }
+
+        if (!data.country) { showError('country', 'Please select your country.'); hasError = true; }
+
+        if (!data.agreedToTerms) { showError('terms', 'You must agree to the terms of service.'); hasError = true; }
+
+        if (hasError) return;
+
+        // Create account
+        var result = MailboxStore.createAccount(data);
+        if (result.success) {
+          formView.style.display = 'none';
+          successView.classList.add('visible');
+          document.getElementById('created-email-display').textContent = result.account.email;
+        } else {
+          // Generic errors
+          if (result.error.indexOf('username') !== -1 || result.error.indexOf('Username') !== -1 || result.error.indexOf('email address') !== -1) {
+            showError('username', result.error);
+          } else if (result.error.indexOf('assword') !== -1) {
+            showError('password', result.error);
+          } else {
+            showError('username', result.error);
+          }
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
