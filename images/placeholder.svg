@@ -1,0 +1,6 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f0f0f5" rx="12"/>
+  <rect x="200" y="150" width="400" height="150" fill="none" stroke="#ccc" stroke-width="3" stroke-dasharray="12,6" rx="8"/>
+  <text x="400" y="215" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="28" fill="#999">Screenshot / تصویر</text>
+  <text x="400" y="255" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="24" fill="#bbb" dir="rtl">جایگزین عکس آموزشی</text>
+</svg>
