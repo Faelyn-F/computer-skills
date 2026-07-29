@@ -134,3 +134,106 @@ Features:
 
 ## Recommended Next Step for Phase 2
 Implement Tasks 6–10 (Reply, Reply All, Forward, Attach, Download), add CC/BCC fields to compose, and expand the compose interface with attachment support.
+
+---
+
+## Phase 1.5 — Email Visual Examples Update (2026-07-30)
+
+### Summary
+Added annotated visual email-interface examples to the Email learning modules. Each visual uses the fictional MailBox interface so teaching images match the later interactive practice. No real Gmail branding or screenshots of real accounts are used.
+
+### Images Created (`images/email/`)
+
+| File | Section | What It Shows |
+|------|---------|---------------|
+| `inbox-compose.svg` | Write & Send §1 | MailBox Inbox with Compose button highlighted (marker 1) |
+| `compose-to-field.svg` | Write & Send §1 | Compose window with To field showing `teacher@mailbox.example` (marker 2) |
+| `compose-subject.svg` | Write & Send §1 | Compose window with Subject field showing "Monday class" (marker 3) |
+| `compose-message-body.svg` | Write & Send §1 | Compose window with message body showing example email (marker 4) |
+| `compose-attachment.svg` | Write & Send §1 | Compose window with Attach button highlighted + `timetable.pdf` (marker 5) |
+| `compose-send.svg` | Write & Send §1 | Compose window with Send button highlighted + "Send vs Sent" note (marker 6) |
+| `email-reply.svg` | Reply §2 | Opened email with Reply/Reply All buttons highlighted (marker 7) |
+| `email-forward.svg` | Forward §3 | Opened email with Forward button highlighted (marker 8) |
+| `email-download-attachment.svg` | Attachments §4 | Email with attachment download + remove-from-draft highlighted (marker 9) |
+| `email-manage-folders.svg` | Manage §5 | Sidebar with Inbox, Drafts, Sent, Spam, Trash folders labeled (markers A–E) |
+| `email-suspicious-message.svg` | Safety §6 | Fictional phishing email with all warning signs marked |
+
+### CSS Classes Added (`css/style.css`)
+- `.email-visual` — Figure wrapper, matches existing card style
+- `.screenshot-wrapper` — Clickable zoom container
+- `.annotation-box` — Highlighted border around relevant control
+- `.annotation-arrow` — Directional arrow pointer
+- `.annotation-marker` — Numbered circle marker
+- `.visual-caption` — Caption area with English + Persian text
+- `.lightbox-overlay` / `.lightbox-close` / `.lightbox-caption` — Accessible image zoom modal
+
+### Annotation Method
+- SVG screenshots designed to visually replicate the actual MailBox interface
+- HTML/CSS overlay annotations (`span.annotation-box`, `span.annotation-marker`) positioned with percentage-based CSS
+- Same base screenshot can be reused with different annotations
+- Numbered markers correspond to the step-by-step flow
+- All annotations use `aria-hidden="true"` — captions carry the accessible content
+
+### Interactive Features
+- Click or tap any screenshot to open in an accessible lightbox/modal
+- Close with ✕ button, Escape key, or clicking outside the image
+- Keyboard focus returns to the original image after closing
+- Captions preserved in both English and Persian when enlarged
+- `tabindex`, `role="button"`, `aria-label` and keyboard Enter/Space support on all screenshot wrappers
+
+### Accessibility
+- Every image has meaningful `alt` text (no generic "screenshot" or "image" alt)
+- Annotations use border + numbered marker together (not color alone)
+- Captions are selectable HTML text (not baked into images)
+- Persian captions use `dir="rtl"`; English and email addresses remain LTR
+- Images are responsive (SVG with `width: 100%`)
+- No flashing animation — static highlights only
+
+### Design Consistency
+- Visual examples use the same card border-radius, typography, and spacing
+- Bilingual English/Persian hierarchy preserved in captions
+- All existing checkboxes, navigation, and Back/Practice buttons unchanged
+
+### Deployment Checks
+- [x] Homepage Email link → `lessons/email.html` (not register.html)
+- [x] "Try Interactive Practice" → `lessons/email-practice.html` (opens inbox directly)
+- [x] No registration or login page in normal flow
+- [x] All image paths use relative paths (`../images/email/...`)
+- [x] Filename casing consistent (all lowercase with hyphens)
+- [x] Existing virtual Inbox (email-practice.html) still works
+- [x] Tasks 1–5 and localStorage progress unchanged
+- [x] Create a Document module unchanged
+- [x] No real client names, emails, or personal data in any screenshot
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email.html` | Added 11 visual `<figure>` elements across all 6 topic sections + annotation CSS |
+| `css/style.css` | Added ~150 lines: `.email-visual`, annotation classes, `.lightbox-overlay` with responsive styles |
+| `js/main.js` | Added `initLightbox()` function (~90 lines) with keyboard and click handling |
+| `PROJECT_PROGRESS.md` | This update |
+
+### Files Created
+| File | Description |
+|------|-------------|
+| `images/email/inbox-compose.svg` | Inbox with Compose highlight |
+| `images/email/compose-to-field.svg` | Compose To field |
+| `images/email/compose-subject.svg` | Compose Subject field |
+| `images/email/compose-message-body.svg` | Compose message body |
+| `images/email/compose-attachment.svg` | Compose Attach button |
+| `images/email/compose-send.svg` | Compose Send button |
+| `images/email/email-reply.svg` | Reply/Reply All buttons |
+| `images/email/email-forward.svg` | Forward button |
+| `images/email/email-download-attachment.svg` | Attachment download/remove |
+| `images/email/email-manage-folders.svg` | Sidebar folders |
+| `images/email/email-suspicious-message.svg` | Suspicious email warnings |
+
+### Placeholder Images Requiring Replacement
+All 11 images are SVG placeholders designed to visually replicate the MailBox interface. The teacher should replace them with actual browser screenshots from the live MailBox inbox (`lessons/email-app/inbox.html`) when automated screenshot tools become available. The annotation overlays will remain correctly positioned since they use percentage-based CSS.
+
+### Known Limitations
+- SVG images are hand-designed representations, not pixel-perfect screenshots
+- Annotation positioning may need minor adjustment when replacing with real screenshots
+- The percentage-based annotation classes are tuned for the current SVGs at 700–800px viewport width
+- Lightbox requires JavaScript enabled (no JavaScript = images display without zoom)
+- Folder management view is a single image (two images would reduce crowding per the task spec)

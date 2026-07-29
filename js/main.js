@@ -79,12 +79,116 @@
     }
   }
 
+  // --- Lightbox for screenshots ---
+  function initLightbox() {
+    var wrappers = document.querySelectorAll('.screenshot-wrapper');
+    if (wrappers.length === 0) return;
+
+    // Create lightbox overlay once
+    var overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Image viewer');
+
+    var img = document.createElement('img');
+    img.alt = '';
+    overlay.appendChild(img);
+
+    var caption = document.createElement('div');
+    caption.className = 'lightbox-caption';
+    overlay.appendChild(caption);
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.setAttribute('aria-label', 'Close image viewer');
+    closeBtn.textContent = '✕';
+    overlay.appendChild(closeBtn);
+
+    document.body.appendChild(overlay);
+
+    var lastFocused = null;
+
+    function openLightbox(wrapper) {
+      lastFocused = wrapper;
+      var sourceImg = wrapper.querySelector('img');
+      var figcaption = wrapper.closest('.email-visual') ? wrapper.closest('.email-visual').querySelector('.visual-caption') : null;
+
+      if (sourceImg) {
+        img.src = sourceImg.src;
+        img.alt = sourceImg.alt || '';
+      }
+
+      if (figcaption) {
+        var enEl = figcaption.querySelector('.english-text');
+        var faEl = figcaption.querySelector('.persian-text');
+        caption.innerHTML = '';
+        if (enEl) {
+          var enDiv = document.createElement('div');
+          enDiv.className = 'en-caption';
+          enDiv.textContent = enEl.textContent;
+          caption.appendChild(enDiv);
+        }
+        if (faEl) {
+          var faDiv = document.createElement('div');
+          faDiv.className = 'fa-caption';
+          faDiv.textContent = faEl.textContent;
+          caption.appendChild(faDiv);
+        }
+      }
+
+      overlay.classList.add('visible');
+      closeBtn.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      overlay.classList.remove('visible');
+      document.body.style.overflow = '';
+      if (lastFocused) {
+        lastFocused.focus();
+        lastFocused = null;
+      }
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay || e.target === img) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && overlay.classList.contains('visible')) {
+        closeLightbox();
+      }
+    });
+
+    // Attach click handlers to wrappers
+    wrappers.forEach(function(wrapper) {
+      wrapper.setAttribute('tabindex', '0');
+      wrapper.setAttribute('role', 'button');
+      wrapper.setAttribute('aria-label', 'Click to enlarge image');
+      wrapper.addEventListener('click', function() {
+        openLightbox(wrapper);
+      });
+      wrapper.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(wrapper);
+        }
+      });
+    });
+  }
+
   // --- Init on DOM ready ---
   function init() {
     restoreCheckboxes();
     initCardKeyboard();
     highlightCurrentNav();
     initFocusManagement();
+    initLightbox();
   }
 
   if (document.readyState === 'loading') {

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#f8f9fa"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.12"/></filter>
+  </defs>
+  <rect width="800" height="500" fill="#e8eaed" rx="0"/>
+  <!-- Header -->
+  <rect x="0" y="0" width="800" height="52" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <rect x="12" y="8" width="32" height="32" rx="6" fill="linear-gradient(135deg,#1a73e8,#4285f4)"/>
+  <text x="28" y="30" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="16" fill="#fff" font-weight="700">M</text>
+  <text x="52" y="32" font-family="Segoe UI,sans-serif" font-size="20" fill="#1a73e8" font-weight="600">MailBox</text>
+  <rect x="180" y="10" width="380" height="30" rx="15" fill="#f1f3f4" stroke="#dadce0"/>
+  <text x="200" y="30" font-family="Segoe UI,sans-serif" font-size="13" fill="#888">🔍 Search mail</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="52" width="200" height="448" fill="#fff"/>
+  <line x1="200" y1="52" x2="200" y2="500" stroke="#eee"/>
+
+  <!-- Compose button (HIGHLIGHTED) -->
+  <rect x="12" y="64" width="176" height="40" rx="16" fill="#c2e7ff" stroke="#f0a500" stroke-width="4"/>
+  <text x="42" y="90" font-family="Segoe UI,sans-serif" font-size="15" fill="#001d35" font-weight="700">✏️ Compose</text>
+
+  <!-- Annotation: arrow + marker 1 -->
+  <text x="210" y="72" font-family="Segoe UI,sans-serif" font-size="28" fill="#f0a500">←</text>
+  <circle cx="230" cy="80" r="14" fill="#f0a500"/>
+  <text x="230" y="86" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="16" fill="#fff" font-weight="700">1</text>
+
+  <!-- Folder items -->
+  <rect x="8" y="118" width="184" height="30" rx="14" fill="#e8f0fe"/>
+  <text x="24" y="138" font-family="Segoe UI,sans-serif" font-size="13" fill="#1a73e8" font-weight="600">📥 Inbox</text>
+  <text x="170" y="138" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11" fill="#1a73e8" font-weight="700">3</text>
+
+  <text x="24" y="164" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">⭐ Starred</text>
+  <text x="24" y="188" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">📝 Drafts</text>
+  <text x="24" y="212" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">📤 Sent</text>
+  <text x="24" y="244" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">🚫 Spam</text>
+  <text x="24" y="268" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">🗑️ Trash</text>
+
+  <!-- Email list -->
+  <rect x="200" y="52" width="360" height="448" fill="#fff"/>
+  <line x1="560" y1="52" x2="560" y2="500" stroke="#eee"/>
+  <rect x="200" y="52" width="360" height="36" fill="#f8f9fa"/>
+  <text x="216" y="74" font-family="Segoe UI,sans-serif" font-size="12" fill="#5f6368" font-weight="600">Inbox</text>
+
+  <!-- Email rows -->
+  <rect x="208" y="96" width="344" height="52" rx="4" fill="#f2f6fc"/>
+  <text x="218" y="116" font-family="Segoe UI,sans-serif" font-size="13" fill="#202124" font-weight="700">Mrs. Lisa Chen</text>
+  <text x="218" y="134" font-family="Segoe UI,sans-serif" font-size="12" fill="#5f6368">Welcome to English Class — Dear…</text>
+  <text x="530" y="116" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Sep 10</text>
+
+  <rect x="208" y="154" width="344" height="52" rx="4" fill="#f2f6fc"/>
+  <text x="218" y="174" font-family="Segoe UI,sans-serif" font-size="13" fill="#202124" font-weight="700">Springfield College Registrar</text>
+  <text x="218" y="192" font-family="Segoe UI,sans-serif" font-size="12" fill="#5f6368">Your Class Timetable — Semester… 📎</text>
+  <text x="530" y="174" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Sep 13</text>
+
+  <rect x="208" y="212" width="344" height="52" rx="4" fill="#f2f6fc"/>
+  <text x="218" y="232" font-family="Segoe UI,sans-serif" font-size="13" fill="#202124" font-weight="700">City Health Clinic</text>
+  <text x="218" y="250" font-family="Segoe UI,sans-serif" font-size="12" fill="#5f6368">Appointment Confirmation — Dr… 📎</text>
+  <text x="530" y="232" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Sep 12</text>
+
+  <!-- Empty detail pane -->
+  <rect x="560" y="52" width="240" height="448" fill="#f8f9fa"/>
+  <text x="680" y="260" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="36" fill="#ccc">📬</text>
+  <text x="680" y="296" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#aaa">Select an email to read</text>
+
+  <!-- Browser frame decoration -->
+  <rect x="0" y="0" width="800" height="500" rx="0" fill="none" stroke="#bbb" stroke-width="1"/>
+</svg>

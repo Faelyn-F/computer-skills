@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#f8f9fa"/></linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="#e8eaed"/>
+  <rect x="0" y="0" width="800" height="48" fill="url(#hdr)"/>
+  <rect x="10" y="10" width="28" height="28" rx="6" fill="linear-gradient(135deg,#1a73e8,#4285f4)"/>
+  <text x="24" y="29" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="14" fill="#fff">M</text>
+  <text x="46" y="30" font-family="Segoe UI,sans-serif" font-size="18" fill="#1a73e8" font-weight="600">MailBox</text>
+
+  <!-- Content area: opened email -->
+  <rect x="30" y="60" width="740" height="320" rx="6" fill="#fff" stroke="#eee"/>
+
+  <!-- Email header -->
+  <text x="50" y="90" font-family="Segoe UI,sans-serif" font-size="18" fill="#202124" font-weight="600">Your Class Timetable — Semester 2</text>
+  <rect x="50" y="100" width="30" height="30" rx="15" fill="#34a853"/>
+  <text x="65" y="121" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff">R</text>
+  <text x="90" y="116" font-family="Segoe UI,sans-serif" font-size="13" fill="#202124" font-weight="600">Springfield College Registrar</text>
+  <text x="90" y="134" font-family="Segoe UI,sans-serif" font-size="12" fill="#888">&lt;registrar@springfield-college.example&gt;</text>
+  <text x="740" y="116" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11" fill="#888">Sep 13</text>
+
+  <line x1="50" y1="148" x2="750" y2="148" stroke="#eee"/>
+
+  <!-- Action buttons -->
+  <rect x="50" y="158" width="70" height="26" rx="4" fill="#fff" stroke="#dadce0"/>
+  <text x="82" y="176" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" fill="#5f6368">↩ Reply</text>
+  <rect x="125" y="158" width="70" height="26" rx="4" fill="#fff" stroke="#dadce0"/>
+  <text x="160" y="176" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" fill="#5f6368">↩↩ Reply all</text>
+
+  <!-- Forward button HIGHLIGHTED -->
+  <rect x="198" y="155" width="85" height="32" rx="4" fill="none" stroke="#f0a500" stroke-width="3"/>
+  <rect x="198" y="155" width="85" height="32" rx="4" fill="rgba(240,165,0,0.12)"/>
+  <text x="238" y="177" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" fill="#202124" font-weight="700">→ Forward</text>
+
+  <!-- Annotation -->
+  <text x="50" y="218" font-family="Segoe UI,sans-serif" font-size="20" fill="#f0a500">↑</text>
+  <circle cx="72" cy="216" r="12" fill="#f0a500"/>
+  <text x="72" y="221" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#fff" font-weight="700">8</text>
+
+  <line x1="50" y1="228" x2="750" y2="228" stroke="#eee"/>
+
+  <!-- Email body -->
+  <text x="50" y="254" font-family="Segoe UI,sans-serif" font-size="13" fill="#555">Dear Student,</text>
+  <text x="50" y="274" font-family="Segoe UI,sans-serif" font-size="13" fill="#555">Please find attached your class timetable</text>
+  <text x="50" y="294" font-family="Segoe UI,sans-serif" font-size="13" fill="#555">for Semester 2, 2026.</text>
+  <text x="50" y="320" font-family="Segoe UI,sans-serif" font-size="13" fill="#555">Classes begin on Monday, 15 September 2026.</text>
+
+  <!-- Attachments in email -->
+  <rect x="50" y="340" width="180" height="26" rx="12" fill="#e8f0fe"/>
+  <text x="60" y="358" font-family="Segoe UI,sans-serif" font-size="12" fill="#1a73e8">📄 timetable.pdf ⬇</text>
+</svg>

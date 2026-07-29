@@ -132,6 +132,117 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ============================================================
+       Annotation Positioning — percentage-based for responsiveness
+       ============================================================ */
+
+    /* Visual 1: Compose button */
+    .compose-highlight {
+      top: 13.5%; left: 1.5%; width: 23.5%; height: 8.5%;
+    }
+    .compose-arrow {
+      top: 10.5%; left: 25.8%;
+      transform: rotate(0deg);
+    }
+    .compose-marker {
+      top: 12.5%; left: 28.5%;
+    }
+
+    /* Visual 2: To field */
+    .to-highlight {
+      top: 17%; left: 8.5%; width: 83%; height: 9.5%;
+    }
+    .to-marker {
+      top: 18%; left: 5%;
+    }
+
+    /* Visual 3: Subject field */
+    .subject-highlight {
+      top: 39.5%; left: 8.5%; width: 83%; height: 8%;
+    }
+    .subject-marker {
+      top: 40.5%; left: 5%;
+    }
+
+    /* Visual 4: Message body */
+    .body-highlight {
+      top: 40%; left: 8.5%; width: 83%; height: 37%;
+    }
+    .body-marker {
+      top: 56%; left: 5%;
+    }
+
+    /* Visual 5: Attach button */
+    .attach-highlight {
+      top: 85.5%; left: 10%; width: 13%; height: 6.5%;
+    }
+    .attach-marker {
+      top: 86.5%; left: 5%;
+    }
+
+    /* Visual 6: Send button */
+    .send-highlight {
+      top: 85.5%; left: 74%; width: 16%; height: 6.5%;
+    }
+    .send-marker {
+      top: 86.5%; left: 93%;
+    }
+
+    /* Reply section */
+    .reply-highlight {
+      top: 30.5%; left: 60%; width: 22%; height: 7%;
+    }
+    .reply-marker {
+      top: 31.5%; left: 83.5%;
+    }
+
+    /* Forward section */
+    .forward-highlight {
+      top: 40%; left: 25%; width: 11%; height: 8.5%;
+    }
+    .forward-marker {
+      top: 41%; left: 22%;
+    }
+
+    /* Download attachment */
+    .download-highlight {
+      top: 39.5%; left: 22%; width: 35%; height: 9.5%;
+    }
+    .download-marker {
+      top: 41%; left: 3.5%;
+    }
+
+    /* Manage folders */
+    .inbox-folder-highlight {
+      top: 22.5%; left: 1.5%; width: 25%; height: 6%;
+    }
+    .drafts-folder-highlight {
+      top: 34.5%; left: 1.5%; width: 25%; height: 6%;
+    }
+    .sent-folder-highlight {
+      top: 43%; left: 1.5%; width: 25%; height: 6%;
+    }
+    .spam-folder-highlight {
+      top: 53.5%; left: 1.5%; width: 25%; height: 6%;
+    }
+    .trash-folder-highlight {
+      top: 62%; left: 1.5%; width: 25%; height: 6%;
+    }
+
+    /* Suspicious email warnings */
+    .warning-sender-highlight {
+      top: 22.5%; left: 12%; width: 36%; height: 4.5%;
+    }
+    .warning-password-highlight {
+      top: 52.5%; left: 5.5%; width: 90%; height: 5%;
+    }
+    .warning-link-highlight {
+      top: 65%; left: 5.5%; width: 54%; height: 5%;
+    }
+    .warning-attachment-highlight {
+      top: 73.5%; left: 6.5%; width: 26%; height: 5.5%;
+    }
   </style>
 </head>
 <body>
@@ -223,6 +334,19 @@
           <li><strong>Send</strong> — Click this button to send your email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(دکمه ارسال)</span></li>
         </ul>
 
+        <!-- Visual 1: Compose button in Inbox -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/inbox-compose.svg" alt="MailBox inbox with the Compose button highlighted by an orange border and a numbered marker 1">
+            <span class="annotation-box compose-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker compose-marker" aria-hidden="true">1</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Click <strong>Compose</strong> to start a new email.</p>
+            <p class="persian-text" lang="fa" dir="rtl">برای شروع یک ایمیل جدید، روی <strong>Compose</strong> کلیک کنید.</p>
+          </figcaption>
+        </figure>
+
         <h4>Simple Email Structure</h4>
         <p class="fa-text" lang="fa">ساختار ساده یک ایمیل</p>
         <ol style="margin:var(--spacing-sm) 0 var(--spacing-md) var(--spacing-lg);line-height:2;">
@@ -246,6 +370,45 @@ Kind regards,
 Ali
         </div>
 
+        <!-- Visual 2: To field -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/compose-to-field.svg" alt="MailBox compose window with the To field highlighted showing teacher@mailbox.example as the recipient">
+            <span class="annotation-box to-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker to-marker" aria-hidden="true">2</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Enter the recipient's email address in the <strong>To</strong> field.</p>
+            <p class="persian-text" lang="fa" dir="rtl">آدرس ایمیل گیرنده را در قسمت <strong>To</strong> وارد کنید.</p>
+          </figcaption>
+        </figure>
+
+        <!-- Visual 3: Subject field -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/compose-subject.svg" alt="MailBox compose window with the Subject field highlighted showing 'Monday class'">
+            <span class="annotation-box subject-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker subject-marker" aria-hidden="true">3</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Write a short and clear <strong>subject</strong>.</p>
+            <p class="persian-text" lang="fa" dir="rtl">یک <strong>موضوع</strong> کوتاه و واضح بنویسید.</p>
+          </figcaption>
+        </figure>
+
+        <!-- Visual 4: Message body -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/compose-message-body.svg" alt="MailBox compose window with the message body area highlighted showing a simple greeting, message, closing and name">
+            <span class="annotation-box body-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker body-marker" aria-hidden="true">4</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Write your greeting, message, closing and name.</p>
+            <p class="persian-text" lang="fa" dir="rtl">سلام، متن پیام، عبارت پایانی و نام خود را بنویسید.</p>
+          </figcaption>
+        </figure>
+
         <h4>Greeting Examples</h4>
         <p class="fa-text" lang="fa">نمونه‌های سلام و احوال‌پرسی</p>
         <ul>
@@ -261,6 +424,32 @@ Ali
           <li>Best wishes</li>
           <li>Thank you</li>
         </ul>
+
+        <!-- Visual 5: Attach files -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/compose-attachment.svg" alt="MailBox compose window with the Attach files button highlighted and a fictional timetable.pdf file attached">
+            <span class="annotation-box attach-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker attach-marker" aria-hidden="true">5</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Click <strong>Attach files</strong> to add a document or picture.</p>
+            <p class="persian-text" lang="fa" dir="rtl">برای افزودن سند یا تصویر، روی <strong>Attach files</strong> کلیک کنید.</p>
+          </figcaption>
+        </figure>
+
+        <!-- Visual 6: Send button -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/compose-send.svg" alt="MailBox compose window with the Send button highlighted by an orange border">
+            <span class="annotation-box send-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker send-marker" aria-hidden="true">6</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Check your email, then click <strong>Send</strong>.</p>
+            <p class="persian-text" lang="fa" dir="rtl">ایمیل خود را بررسی کنید و سپس روی <strong>Send</strong> کلیک کنید.</p>
+          </figcaption>
+        </figure>
 
         <div class="checklist-box">
           <h4 style="margin-top:0;">✅ Check Before Sending</h4>
@@ -318,6 +507,19 @@ Ali
 
         <p>The recipient's address is usually filled in automatically. You still need to type your reply and click <strong>Send</strong>.</p>
         <p class="fa-text" lang="fa">آدرس گیرنده معمولاً به طور خودکار پر می‌شود. شما باید پاسخ خود را تایپ کنید و روی <strong>Send</strong> کلیک کنید.</p>
+
+        <!-- Visual: Reply and Reply All -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/email-reply.svg" alt="MailBox opened email showing the Reply button and Reply All button highlighted with marker 7">
+            <span class="annotation-box reply-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker reply-marker" aria-hidden="true">7</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text"><strong>Reply</strong> sends your response to the sender. <strong>Reply All</strong> sends your response to everyone included in the email.</p>
+            <p class="persian-text" lang="fa" dir="rtl"><strong>Reply</strong> پاسخ شما را برای فرستنده ارسال می‌کند. <strong>Reply All</strong> پاسخ شما را برای همه افراد موجود در ایمیل ارسال می‌کند.</p>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="complete-row">
@@ -348,6 +550,19 @@ Ali
           <li>The <strong>Subject</strong> usually starts with "Fwd:" to show it is a forwarded message. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(موضوع معمولاً با "Fwd:" شروع می‌شود)</span></li>
           <li>The original message is included below your new message. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پیام اصلی در پایین پیام جدید شما قرار می‌گیرد)</span></li>
         </ul>
+
+        <!-- Visual: Forward button -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/email-forward.svg" alt="MailBox opened email showing the Forward button highlighted with marker 8">
+            <span class="annotation-box forward-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker forward-marker" aria-hidden="true">8</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text"><strong>Forward</strong> sends a received email to a new person.</p>
+            <p class="persian-text" lang="fa" dir="rtl"><strong>Forward</strong> یک ایمیل دریافت‌شده را برای شخص دیگری ارسال می‌کند.</p>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="complete-row">
@@ -378,6 +593,19 @@ Ali
           <li><strong>Remove an attachment</strong> — Click the ✕ on the attachment to remove it. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(برای حذف پیوست روی ✕ کلیک کنید)</span></li>
           <li><strong>Download an attachment</strong> — Click the ⬇️ icon to save the file to your computer. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(برای ذخیره فایل روی ⬇️ کلیک کنید)</span></li>
         </ul>
+
+        <!-- Visual: Download and remove attachments -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/email-download-attachment.svg" alt="MailBox opened email showing an attachment being downloaded and a remove-attachment button highlighted with marker 9">
+            <span class="annotation-box download-highlight" aria-hidden="true"></span>
+            <span class="annotation-marker download-marker" aria-hidden="true">9</span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Click the attachment name to <strong>download</strong> it. Click the ✕ to <strong>remove</strong> an attachment from a draft.</p>
+            <p class="persian-text" lang="fa" dir="rtl">برای <strong>دانلود</strong> فایل پیوست روی نام آن کلیک کنید. برای <strong>حذف</strong> پیوست از پیش‌نویس روی ✕ کلیک کنید.</p>
+          </figcaption>
+        </figure>
 
         <div class="checklist-box" style="background:#fce4ec;border-color:#ef5350;">
           <h4 style="margin-top:0;color:#c62828;">⚠️ Safety Warning</h4>
@@ -418,6 +646,22 @@ Ali
           <li><strong>Trash</strong> — Deleted emails stay here until you empty the trash. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های حذف شده تا زمان خالی کردن سطل زباله اینجا می‌مانند)</span></li>
           <li><strong>Spam</strong> — Unwanted or junk email is moved here. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های ناخواسته به اینجا منتقل می‌شوند)</span></li>
         </ul>
+
+        <!-- Visual: Manage folders -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/email-manage-folders.svg" alt="MailBox sidebar showing the main folders: Inbox (A), Drafts (B), Sent (C), Spam (D), and Trash (E) each highlighted with lettered markers">
+            <span class="annotation-box inbox-folder-highlight" aria-hidden="true"></span>
+            <span class="annotation-box drafts-folder-highlight" aria-hidden="true"></span>
+            <span class="annotation-box sent-folder-highlight" aria-hidden="true"></span>
+            <span class="annotation-box spam-folder-highlight" aria-hidden="true"></span>
+            <span class="annotation-box trash-folder-highlight" aria-hidden="true"></span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text">Your email has several folders to help you stay organised: <strong>Inbox</strong>, <strong>Drafts</strong>, <strong>Sent</strong>, <strong>Spam</strong> and <strong>Trash</strong>.</p>
+            <p class="persian-text" lang="fa" dir="rtl">ایمیل شما چندین پوشه برای سازماندهی دارد: <strong>Inbox</strong> (صندوق ورودی)، <strong>Drafts</strong> (پیش‌نویس‌ها)، <strong>Sent</strong> (ارسال شده)، <strong>Spam</strong> (هرزنامه) و <strong>Trash</strong> (سطل زباله).</p>
+          </figcaption>
+        </figure>
       </div>
 
       <div class="complete-row">
@@ -454,6 +698,21 @@ Ali
             <li><strong>Fake prize or payment messages</strong> — "You have won!" messages are usually fake. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پیام‌های جعلی جایزه یا پرداخت — پیام‌های "شما برنده شده‌اید!" معمولاً جعلی هستند)</span></li>
           </ul>
         </div>
+
+        <!-- Visual: Suspicious email warning signs -->
+        <figure class="email-visual">
+          <div class="screenshot-wrapper">
+            <img src="../images/email/email-suspicious-message.svg" alt="Fictional suspicious email showing warning signs: unknown sender, request for password, suspicious link, and dangerous .exe attachment">
+            <span class="annotation-box warning-sender-highlight" aria-hidden="true"></span>
+            <span class="annotation-box warning-password-highlight" aria-hidden="true"></span>
+            <span class="annotation-box warning-link-highlight" aria-hidden="true"></span>
+            <span class="annotation-box warning-attachment-highlight" aria-hidden="true"></span>
+          </div>
+          <figcaption class="visual-caption">
+            <p class="english-text"><strong>Stop and check</strong> before clicking a suspicious link or attachment.</p>
+            <p class="persian-text" lang="fa" dir="rtl"><strong>قبل از کلیک</strong> روی لینک یا فایل پیوست مشکوک، توقف و بررسی کنید.</p>
+          </figcaption>
+        </figure>
 
         <p style="margin-top:var(--spacing-md);"><strong>If you are not sure about an email, ask a trusted person before you reply or click anything.</strong></p>
         <p class="fa-text" lang="fa"><strong>اگر در مورد ایمیلی مطمئن نیستید، قبل از پاسخ دادن یا کلیک روی چیزی، از یک فرد مورد اعتماد بپرسید.</strong></p>

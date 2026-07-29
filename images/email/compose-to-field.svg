@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460">
+  <defs>
+    <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="6" flood-opacity="0.25"/></filter>
+  </defs>
+  <rect width="700" height="460" fill="rgba(0,0,0,0.4)" rx="0"/>
+  <!-- Compose dialog -->
+  <rect x="60" y="30" width="580" height="400" rx="8" fill="#fff" filter="url(#shadow)"/>
+  <rect x="60" y="30" width="580" height="42" rx="8 8 0 0" fill="#f2f6fc"/>
+  <text x="80" y="56" font-family="Segoe UI,sans-serif" font-size="15" fill="#202124" font-weight="600">New Message</text>
+  <circle cx="622" cy="51" r="10" fill="#e0e0e0"/>
+  <text x="622" y="56" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="14" fill="#666">✕</text>
+
+  <!-- To field (HIGHLIGHTED) -->
+  <rect x="60" y="72" width="580" height="42" fill="#fff" stroke="#f0a500" stroke-width="3"/>
+  <rect x="60" y="72" width="580" height="42" fill="rgba(240,165,0,0.08)"/>
+  <text x="80" y="98" font-family="Segoe UI,sans-serif" font-size="13" fill="#888">To</text>
+  <text x="110" y="98" font-family="Segoe UI,sans-serif" font-size="14" fill="#202124">teacher@mailbox.example</text>
+
+  <!-- Annotation marker 2 -->
+  <circle cx="40" cy="93" r="14" fill="#f0a500"/>
+  <text x="40" y="99" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="15" fill="#fff" font-weight="700">2</text>
+  <line x1="54" y1="93" x2="60" y2="93" stroke="#f0a500" stroke-width="2"/>
+
+  <!-- Cc field -->
+  <line x1="60" y1="114" x2="640" y2="114" stroke="#eee"/>
+  <text x="80" y="134" font-family="Segoe UI,sans-serif" font-size="13" fill="#aaa">Cc</text>
+
+  <!-- Bcc field -->
+  <line x1="60" y1="150" x2="640" y2="150" stroke="#eee"/>
+  <text x="80" y="170" font-family="Segoe UI,sans-serif" font-size="13" fill="#aaa">Bcc</text>
+
+  <!-- Subject field (normal) -->
+  <line x1="60" y1="186" x2="640" y2="186" stroke="#eee"/>
+  <text x="80" y="210" font-family="Segoe UI,sans-serif" font-size="13" fill="#888">Subj</text>
+
+  <!-- Message body (normal) -->
+  <line x1="60" y1="234" x2="640" y2="234" stroke="#eee"/>
+  <text x="80" y="260" font-family="Segoe UI,sans-serif" font-size="13" fill="#ccc">Write your message...</text>
+
+  <!-- Toolbar -->
+  <line x1="60" y1="380" x2="640" y2="380" stroke="#eee"/>
+  <rect x="60" y="380" width="580" height="50" rx="0 0 8 8" fill="#fafafa"/>
+  <rect x="520" y="392" width="100" height="28" rx="4" fill="#1a73e8"/>
+  <text x="570" y="412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="14" fill="#fff" font-weight="600">Send</text>
+  <text x="80" y="412" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">📎 Attach</text>
+  <text x="170" y="412" font-family="Segoe UI,sans-serif" font-size="13" fill="#5f6368">🗑️ Discard</text>
+</svg>

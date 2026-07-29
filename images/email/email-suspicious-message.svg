@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#f8f9fa"/></linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="#e8eaed"/>
+  <rect x="0" y="0" width="800" height="50" fill="url(#hdr)"/>
+  <rect x="12" y="10" width="28" height="28" rx="6" fill="linear-gradient(135deg,#1a73e8,#4285f4)"/>
+  <text x="26" y="29" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="14" fill="#fff">M</text>
+  <text x="48" y="31" font-family="Segoe UI,sans-serif" font-size="18" fill="#1a73e8" font-weight="600">MailBox</text>
+
+  <!-- Warning banner -->
+  <rect x="0" y="50" width="800" height="28" fill="#fce4ec"/>
+  <text x="400" y="69" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13" fill="#c62828" font-weight="700">⚠️ This is a fictional example — This email shows warning signs ⚠️</text>
+
+  <!-- Email content -->
+  <rect x="30" y="90" width="740" height="390" rx="6" fill="#fff" stroke="#eee"/>
+
+  <!-- Suspicious sender (highlighted) -->
+  <text x="50" y="118" font-family="Segoe UI,sans-serif" font-size="12" fill="#888">From:</text>
+  <rect x="96" y="106" width="280" height="20" rx="4" fill="rgba(234,67,53,0.1)" stroke="#ea4335" stroke-width="2"/>
+  <text x="106" y="121" font-family="Segoe UI,sans-serif" font-size="13" fill="#ea4335" font-weight="700">prize-claim@urgent-notice.example</text>
+  <circle cx="62" cy="116" r="10" fill="#ea4335"/>
+  <text x="62" y="121" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" fill="#fff" font-weight="700">!</text>
+  <text x="390" y="120" font-family="Segoe UI,sans-serif" font-size="11" fill="#ea4335">← Unknown sender</text>
+
+  <!-- Subject -->
+  <text x="50" y="150" font-family="Segoe UI,sans-serif" font-size="18" fill="#d93025" font-weight="700">⚠️ URGENT: Your prize is waiting! Claim now!</text>
+
+  <line x1="50" y1="166" x2="750" y2="166" stroke="#eee"/>
+
+  <!-- Body -->
+  <text x="50" y="192" font-family="Segoe UI,sans-serif" font-size="14" fill="#555">Dear Winner,</text>
+  <text x="50" y="216" font-family="Segoe UI,sans-serif" font-size="14" fill="#555">You have been selected to receive a prize of <tspan fill="#ea4335" font-weight="700">$5,000</tspan>!</text>
+  <text x="50" y="240" font-family="Segoe UI,sans-serif" font-size="14" fill="#555">To claim your prize, you must verify your account immediately.</text>
+
+  <!-- Password request (highlighted) -->
+  <rect x="44" y="254" width="720" height="22" rx="4" fill="rgba(234,67,53,0.08)" stroke="#ea4335" stroke-width="2"/>
+  <text x="50" y="270" font-family="Segoe UI,sans-serif" font-size="13" fill="#ea4335" font-weight="600">⚠ Request: Please send your password and bank details to confirm.</text>
+  <circle cx="36" cy="265" r="10" fill="#ea4335"/>
+  <text x="36" y="270" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" fill="#fff" font-weight="700">!</text>
+
+  <!-- Suspicious link -->
+  <text x="50" y="304" font-family="Segoe UI,sans-serif" font-size="14" fill="#555">Click the link below to claim:</text>
+  <rect x="44" y="316" width="420" height="22" rx="4" fill="rgba(234,67,53,0.08)" stroke="#ea4335" stroke-width="2"/>
+  <text x="54" y="332" font-family="Segoe UI,sans-serif" font-size="13" fill="#1a73e8" text-decoration="underline">🔗 https://prize-claim.example.com/verify</text>
+  <text x="480" y="332" font-family="Segoe UI,sans-serif" font-size="11" fill="#ea4335">← Suspicious link</text>
+  <circle cx="36" cy="327" r="10" fill="#ea4335"/>
+  <text x="36" y="332" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" fill="#fff" font-weight="700">!</text>
+
+  <!-- Suspicious attachment -->
+  <rect x="50" y="358" width="200" height="26" rx="12" fill="#fce4ec" stroke="#ea4335" stroke-width="2"/>
+  <text x="62" y="376" font-family="Segoe UI,sans-serif" font-size="12" fill="#d93025" font-weight="600">📎 claim-form.exe</text>
+  <text x="260" y="376" font-family="Segoe UI,sans-serif" font-size="11" fill="#ea4335">← Suspicious attachment!</text>
+  <circle cx="36" cy="371" r="10" fill="#ea4335"/>
+  <text x="36" y="376" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" fill="#fff" font-weight="700">!</text>
+
+  <!-- Urgent wording warning -->
+  <text x="50" y="416" font-family="Segoe UI,sans-serif" font-size="14" fill="#555">This offer expires in <tspan fill="#ea4335" font-weight="700">24 hours</tspan>! ACT NOW!</text>
+
+  <!-- Warning signs summary -->
+  <rect x="44" y="428" width="720" height="44" rx="6" fill="#fce4ec"/>
+  <text x="54" y="450" font-family="Segoe UI,sans-serif" font-size="12" fill="#c62828" font-weight="600">Warning signs: ⚠ Unknown sender ⚠ Urgent wording ⚠ Asks for password ⚠ Suspicious link ⚠ Suspicious .exe attachment ⚠ "ACT NOW" pressure</text>
+  <text x="54" y="466" font-family="Segoe UI,sans-serif" font-size="11" fill="#c62828">نشانه‌های هشدار: فرستنده ناشناس، متن فوری، درخواست رمز عبور، لینک مشکوک، فایل پیوست .exe</text>
+</svg>
