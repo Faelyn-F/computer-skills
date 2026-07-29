@@ -3,8 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Lesson — درس ایمیل</title>
+  <title>Email — ایمیل</title>
   <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Topic Cards Grid */
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+    }
+    .topic-card {
+      background: var(--color-card);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      text-align: center;
+      border: 3px solid transparent;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+    }
+    .topic-card:hover,
+    .topic-card:focus-visible {
+      border-color: var(--color-accent);
+      transform: translateY(-3px);
+      outline: none;
+    }
+    .topic-card:focus-visible {
+      box-shadow: 0 0 0 4px rgba(240, 165, 0, 0.4);
+    }
+    .topic-card .topic-icon {
+      font-size: 40px;
+      margin-bottom: var(--spacing-xs);
+    }
+    .topic-card .topic-en {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      direction: ltr;
+    }
+    .topic-card .topic-fa {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-accent);
+      direction: rtl;
+      font-family: var(--font-family-fa);
+    }
+
+    /* Section content area */
+    .section-content {
+      background: #f9fafb;
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin-top: var(--spacing-sm);
+    }
+    .section-content h3 {
+      color: var(--color-accent);
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-xl);
+    }
+    .section-content h4 {
+      color: var(--color-text);
+      margin: var(--spacing-md) 0 var(--spacing-xs);
+      font-size: var(--font-size-lg);
+    }
+    .section-content ul {
+      margin: var(--spacing-sm) 0 var(--spacing-md) var(--spacing-lg);
+    }
+    .section-content li {
+      margin-bottom: var(--spacing-xs);
+      line-height: 1.6;
+    }
+    .example-box {
+      background: #fff;
+      border: 2px solid #c2e7ff;
+      border-radius: 8px;
+      padding: var(--spacing-md);
+      margin: var(--spacing-md) 0;
+      font-family: var(--font-family-en);
+      white-space: pre-line;
+      line-height: 1.6;
+    }
+    .checklist-box {
+      background: #e8f5e9;
+      border: 2px solid var(--color-success);
+      border-radius: 8px;
+      padding: var(--spacing-md);
+      margin: var(--spacing-md) 0;
+    }
+    .send-vs-sent-box {
+      background: #fff8e1;
+      border: 2px solid var(--color-accent);
+      border-radius: 8px;
+      padding: var(--spacing-md);
+      margin: var(--spacing-md) 0;
+    }
+    .section-content .fa-text {
+      direction: rtl;
+      text-align: right;
+      font-family: var(--font-family-fa);
+      color: #555;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    /* Back to top */
+    .back-to-top {
+      text-align: center;
+      margin: var(--spacing-lg) 0;
+    }
+    .back-to-top a {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--color-surface);
+      color: var(--color-card);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .back-to-top a:hover {
+      background: #2a2a4a;
+    }
+
+    @media (max-width: 600px) {
+      .topic-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -19,259 +147,333 @@
 
   <main id="main-content" class="main-content" tabindex="-1">
 
-    <!-- Practice CTA -->
+    <!-- Introduction -->
+    <div style="text-align:center;margin-bottom:var(--spacing-lg);">
+      <p style="font-size:var(--font-size-lg);font-weight:600;direction:ltr;">
+        Learn how to write, send and manage email.
+      </p>
+      <p style="font-size:var(--font-size-lg);font-weight:600;direction:rtl;font-family:var(--font-family-fa);color:#555;" lang="fa">
+        یاد بگیرید چگونه ایمیل بنویسید، ارسال کنید و مدیریت کنید.
+      </p>
+    </div>
+
+    <!-- Interactive Practice CTA -->
     <div style="text-align:center;margin-bottom:var(--spacing-lg);">
       <a href="email-practice.html" style="display:inline-block;padding:16px 36px;font-size:20px;font-weight:700;background:var(--color-accent);color:#1a1a2e;text-decoration:none;border-radius:var(--border-radius);transition:all 0.2s ease;">
         🖐️ Try Interactive Practice &mdash; تمرین تعاملی را امتحان کنید
       </a>
     </div>
 
-    <ol class="step-list">
+    <!-- Topic Cards -->
+    <h2 style="text-align:center;margin-bottom:var(--spacing-sm);direction:ltr;">Topics</h2>
+    <p style="text-align:center;direction:rtl;font-family:var(--font-family-fa);color:#888;margin-bottom:var(--spacing-md);" lang="fa">موضوعات</p>
 
-      <!-- Step 1: Open Gmail -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">1</span>
-        <p class="step-en" lang="en">Open Gmail</p>
-        <p class="step-fa" lang="fa">Gmail را باز کنید</p>
+    <div class="topic-grid">
+      <a href="#write-send" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">✏️</span>
+        <p class="topic-en">Write and Send an Email</p>
+        <p class="topic-fa" lang="fa">نوشتن و ارسال ایمیل</p>
+      </a>
+      <a href="#reply" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">↩️</span>
+        <p class="topic-en">Reply to an Email</p>
+        <p class="topic-fa" lang="fa">پاسخ دادن به ایمیل</p>
+      </a>
+      <a href="#forward" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">↗️</span>
+        <p class="topic-en">Forward an Email</p>
+        <p class="topic-fa" lang="fa">بازارسال ایمیل</p>
+      </a>
+      <a href="#attachments" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">📎</span>
+        <p class="topic-en">Attachments</p>
+        <p class="topic-fa" lang="fa">فایل‌های پیوست</p>
+      </a>
+      <a href="#manage" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">📂</span>
+        <p class="topic-en">Manage Email</p>
+        <p class="topic-fa" lang="fa">مدیریت ایمیل</p>
+      </a>
+      <a href="#safety" class="topic-card">
+        <span class="topic-icon" aria-hidden="true">🔒</span>
+        <p class="topic-en">Email Safety</p>
+        <p class="topic-fa" lang="fa">ايمنی ايميل</p>
+      </a>
+    </div>
 
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-01-open-gmail.svg" alt="Browser address bar with gmail.com typed in, showing the Gmail inbox page" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
+    <!-- ============================================================ -->
+    <!-- SECTION: Write and Send an Email (most detailed) -->
+    <!-- ============================================================ -->
+    <section id="write-send" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">1</span>
+      <p class="step-en">Write and Send an Email</p>
+      <p class="step-fa" lang="fa">نوشتن و ارسال ایمیل</p>
+
+      <div class="section-content">
+        <p style="direction:ltr;">To write and send an email, you use the <strong>Compose</strong> button. This opens a new email window with several important fields.</p>
+        <p class="fa-text" lang="fa">برای نوشتن و ارسال ایمیل، از دکمه <strong>Compose</strong> استفاده می‌کنید. با این کار یک پنجره ایمیل جدید با چند بخش مهم باز می‌شود.</p>
+
+        <h4>Parts of an Email</h4>
+        <p class="fa-text" lang="fa">بخش‌های یک ایمیل</p>
+        <ul>
+          <li><strong>To</strong> — The email address of the person you are sending to. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(آدرس ایمیل گیرنده)</span></li>
+          <li><strong>Subject</strong> — A short title that tells the reader what the email is about. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(عنوان کوتاه که موضوع ایمیل را نشان می‌دهد)</span></li>
+          <li><strong>Message body</strong> — The main text of your email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(متن اصلی ایمیل)</span></li>
+          <li><strong>Attach files</strong> — Add a file (photo, document, PDF) to your email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(افزودن فایل به ایمیل)</span></li>
+          <li><strong>Send</strong> — Click this button to send your email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(دکمه ارسال)</span></li>
+        </ul>
+
+        <h4>Simple Email Structure</h4>
+        <p class="fa-text" lang="fa">ساختار ساده یک ایمیل</p>
+        <ol style="margin:var(--spacing-sm) 0 var(--spacing-md) var(--spacing-lg);line-height:2;">
+          <li><strong>Greeting</strong> — Say hello <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(سلام و احوال‌پرسی)</span></li>
+          <li><strong>Reason for writing</strong> — Why are you writing? <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(دلیل نوشتن ایمیل)</span></li>
+          <li><strong>Important information or request</strong> — The main details <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(اطلاعات اصلی یا درخواست)</span></li>
+          <li><strong>Closing</strong> — A polite ending <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(عبارت پایانی مودبانه)</span></li>
+          <li><strong>Your name</strong> — Sign your name <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(نام خود را بنویسید)</span></li>
+        </ol>
+
+        <h4>Example Email</h4>
+        <p class="fa-text" lang="fa">نمونه ایمیل</p>
+        <div class="example-box">
+Hello Sarah,
+
+I am writing to confirm that I will attend class on Monday.
+
+Please let me know if I need to bring anything.
+
+Kind regards,
+Ali
         </div>
 
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Open your web browser. Type <strong>gmail.com</strong> in the address bar. Press Enter.</p>
-          <p class="practice-text-fa" lang="fa">مرورگر خود را باز کنید. در نوار آدرس <strong>gmail.com</strong> را تایپ کنید. Enter را بزنید.</p>
+        <h4>Greeting Examples</h4>
+        <p class="fa-text" lang="fa">نمونه‌های سلام و احوال‌پرسی</p>
+        <ul>
+          <li>Hello Sarah</li>
+          <li>Hi Sarah</li>
+          <li>Dear Sarah</li>
+        </ul>
+
+        <h4>Closing Examples</h4>
+        <p class="fa-text" lang="fa">نمونه‌های عبارت پایانی</p>
+        <ul>
+          <li>Kind regards</li>
+          <li>Best wishes</li>
+          <li>Thank you</li>
+        </ul>
+
+        <div class="checklist-box">
+          <h4 style="margin-top:0;">✅ Check Before Sending</h4>
+          <p class="fa-text" lang="fa" style="color:#2e7d32;">✅ مواردی که قبل از ارسال باید بررسی کنید</p>
+          <ul style="list-style:none;padding-left:0;">
+            <li>☐ Is the recipient correct?</li>
+            <li>☐ Is the subject clear?</li>
+            <li>☐ Is the message complete?</li>
+            <li>☐ Is the attachment included?</li>
+            <li>☐ Did I write my name?</li>
+          </ul>
+          <p class="fa-text" lang="fa" style="font-size:14px;">
+            ☐ آیا آدرس گیرنده درست است؟ &nbsp;
+            ☐ آیا موضوع واضح است؟ &nbsp;
+            ☐ آیا پیام کامل است؟ &nbsp;
+            ☐ آیا فایل پیوست اضافه شده؟ &nbsp;
+            ☐ آیا نام خود را نوشته‌ام؟
+          </p>
         </div>
 
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-1" class="step-checkbox" data-step="email-1">
-          <label for="email-step-1">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
+        <div class="send-vs-sent-box">
+          <h4 style="margin-top:0;">⚠️ Send vs Sent</h4>
+          <p class="fa-text" lang="fa" style="color:#8d6e00;">⚠️ تفاوت Send و Sent</p>
+          <p><strong>Send</strong> is the action button you click to send the email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(دکمه عملیات ارسال)</span></p>
+          <p><strong>Sent</strong> is the folder that contains emails you have already sent. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پوشه ایمیل‌های ارسال شده)</span></p>
         </div>
-      </li>
+      </div>
 
-      <!-- Step 2: Compose a new email -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">2</span>
-        <p class="step-en" lang="en">Compose a new email</p>
-        <p class="step-fa" lang="fa">یک ایمیل جدید بنویسید</p>
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-1" class="step-checkbox" data-step="email-s1">
+        <label for="email-section-1">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
 
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-02-compose.svg" alt="Gmail interface with Compose button highlighted with a yellow glow, arrow pointing to it" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
+    <!-- ============================================================ -->
+    <!-- SECTION: Reply to an Email -->
+    <!-- ============================================================ -->
+    <section id="reply" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">2</span>
+      <p class="step-en">Reply to an Email</p>
+      <p class="step-fa" lang="fa">پاسخ دادن به ایمیل</p>
+
+      <div class="section-content">
+        <p>When you receive an email, you can reply to it. The <strong>Reply</strong> button lets you write back to the person who sent the email.</p>
+        <p class="fa-text" lang="fa">وقتی یک ایمیل دریافت می‌کنید، می‌توانید به آن پاسخ دهید. دکمه <strong>Reply</strong> به شما امکان می‌دهد به فرستنده ایمیل پاسخ بنویسید.</p>
+
+        <ul>
+          <li><strong>Reply</strong> — Send your answer to the sender only. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پاسخ فقط به فرستنده)</span></li>
+          <li><strong>Reply All</strong> — Send your answer to the sender and everyone else who received the email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پاسخ به فرستنده و همه گیرندگان دیگر)</span></li>
+        </ul>
+
+        <p>The recipient's address is usually filled in automatically. You still need to type your reply and click <strong>Send</strong>.</p>
+        <p class="fa-text" lang="fa">آدرس گیرنده معمولاً به طور خودکار پر می‌شود. شما باید پاسخ خود را تایپ کنید و روی <strong>Send</strong> کلیک کنید.</p>
+      </div>
+
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-2" class="step-checkbox" data-step="email-s2">
+        <label for="email-section-2">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: Forward an Email -->
+    <!-- ============================================================ -->
+    <section id="forward" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">3</span>
+      <p class="step-en">Forward an Email</p>
+      <p class="step-fa" lang="fa">بازارسال ایمیل</p>
+
+      <div class="section-content">
+        <p><strong>Forward</strong> sends an email you received to a new person. The original message stays included in the email.</p>
+        <p class="fa-text" lang="fa">دکمه <strong>Forward</strong> یک ایمیل دریافتی را به یک شخص جدید ارسال می‌کند. پیام اصلی در ایمیل باقی می‌ماند.</p>
+
+        <p>When you forward an email:</p>
+        <ul>
+          <li>The <strong>To</strong> field will be empty — you must enter the new recipient. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(باید گیرنده جدید را وارد کنید)</span></li>
+          <li>The <strong>Subject</strong> usually starts with "Fwd:" to show it is a forwarded message. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(موضوع معمولاً با "Fwd:" شروع می‌شود)</span></li>
+          <li>The original message is included below your new message. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پیام اصلی در پایین پیام جدید شما قرار می‌گیرد)</span></li>
+        </ul>
+      </div>
+
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-3" class="step-checkbox" data-step="email-s3">
+        <label for="email-section-3">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION: Attachments -->
+    <!-- ============================================================ -->
+    <section id="attachments" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">4</span>
+      <p class="step-en">Attachments</p>
+      <p class="step-fa" lang="fa">فایل‌های پیوست</p>
+
+      <div class="section-content">
+        <p>An <strong>attachment</strong> is a file you send together with your email. You can attach photos, documents, PDFs and other files.</p>
+        <p class="fa-text" lang="fa"><strong>فایل پیوست</strong> فایلی است که همراه ایمیل خود ارسال می‌کنید. می‌توانید عکس، سند، PDF و فایل‌های دیگر را پیوست کنید.</p>
+
+        <ul>
+          <li><strong>Attach a file</strong> — Click the 📎 (paperclip) icon to add a file. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(روی آیکن گیره کاغذ کلیک کنید)</span></li>
+          <li><strong>Choose a file</strong> — Select the file from your computer. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(فایل را از کامپیوتر انتخاب کنید)</span></li>
+          <li><strong>Remove an attachment</strong> — Click the ✕ on the attachment to remove it. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(برای حذف پیوست روی ✕ کلیک کنید)</span></li>
+          <li><strong>Download an attachment</strong> — Click the ⬇️ icon to save the file to your computer. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(برای ذخیره فایل روی ⬇️ کلیک کنید)</span></li>
+        </ul>
+
+        <div class="checklist-box" style="background:#fce4ec;border-color:#ef5350;">
+          <h4 style="margin-top:0;color:#c62828;">⚠️ Safety Warning</h4>
+          <p class="fa-text" lang="fa" style="color:#c62828;">⚠️ هشدار ایمنی</p>
+          <p><strong>Do not open attachments from unknown senders.</strong> They may contain harmful software.</p>
+          <p class="fa-text" lang="fa"><strong>فایل‌های پیوست از فرستندگان ناشناس را باز نکنید.</strong> ممکن است حاوی نرم‌افزار مخرب باشند.</p>
         </div>
+      </div>
 
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the <strong>Compose</strong> button (top left). A new message window will open.</p>
-          <p class="practice-text-fa" lang="fa">روی دکمه <strong>Compose</strong> (بالا سمت چپ) کلیک کنید. یک پنجره پیام جدید باز می‌شود.</p>
-        </div>
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-4" class="step-checkbox" data-step="email-s4">
+        <label for="email-section-4">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
 
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-2" class="step-checkbox" data-step="email-2">
-          <label for="email-step-2">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
+    <!-- ============================================================ -->
+    <!-- SECTION: Manage Email -->
+    <!-- ============================================================ -->
+    <section id="manage" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">5</span>
+      <p class="step-en">Manage Email</p>
+      <p class="step-fa" lang="fa">مدیریت ایمیل</p>
 
-      <!-- Step 3: Enter an email address -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">3</span>
-        <p class="step-en" lang="en">Enter an email address</p>
-        <p class="step-fa" lang="fa">آدرس ایمیل را وارد کنید</p>
+      <div class="section-content">
+        <p>Your email has several folders and tools to help you stay organised.</p>
+        <p class="fa-text" lang="fa">ایمیل شما چندین پوشه و ابزار دارد که به شما کمک می‌کند مرتب بمانید.</p>
 
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-03-to-field.svg" alt="Compose window with To field highlighted yellow, showing friend@gmail.com typed in" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
+        <ul>
+          <li><strong>Inbox</strong> — Where new emails arrive. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(صندوق ورودی — جایی که ایمیل‌های جدید می‌رسند)</span></li>
+          <li><strong>Sent</strong> — Emails you have already sent. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های ارسال شده)</span></li>
+          <li><strong>Drafts</strong> — Emails you started but have not sent yet. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌هایی که شروع کرده‌اید اما هنوز ارسال نکرده‌اید)</span></li>
+          <li><strong>Starred</strong> — Important emails you have marked with a star ⭐. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های مهم که با ستاره علامت‌گذاری شده‌اند)</span></li>
+          <li><strong>Search</strong> — Find emails by typing words, names or subjects. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(جستجوی ایمیل با تایپ کلمات، نام‌ها یا موضوعات)</span></li>
+          <li><strong>Trash</strong> — Deleted emails stay here until you empty the trash. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های حذف شده تا زمان خالی کردن سطل زباله اینجا می‌مانند)</span></li>
+          <li><strong>Spam</strong> — Unwanted or junk email is moved here. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(ایمیل‌های ناخواسته به اینجا منتقل می‌شوند)</span></li>
+        </ul>
+      </div>
 
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the <strong>To</strong> field. Type an email address, for example: <strong>friend@gmail.com</strong></p>
-          <p class="practice-text-fa" lang="fa">روی قسمت <strong>To</strong> کلیک کنید. یک آدرس ایمیل تایپ کنید، مثلاً: <strong>friend@gmail.com</strong></p>
-        </div>
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-5" class="step-checkbox" data-step="email-s5">
+        <label for="email-section-5">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
 
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-3" class="step-checkbox" data-step="email-3">
-          <label for="email-step-3">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
+    <!-- ============================================================ -->
+    <!-- SECTION: Email Safety -->
+    <!-- ============================================================ -->
+    <section id="safety" class="step-item" style="scroll-margin-top:20px;">
+      <span class="step-number" aria-hidden="true">6</span>
+      <p class="step-en">Email Safety</p>
+      <p class="step-fa" lang="fa">امنیت ایمیل</p>
 
-      <!-- Step 4: Add a subject -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">4</span>
-        <p class="step-en" lang="en">Add a subject</p>
-        <p class="step-fa" lang="fa">موضوع اضافه کنید</p>
+      <div class="section-content">
+        <p>Not every email is safe. Learn to recognise emails that may try to trick you.</p>
+        <p class="fa-text" lang="fa">هر ایمیلی امن نیست. یاد بگیرید ایمیل‌هایی که ممکن است شما را فریب دهند شناسایی کنید.</p>
 
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-04-subject.svg" alt="Compose window with Subject field highlighted yellow, showing 'Hello from practice' typed in" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
-
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the <strong>Subject</strong> field. Type a short title, for example: <strong>Hello</strong></p>
-          <p class="practice-text-fa" lang="fa">روی قسمت <strong>Subject</strong> کلیک کنید. یک عنوان کوتاه تایپ کنید، مثلاً: <strong>سلام</strong></p>
-        </div>
-
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-4" class="step-checkbox" data-step="email-4">
-          <label for="email-step-4">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
-
-      <!-- Step 5: Write a message -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">5</span>
-        <p class="step-en" lang="en">Write a message</p>
-        <p class="step-fa" lang="fa">پیام خود را بنویسید</p>
-
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-05-message.svg" alt="Compose window with message body area highlighted, showing typed email text and blinking cursor" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
-
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the large white text area. Type your message.</p>
-          <p class="practice-text-fa" lang="fa">روی قسمت بزرگ سفید متن کلیک کنید. پیام خود را تایپ کنید.</p>
-        </div>
-
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-5" class="step-checkbox" data-step="email-5">
-          <label for="email-step-5">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
-
-      <!-- Step 6: Attach a file -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">6</span>
-        <p class="step-en" lang="en">Attach a file</p>
-        <p class="step-fa" lang="fa">یک فایل پیوست کنید</p>
-
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-06-attach.svg" alt="Compose window bottom toolbar with paperclip Attach button highlighted yellow, attached file pill appearing" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
-
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the <strong>📎 Attach</strong> icon (paperclip). Choose a file from your computer. Click Open.</p>
-          <p class="practice-text-fa" lang="fa">روی آیکن <strong>📎 پیوست</strong> (گیره کاغذ) کلیک کنید. یک فایل از کامپیوتر خود انتخاب کنید. روی Open کلیک کنید.</p>
-        </div>
-
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-6" class="step-checkbox" data-step="email-6">
-          <label for="email-step-6">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
-
-      <!-- Step 7: Send the email -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">7</span>
-        <p class="step-en" lang="en">Send the email</p>
-        <p class="step-fa" lang="fa">ایمیل را ارسال کنید</p>
-
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-07-send.svg" alt="Compose window with blue Send button highlighted with yellow glow, green Sent confirmation appearing" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
-
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Click the blue <strong>Send</strong> button at the bottom. Your email is sent!</p>
-          <p class="practice-text-fa" lang="fa">روی دکمه آبی <strong>Send</strong> در پایین کلیک کنید. ایمیل شما ارسال شد!</p>
-        </div>
-
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-7" class="step-checkbox" data-step="email-7">
-          <label for="email-step-7">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
-
-      <!-- Step 8: Reply to an email -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">8</span>
-        <p class="step-en" lang="en">Reply to an email</p>
-        <p class="step-fa" lang="fa">به یک ایمیل پاسخ دهید</p>
-
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-08-reply.svg" alt="Open email view with Reply button highlighted yellow, reply text area appearing below" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
+        <div class="checklist-box" style="background:#fce4ec;border-color:#ef5350;">
+          <h4 style="margin-top:0;color:#c62828;">🚫 Watch Out For</h4>
+          <p class="fa-text" lang="fa" style="color:#c62828;">🚫 مراقب این موارد باشید</p>
+          <ul>
+            <li><strong>Unknown sender</strong> — Someone you do not know. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(فرستنده ناشناس)</span></li>
+            <li><strong>Requests for passwords</strong> — Real companies never ask for your password by email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(درخواست رمز عبور — شرکت‌های واقعی هرگز رمز عبور شما را از طریق ایمیل نمی‌خواهند)</span></li>
+            <li><strong>Requests for bank details</strong> — Never send your bank information by email. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(درخواست اطلاعات بانکی — هرگز اطلاعات بانکی خود را از طریق ایمیل ارسال نکنید)</span></li>
+            <li><strong>Urgent requests to click links</strong> — Words like "URGENT" or "ACT NOW" are warning signs. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(درخواست فوری برای کلیک روی لینک‌ها — کلماتی مانند "فوری" نشانه هشدار هستند)</span></li>
+            <li><strong>Suspicious attachments</strong> — Do not open unexpected files. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(فایل‌های پیوست مشکوک — فایل‌های غیرمنتظره را باز نکنید)</span></li>
+            <li><strong>Fake prize or payment messages</strong> — "You have won!" messages are usually fake. <span lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#555;">(پیام‌های جعلی جایزه یا پرداخت — پیام‌های "شما برنده شده‌اید!" معمولاً جعلی هستند)</span></li>
+          </ul>
         </div>
 
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Open any email. Click the <strong>Reply</strong> button. Type your reply. Click Send.</p>
-          <p class="practice-text-fa" lang="fa">یک ایمیل را باز کنید. روی دکمه <strong>Reply</strong> کلیک کنید. پاسخ خود را تایپ کنید. روی Send کلیک کنید.</p>
-        </div>
+        <p style="margin-top:var(--spacing-md);"><strong>If you are not sure about an email, ask a trusted person before you reply or click anything.</strong></p>
+        <p class="fa-text" lang="fa"><strong>اگر در مورد ایمیلی مطمئن نیستید، قبل از پاسخ دادن یا کلیک روی چیزی، از یک فرد مورد اعتماد بپرسید.</strong></p>
+      </div>
 
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-8" class="step-checkbox" data-step="email-8">
-          <label for="email-step-8">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
+      <div class="complete-row">
+        <input type="checkbox" id="email-section-6" class="step-checkbox" data-step="email-s6">
+        <label for="email-section-6">
+          <span class="complete-en">Completed</span>
+          &nbsp;&mdash;&nbsp;
+          <span class="complete-fa" lang="fa">انجام شد</span>
+        </label>
+      </div>
+    </section>
 
-      <!-- Step 9: Download an attachment -->
-      <li class="step-item">
-        <span class="step-number" aria-hidden="true">9</span>
-        <p class="step-en" lang="en">Download an attachment</p>
-        <p class="step-fa" lang="fa">یک فایل پیوست را دانلود کنید</p>
+    <!-- Back to top -->
+    <div class="back-to-top">
+      <a href="#main-content">↑ Back to Topics / بازگشت به موضوعات</a>
+    </div>
 
-        <div class="screenshot-area" style="padding:0;min-height:auto;border:none;background:none;">
-          <img src="../images/screenshots/email-09-download.svg" alt="Open email with PDF attachment box highlighted yellow, download arrow icon highlighted blue" style="width:100%;max-width:700px;border-radius:8px;border:2px solid #ddd;">
-        </div>
-
-        <div class="practice-box">
-          <p class="practice-label-en">🔨 Practice</p>
-          <p class="practice-label-fa" lang="fa">🔨 تمرین</p>
-          <p class="practice-text-en">Open an email with an attachment. Click the <strong>Download</strong> icon (down arrow ⬇️) on the attachment. The file saves to your computer.</p>
-          <p class="practice-text-fa" lang="fa">یک ایمیل با فایل پیوست باز کنید. روی آیکن <strong>دانلود</strong> (فلش پایین ⬇️) روی فایل پیوست کلیک کنید. فایل در کامپیوتر شما ذخیره می‌شود.</p>
-        </div>
-
-        <div class="complete-row">
-          <input type="checkbox" id="email-step-9" class="step-checkbox" data-step="email-9">
-          <label for="email-step-9">
-            <span class="complete-en">Completed</span>
-            &nbsp;&mdash;&nbsp;
-            <span class="complete-fa" lang="fa">انجام شد</span>
-          </label>
-        </div>
-      </li>
-
-    </ol>
   </main>
 
   <!-- Navigation -->
