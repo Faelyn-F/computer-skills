@@ -237,3 +237,106 @@ All 11 images are SVG placeholders designed to visually replicate the MailBox in
 - The percentage-based annotation classes are tuned for the current SVGs at 700–800px viewport width
 - Lightbox requires JavaScript enabled (no JavaScript = images display without zoom)
 - Folder management view is a single image (two images would reduce crowding per the task spec)
+
+---
+
+## Phase 1.6 — Email Topic Navigation Improvement (2026-07-30)
+
+### Summary
+Restructured the Email learning page from a single long-scrolling document into a two-view system: a Topics view showing only the six topic cards, and a Single-topic view that displays only the selected topic. This prevents learners from needing to scroll through all six topics as one long document.
+
+### Two-View System
+
+1. **Topics View** (`email.html` with no hash)
+   - Shows Email title, Persian title, short bilingual introduction
+   - "Try Interactive Practice" button
+   - Six topic cards in a responsive grid
+   - Back to Home navigation
+   - Completion badges on cards for finished topics
+   - No topic content is visible
+
+2. **Single-Topic View** (`email.html#topic-id`)
+   - Shows only the selected topic's content
+   - "Back to Email Topics" button at top (sticky on mobile) and bottom
+   - Previous Topic / Back to Topics / Next Topic navigation
+   - All existing bilingual text, annotated images, and checkboxes preserved
+   - Other topic sections are hidden with the HTML `hidden` attribute
+
+### URL Hash Routes
+| Hash | Topic |
+|------|-------|
+| (none) | Topics view |
+| `#write-send` | Write and Send an Email |
+| `#reply` | Reply to an Email |
+| `#forward` | Forward an Email |
+| `#attachments` | Attachments |
+| `#manage` | Manage Email |
+| `#safety` | Email Safety |
+
+Invalid or missing hashes default to the Topics view.
+
+### Navigation Logic
+- JavaScript listens for `DOMContentLoaded` (initial load) and `hashchange` (browser back/forward, card clicks, prev/next)
+- `renderEmailView()` reads `window.location.hash`, validates it, and shows/hides views accordingly
+- Topic cards use `<a href="#topic-id">` for natural browser history integration
+- "Back to Email Topics" buttons clear the hash (`window.location.hash = ''`)
+- Focus is managed: when switching to a single topic, focus moves to the topic heading; when returning to topics, focus moves to `#main-content`
+- Hidden sections use the HTML `hidden` attribute, removing them from keyboard navigation entirely
+
+### Completion Badges
+- Each topic card now includes a `<span class="topic-complete-badge">` with ✅ Completed / انجام شد
+- Badges are hidden by default, shown when the corresponding checkbox is checked in localStorage
+- `syncCompletionBadges()` runs on initial load (after main.js restores checkboxes) and on every checkbox change
+- Also re-synchronized every time the Topics view is shown (via hashchange)
+
+### Previous / Next Topic Navigation
+| Section | Previous | Next |
+|---------|----------|------|
+| Write and Send | *(disabled)* | Reply |
+| Reply | Write & Send | Forward |
+| Forward | Reply | Attachments |
+| Attachments | Forward | Manage |
+| Manage | Attachments | Safety |
+| Safety | Manage | *(disabled)* |
+
+### Browser Navigation
+- Full browser Back/Forward support via hash-based routing
+- `hashchange` event listener ensures correct view state on navigation
+- No history manipulation that would break browser navigation
+
+### CSS Classes Added
+- `.topic-complete-badge` / `.topic-complete-badge.visible` — Completion indicators on topic cards
+- `.back-to-topics` / `.back-to-topics-top` / `.back-to-topics-bottom` — Return-to-topics buttons with bilingual text
+- `.topic-nav` / `.topic-nav-btn` / `.topic-nav-btn.disabled` / `.topic-nav-btn .nav-fa` — Previous/Next navigation bar
+- `.email-topic-section` — Wrapper class for each topic section (used with `hidden` attribute)
+- Mobile sticky behavior for the top back button (position: sticky on ≤600px)
+
+### Accessibility
+- All hidden sections use the HTML `hidden` attribute (not opacity/offscreen tricks), so they are fully removed from keyboard navigation
+- Focus is managed: single-topic headings receive `tabindex="-1"` and `focus()` on view switch
+- Back to Topics buttons, Previous/Next links are all semantic `<button>` or `<a>` elements
+- Large touch targets (min-height: 48px on all navigation buttons)
+- `aria-label` on all navigation elements
+- `aria-current` style via visible active state
+- No animations or transitions that could confuse users
+- All existing accessibility features preserved (skip link, focus styles, RTL support)
+
+### Content Preservation
+- All six topics with full bilingual text untouched
+- All 11 annotated MailBox screenshots preserved
+- All completed checkboxes and localStorage keys unchanged
+- "Try Interactive Practice" button preserved
+- Home navigation preserved
+- Virtual Inbox and Tasks 1–5 in `email-practice.html` unchanged
+- No other modules modified
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email.html` | Restructured into two-view system with JS topic switching, completion badges, top/bottom back buttons, prev/next navigation |
+| `PROJECT_PROGRESS.md` | This update |
+
+### Known Limitations
+- Completion badge sync relies on a 100ms delay after page load; if main.js takes longer to restore checkboxes, badges may not appear until the next hash change
+- The `hidden` attribute is used instead of `display: none` CSS — this is correct for accessibility but means the sections are entirely absent from the accessibility tree when hidden
+- No "scroll to top" animation when switching views (intentional — avoids motion that may confuse users)
