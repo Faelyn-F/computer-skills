@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Preview — پیش‌نمایش صدا</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background: #f5f5f5; }
+    .preview-wrap { max-width: 860px; margin: 0 auto; padding: var(--spacing-lg); }
+
+    /* --- Debug Panel --- */
+    .debug-panel {
+      background: #1e1e2e;
+      color: #a6e3a1;
+      border-radius: var(--border-radius);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+      direction: ltr;
+      text-align: left;
+    }
+    .debug-panel .warn  { color: #fab387; }
+    .debug-panel .error { color: #f38ba8; }
+    .debug-panel .ok    { color: #a6e3a1; }
+    .debug-panel .label { color: #89b4fa; }
+
+    /* --- Voice info bar --- */
+    .voice-info {
+      background: var(--color-card);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      align-items: center;
+      direction: ltr;
+      text-align: left;
+    }
+    .voice-info .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .voice-info .badge-ok    { background: #e8f5e9; color: #2e7d32; }
+    .voice-info .badge-warn  { background: #fff3e0; color: #e65100; }
+    .voice-info .badge-error { background: #fce4ec; color: #c62828; }
+
+    /* --- Audio section card --- */
+    .audio-section {
+      background: var(--color-card);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      border-left: 6px solid var(--color-accent);
+    }
+    .audio-section h3 {
+      margin: 0 0 2px;
+      direction: ltr;
+      text-align: left;
+      font-size: var(--font-size-lg);
+    }
+    .audio-section h3 .step-fa {
+      display: block;
+      font-family: var(--font-family-fa);
+      font-size: var(--font-size-base);
+      color: var(--color-accent);
+      direction: rtl;
+      text-align: right;
+    }
+    .audio-section .english-text {
+      color: #555;
+      margin-bottom: var(--spacing-sm);
+      direction: ltr;
+      text-align: left;
+    }
+    .audio-section .persian-audio-text {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: var(--spacing-md);
+      margin: var(--spacing-sm) 0;
+      font-family: var(--font-family-fa);
+      direction: rtl;
+      line-height: 2.2;
+      font-size: var(--font-size-base);
+      color: #1a1a2e;
+    }
+    .audio-section .persian-audio-text p,
+    .audio-section .persian-audio-text li {
+      margin-bottom: var(--spacing-xs);
+    }
+    .audio-section .btn-row {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: var(--spacing-sm);
+    }
+    .btn-play {
+      padding: 12px 24px;
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      min-height: 52px;
+      min-width: 200px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-accent);
+      color: #1a1a2e;
+      transition: background 0.2s;
+    }
+    .btn-play:hover:not(:disabled) { background: var(--color-accent-hover); }
+    .btn-play:focus-visible { outline: 3px solid #1a1a2e; outline-offset: 2px; }
+    .btn-play.playing { background: var(--color-success); color: #fff; }
+    .btn-play.paused { background: #fff8e1; border: 2px solid var(--color-accent); }
+    .btn-play:disabled { background: #e0e0e0; color: #9e9e9e; cursor: not-allowed; }
+
+    .btn-stop-all {
+      padding: 12px 20px;
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      border: 2px solid #ef5350;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      min-height: 48px;
+      background: #fff;
+      color: #ef5350;
+    }
+    .btn-stop-all:hover { background: #fce4ec; }
+
+    .file-tag { font-size: 12px; color: #999; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <header class="page-header">
+    <h1>🔊 Audio Preview — پیش‌نمایش صدا</h1>
+    <p style="direction:ltr;font-size:var(--font-size-base);">
+      Persian audio pilot for Write and Send an Email — temporary preview until MP3 files are recorded.
+    </p>
+  </header>
+
+  <main id="main-content" class="preview-wrap" tabindex="-1">
+
+    <!-- ============================================================ -->
+    <!-- Voice Info + Debug -->
+    <!-- ============================================================ -->
+    <div class="voice-info" id="voice-info">
+      <strong>Voice:</strong>
+      <span id="voice-name">Detecting…</span>
+      <span id="voice-badge" class="badge">—</span>
+    </div>
+
+    <button class="btn-stop-all" id="btn-stop-all" onclick="AudioPreview.stopAll()">
+      ⏹ Stop All — توقف همه
+    </button>
+
+    <details style="margin-bottom:var(--spacing-md);direction:ltr;text-align:left;">
+      <summary style="cursor:pointer;font-weight:700;padding:8px 0;">🔧 Developer Debug Panel</summary>
+      <pre class="debug-panel" id="debug-panel">Waiting for first playback…</pre>
+    </details>
+
+    <!-- ============================================================ -->
+    <!-- 12 Audio Sections -->
+    <!-- ============================================================ -->
+
+    <!-- 1. Introduction -->
+    <section class="audio-section" data-audio-section="write-send-intro">
+      <h3>1. Introduction to Write and Send
+        <span class="step-fa" lang="fa" dir="rtl">معرفی نوشتن و ارسال ایمیل</span>
+      </h3>
+      <p class="english-text">Learn how to write and send a new email by clicking the Compose button.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>در این بخش یاد می‌گیرید چطور یک ایمیل جدید بنویسید و ارسال کنید.</p>
+        <p>برای شروع، باید دکمه Compose را پیدا کنید و روی آن کلیک کنید. با کلیک روی Compose، یک پنجره جدید برای نوشتن ایمیل باز می‌شود.</p>
+        <p>این پنجره چند بخش مهم دارد: قسمت To برای آدرس گیرنده، قسمت Subject برای عنوان، قسمت بزرگ متن برای پیام شما، دکمه Attach files برای پیوست کردن فایل، و دکمه Send برای ارسال.</p>
+        <p>قدم به قدم همه این بخش‌ها را با هم یاد می‌گیریم.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="write-send-intro">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">write-send-intro.mp3</span>
+      </div>
+    </section>
+
+    <!-- 2. Compose -->
+    <section class="audio-section" data-audio-section="compose">
+      <h3>2. Compose Button
+        <span class="step-fa" lang="fa" dir="rtl">دکمه Compose — کامپوز</span>
+      </h3>
+      <p class="english-text">Click the Compose button to start a new email.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>دکمه Compose، یعنی کامپوز، معمولاً در بالای صفحه ایمیل و سمت چپ قرار دارد.</p>
+        <p>شکل آن یک دکمه بزرگ و رنگی است که روی آن کلمه Compose نوشته شده است.</p>
+        <p>برای نوشتن یک ایمیل جدید، اول باید روی این دکمه کلیک کنید.</p>
+        <p>با کلیک روی دکمه Compose، یک صفحه جدید برای نوشتن ایمیل باز می‌شود.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="compose">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">compose.mp3</span>
+      </div>
+    </section>
+
+    <!-- 3. To field -->
+    <section class="audio-section" data-audio-section="to-field">
+      <h3>3. To Field
+        <span class="step-fa" lang="fa" dir="rtl">قسمت To — تو</span>
+      </h3>
+      <p class="english-text">Enter the recipient's email address in the To field.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>قسمت To، یعنی تو، جایی است که آدرس ایمیل گیرنده را وارد می‌کنید.</p>
+        <p>آدرس ایمیل را باید دقیق و بدون اشتباه تایپ کنید. اگر آدرس ایمیل اشتباه باشد، ایمیل شما به مقصد نمی‌رسد.</p>
+        <p>همیشه قبل از ارسال، آدرس ایمیل را دوباره چک کنید.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="to-field">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">to-field.mp3</span>
+      </div>
+    </section>
+
+    <!-- 4. Subject -->
+    <section class="audio-section" data-audio-section="subject">
+      <h3>4. Subject Field
+        <span class="step-fa" lang="fa" dir="rtl">قسمت Subject — سابجکت</span>
+      </h3>
+      <p class="english-text">Write a short and clear subject line.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>قسمت Subject، یعنی سابجکت، عنوان ایمیل شماست.</p>
+        <p>عنوان باید کوتاه و واضح باشد و به گیرنده بگوید ایمیل شما درباره چیست.</p>
+        <p>برای مثال می‌توانید بنویسید: جلسه دوشنبه، یا: عکس‌های مهمانی.</p>
+        <p>عنوان را کوتاه بنویسید. دو تا پنج کلمه کافی است.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="subject">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">subject.mp3</span>
+      </div>
+    </section>
+
+    <!-- 5. Message body -->
+    <section class="audio-section" data-audio-section="message-body">
+      <h3>5. Message Body
+        <span class="step-fa" lang="fa" dir="rtl">متن پیام</span>
+      </h3>
+      <p class="english-text">The message body is where you write the main text of your email.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>قسمت بزرگ وسط پنجره، متن پیام شماست. اینجا جایی است که پیام اصلی خود را می‌نویسید.</p>
+        <p>یک ایمیل ساده و خوب، پنج بخش اصلی دارد که قدم به قدم یاد می‌گیریم: سلام و احوال‌پرسی، دلیل نوشتن، اطلاعات اصلی، جمله پایانی، و نام شما.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="message-body">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">message-body.mp3</span>
+      </div>
+    </section>
+
+    <!-- 6. Email greeting -->
+    <section class="audio-section" data-audio-section="email-greeting">
+      <h3>6. Email Greeting
+        <span class="step-fa" lang="fa" dir="rtl">سلام و احوال‌پرسی</span>
+      </h3>
+      <p class="english-text">Start your email with a polite greeting.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>بخش اول ایمیل، سلام و احوال‌پرسی است.</p>
+        <p>ایمیل خود را با یک سلام ساده شروع کنید. می‌توانید بنویسید: سلام سارا، یا: سلام خانم چن، یا: با سلام و احترام.</p>
+        <p>سلام را در خط اول بنویسید و بعد به خط بعدی بروید.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="email-greeting">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">email-greeting.mp3</span>
+      </div>
+    </section>
+
+    <!-- 7. Main reason for writing -->
+    <section class="audio-section" data-audio-section="reason-for-writing">
+      <h3>7. Reason for Writing
+        <span class="step-fa" lang="fa" dir="rtl">دلیل نوشتن ایمیل</span>
+      </h3>
+      <p class="english-text">Explain why you are writing the email.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>بخش دوم ایمیل، دلیل نوشتن است. به زبان ساده توضیح دهید چرا این ایمیل را می‌نویسید.</p>
+        <p>برای مثال: می‌خواهم تأیید کنم که روز دوشنبه در کلاس شرکت می‌کنم.</p>
+        <p>یا: لطفاً برنامه کلاسی هفته آینده را برای من بفرستید.</p>
+        <p>دلیل نوشتن را واضح و مستقیم بیان کنید تا گیرنده سریع متوجه شود.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="reason-for-writing">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">reason-for-writing.mp3</span>
+      </div>
+    </section>
+
+    <!-- 8. Closing and name -->
+    <section class="audio-section" data-audio-section="closing-name">
+      <h3>8. Closing and Name
+        <span class="step-fa" lang="fa" dir="rtl">جمله پایانی و نام</span>
+      </h3>
+      <p class="english-text">End with a polite closing and sign your name.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>بخش پایانی ایمیل دو قسمت دارد: جمله پایانی مودبانه و نام شما.</p>
+        <p>برای جمله پایانی می‌توانید بنویسید: با تشکر، یا: ارادتمند، یا: با احترام.</p>
+        <p>بعد از جمله پایانی، نام خود را در خط بعدی بنویسید. مثلاً: علی، یا: مریم.</p>
+        <p>این کار نشان می‌دهد ایمیل شما تمام شده و چه کسی آن را فرستاده است.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="closing-name">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">closing-name.mp3</span>
+      </div>
+    </section>
+
+    <!-- 9. Attach files -->
+    <section class="audio-section" data-audio-section="attachment">
+      <h3>9. Attach Files
+        <span class="step-fa" lang="fa" dir="rtl">پیوست کردن فایل</span>
+      </h3>
+      <p class="english-text">Add a file like a photo or document to your email.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>اگر می‌خواهید یک فایل مثل عکس یا سند به ایمیل خود اضافه کنید، روی دکمه Attach files کلیک کنید.</p>
+        <p>دکمه Attach files، یعنی اَتَچ فایلز، معمولاً شکل یک گیره کاغذ دارد.</p>
+        <p>بعد از کلیک، پنجره‌ای باز می‌شود که می‌توانید فایل مورد نظر را از کامپیوتر خود انتخاب کنید.</p>
+        <p>نام فایل پیوست شده در پایین پنجره ایمیل نشان داده می‌شود.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="attachment">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">attachment.mp3</span>
+      </div>
+    </section>
+
+    <!-- 10. Check before sending -->
+    <section class="audio-section" data-audio-section="check-before-send">
+      <h3>10. Check Before Sending
+        <span class="step-fa" lang="fa" dir="rtl">بررسی قبل از ارسال</span>
+      </h3>
+      <p class="english-text">Review everything before clicking Send.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>قبل از اینکه روی دکمه Send کلیک کنید، این پنج مورد را چک کنید:</p>
+        <ul>
+          <li>یک: آیا آدرس ایمیل گیرنده درست نوشته شده است؟</li>
+          <li>دو: آیا موضوع ایمیل واضح و کوتاه است؟</li>
+          <li>سه: آیا متن پیام شما کامل است؟</li>
+          <li>چهار: اگر فایلی پیوست کرده‌اید، آیا پیوست شده است؟</li>
+          <li>پنج: آیا نام خود را در انتهای ایمیل نوشته‌اید؟</li>
+        </ul>
+        <p>همیشه قبل از ارسال این پنج مورد را بررسی کنید تا ایمیل درست و کامل ارسال شود.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="check-before-send">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">check-before-send.mp3</span>
+      </div>
+    </section>
+
+    <!-- 11. Send -->
+    <section class="audio-section" data-audio-section="send">
+      <h3>11. Send Button
+        <span class="step-fa" lang="fa" dir="rtl">دکمه Send — سند</span>
+      </h3>
+      <p class="english-text">Click Send to deliver your email.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>بعد از اینکه ایمیل را نوشتید و همه چیز را چک کردید، وقت ارسال است.</p>
+        <p>روی دکمه Send، یعنی سند، کلیک کنید. این دکمه معمولاً یک دکمه بزرگ و رنگی است که در پایین یا بالای پنجره ایمیل قرار دارد.</p>
+        <p>با کلیک روی Send، ایمیل شما برای گیرنده ارسال می‌شود. چند لحظه صبر کنید تا پیام تأیید ارسال را ببینید.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="send">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">send.mp3</span>
+      </div>
+    </section>
+
+    <!-- 12. Send vs Sent -->
+    <section class="audio-section" data-audio-section="send-vs-sent">
+      <h3>12. Send versus Sent
+        <span class="step-fa" lang="fa" dir="rtl">تفاوت Send و Sent</span>
+      </h3>
+      <p class="english-text">Send is the action button; Sent is the folder of sent emails.</p>
+      <div class="persian-audio-text" lang="fa-IR" dir="rtl" data-audio-transcript>
+        <p>توجه کنید که Send و Sent با هم فرق دارند.</p>
+        <p>Send، یعنی سند، یک دکمه است. شما روی این دکمه کلیک می‌کنید تا ایمیل ارسال شود. Send یعنی عمل ارسال کردن.</p>
+        <p>اما Sent، یعنی سِنت، یک پوشه است در منوی ایمیل شما. در پوشه Sent، همه ایمیل‌هایی که قبلاً ارسال کرده‌اید نگهداری می‌شود. Sent یعنی قبلاً ارسال شده.</p>
+        <p>پس Send دکمه ارسال است، و Sent پوشه ایمیل‌های ارسال شده.</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-play" data-audio-target="send-vs-sent">▶️ Listen — گوش دهید</button>
+        <span class="file-tag">send-vs-sent.mp3</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Computer Skills Website — Audio Preview Tool — Temporary</p>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- JavaScript: SpeechSynthesis audio preview with debug panel  -->
+  <!-- ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      var synth = window.speechSynthesis;
+      var currentBtn = null;
+      var persianVoice = null;
+      var allVoices = [];
+      var debugPanel = document.getElementById('debug-panel');
+      var voiceNameEl = document.getElementById('voice-name');
+      var voiceBadgeEl = document.getElementById('voice-badge');
+
+      // ── Debug logging ──────────────────────────────────────────
+      function debugLog(msg) {
+        if (debugPanel) {
+          var time = new Date().toLocaleTimeString();
+          debugPanel.textContent += '[' + time + '] ' + msg + '\n';
+          debugPanel.scrollTop = debugPanel.scrollHeight;
+        }
+      }
+
+      function clearDebug() {
+        if (debugPanel) { debugPanel.textContent = ''; }
+      }
+
+      // ── Persian character check ────────────────────────────────
+      function containsPersianCharacters(text) {
+        return /[؀-ۿ]/.test(text);
+      }
+
+      // ── Get Persian transcript for a section ───────────────────
+      function getPersianTranscript(sectionId) {
+        var section = document.querySelector('[data-audio-section="' + sectionId + '"]');
+        if (!section) {
+          return { text: '', hasPersian: false, paraCount: 0 };
+        }
+
+        var transcript = section.querySelector('[data-audio-transcript]');
+        if (!transcript) {
+          return { text: '', hasPersian: false, paraCount: 0 };
+        }
+
+        // Collect text from p, li, and [data-audio-sentence] elements
+        var elements = transcript.querySelectorAll('p, li, [data-audio-sentence]');
+        var parts = [];
+        if (elements.length > 0) {
+          for (var i = 0; i < elements.length; i++) {
+            var t = elements[i].textContent.trim();
+            if (t) { parts.push(t); }
+          }
+        } else {
+          // Direct text content fallback
+          var directText = transcript.textContent.trim();
+          if (directText) { parts.push(directText); }
+        }
+
+        var fullText = parts.join(' ');
+        return {
+          text: fullText,
+          hasPersian: containsPersianCharacters(fullText),
+          paraCount: parts.length
+        };
+      }
+
+      // ── Voice selection ────────────────────────────────────────
+      function findPersianVoice(voices) {
+        // Exact match first
+        var exact = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang.toLowerCase() === 'fa-ir') {
+            exact = voices[i];
+            break;
+          }
+        }
+        if (exact) { return exact; }
+
+        // fa-* prefix match
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang.toLowerCase().indexOf('fa') === 0) {
+            return voices[i];
+          }
+        }
+
+        return null;
+      }
+
+      function updateVoiceUI() {
+        allVoices = synth.getVoices();
+
+        // Dump all voices to console for diagnostics
+        console.log('[AudioPreview] All available voices (' + allVoices.length + '):');
+        allVoices.forEach(function (v, i) {
+          console.log('  [' + i + '] ' + v.name + ' | lang=' + v.lang + ' | default=' + v.default);
+        });
+
+        persianVoice = findPersianVoice(allVoices);
+
+        if (persianVoice) {
+          voiceNameEl.textContent = persianVoice.name + ' (' + persianVoice.lang + ')';
+          voiceBadgeEl.textContent = '✓ Persian voice found';
+          voiceBadgeEl.className = 'badge badge-ok';
+          debugLog('OK Persian voice selected: ' + persianVoice.name + ' (' + persianVoice.lang + ')');
+        } else {
+          voiceNameEl.textContent = 'None found — none';
+          voiceBadgeEl.textContent = '✗ No Persian voice available';
+          voiceBadgeEl.className = 'badge badge-error';
+          debugLog('ERROR No fa-IR or fa-* voice found. ' + allVoices.length + ' voices checked.');
+
+          // Show available fa-* voices
+          var faVoices = allVoices.filter(function (v) { return v.lang.toLowerCase().indexOf('fa') === 0; });
+          console.log('[AudioPreview] fa-* voices found: ' + faVoices.length);
+        }
+
+        // Update all buttons
+        updateAllButtons();
+      }
+
+      function updateAllButtons() {
+        var buttons = document.querySelectorAll('.btn-play');
+        for (var i = 0; i < buttons.length; i++) {
+          var btn = buttons[i];
+          if (!persianVoice) {
+            btn.disabled = true;
+            btn.title = 'No Persian voice available on this device. — صدای فارسی در این دستگاه موجود نیست.';
+          } else {
+            btn.disabled = false;
+            btn.title = '';
+          }
+        }
+      }
+
+      // ── Play / Pause / Stop ────────────────────────────────────
+      function stopAll(resetBtn) {
+        if (synth.speaking || synth.pending) {
+          synth.cancel();
+        }
+        if (currentBtn && currentBtn !== resetBtn) {
+          resetButtonUI(currentBtn);
+        }
+        if (resetBtn) {
+          resetButtonUI(resetBtn);
+        }
+        currentBtn = null;
+      }
+
+      function resetButtonUI(btn) {
+        btn.classList.remove('playing', 'paused');
+        btn.innerHTML = '▶️ Listen<br><span lang="fa" dir="rtl" style="font-size:13px;font-family:var(--font-family-fa);">گوش دهید</span>';
+      }
+
+      function playTranscript(btn) {
+        var sectionId = btn.getAttribute('data-audio-target');
+        if (!sectionId) {
+          debugLog('ERROR Button has no data-audio-target');
+          return;
+        }
+
+        clearDebug();
+
+        // -- Gather diagnostic info --
+        var result = getPersianTranscript(sectionId);
+
+        debugLog('sectionId: ' + sectionId);
+        debugLog('paragraphs found: ' + result.paraCount);
+        debugLog('character count: ' + result.text.length);
+        debugLog('hasPersianChars: ' + result.hasPersian);
+        debugLog('voice: ' + (persianVoice ? persianVoice.name + ' (' + persianVoice.lang + ')' : 'null'));
+        debugLog('transcript preview (first 120 chars):');
+        debugLog('  "' + result.text.substring(0, 120) + '..."');
+
+        // -- Validate --
+        if (!persianVoice) {
+          debugLog('ERROR BLOCKED: No Persian voice available on this device.');
+          debugLog('صدای فارسی در این دستگاه موجود نیست.');
+          alert('No Persian voice is available on this device.\n\nصدای فارسی در این دستگاه موجود نیست.\n\nOpen the Debug Panel for details.');
+          return;
+        }
+
+        if (!result.text) {
+          debugLog('ERROR BLOCKED: Transcript is empty.');
+          return;
+        }
+
+        if (!result.hasPersian) {
+          debugLog('ERROR BLOCKED: Audio transcript does not contain Persian text.');
+          debugLog('Incorrectly selected text: "' + result.text.substring(0, 100) + '"');
+          alert('Audio transcript does not contain Persian text.\nCheck the Debug Panel.');
+          return;
+        }
+
+        // -- Handle pause/resume --
+        if (btn.classList.contains('playing')) {
+          // Pause
+          if (synth.speaking) {
+            synth.pause();
+          }
+          btn.classList.remove('playing');
+          btn.classList.add('paused');
+          btn.innerHTML = '⏸️ Paused<br><span lang="fa" dir="rtl" style="font-size:13px;font-family:var(--font-family-fa);">مکث</span>';
+          debugLog('Paused');
+          return;
+        }
+
+        if (btn.classList.contains('paused')) {
+          // Resume
+          synth.resume();
+          btn.classList.remove('paused');
+          btn.classList.add('playing');
+          btn.innerHTML = '⏸️ Speaking…<br><span lang="fa" dir="rtl" style="font-size:13px;font-family:var(--font-family-fa);">در حال صحبت…</span>';
+          debugLog('Resumed');
+          return;
+        }
+
+        // -- Stop any current audio --
+        stopAll(null);
+
+        // -- Create utterance --
+        var utterance = new SpeechSynthesisUtterance(result.text);
+        utterance.voice = persianVoice;
+        utterance.lang = 'fa-IR';
+        utterance.rate = 0.85;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        currentBtn = btn;
+        btn.classList.add('playing');
+        btn.innerHTML = '⏸️ Speaking…<br><span lang="fa" dir="rtl" style="font-size:13px;font-family:var(--font-family-fa);">در حال صحبت…</span>';
+
+        debugLog('Playing — utterance.lang = ' + utterance.lang + ', voice.lang = ' + persianVoice.lang);
+
+        utterance.onend = function () {
+          resetButtonUI(btn);
+          currentBtn = null;
+          debugLog('Finished');
+        };
+
+        utterance.onerror = function (e) {
+          debugLog('ERROR SpeechSynthesis error: ' + (e.error || 'unknown'));
+          resetButtonUI(btn);
+          currentBtn = null;
+        };
+
+        synth.speak(utterance);
+      }
+
+      // ── Init ───────────────────────────────────────────────────
+      function init() {
+        // Attach click handlers to all play buttons
+        var buttons = document.querySelectorAll('.btn-play');
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].addEventListener('click', function () {
+            playTranscript(this);
+          });
+        }
+
+        // Load voices
+        if (synth.onvoiceschanged !== undefined) {
+          synth.onvoiceschanged = updateVoiceUI;
+        }
+        updateVoiceUI();
+
+        // Stop all on page leave
+        window.addEventListener('beforeunload', function () {
+          stopAll(null);
+        });
+
+        debugLog('Init complete. ' + allVoices.length + ' voices, persianVoice: ' + (persianVoice ? persianVoice.name : 'NONE'));
+      }
+
+      // Expose for onclick in HTML
+      window.AudioPreview = {
+        stopAll: function () { stopAll(null); }
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

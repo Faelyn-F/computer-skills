@@ -1,7 +1,9 @@
-# 🖥️ Computer Skills — Bilingual Teaching Website
+# 🖥️ Computer Skills — Multilingual Teaching Website
 
-A static website for teaching basic computer skills to Deaf Iranian adult learners.
-All content is bilingual: **English first**, then **Persian (فارسی)** underneath.
+A static website for teaching basic computer skills to Deaf adult learners.
+Supports three language modes: **English only**, **English + Persian (فارسی)**, and **English + Chinese (中文)**.
+
+The website opens with a simple language selection page. Learners choose their preferred language, and the site adapts to show or hide supporting translations.
 
 📚 **Skills taught:** Email (Gmail/MailBox), Document creation (Google Docs), Google Drive, Internet basics, Keyboard & mouse.
 
@@ -21,9 +23,12 @@ All content is bilingual: **English first**, then **Persian (فارسی)** under
 
 ```
 computer-skills/
-├── index.html                          # Home page (5 lesson cards)
+├── index.html                          # Language selection page
+├── en/index.html                       # English-only homepage
+├── fa/index.html                       # Persian-English bilingual homepage
+├── zh/index.html                       # Chinese-English placeholder homepage
 ├── lessons/
-│   ├── email.html                      # Email lesson reference (9 steps + screenshot SVGs)
+│   ├── email.html                      # Email lesson reference (6 topics)
 │   ├── email-practice.html             # Email interactive guided practice (original)
 │   ├── email-app/                      # 📬 MAILBOX SIMULATION (new v2)
 │   │   ├── register.html               #   Create account (full form + validation)
@@ -45,9 +50,18 @@ computer-skills/
 │   └── screenshots/
 │       └── email-*.svg                 # 9 Email lesson screenshot illustrations
 ├── css/
-│   └── style.css                       # Global styles (responsive, RTL/LTR)
+│   └── style.css                       # Global styles (responsive, RTL/LTR, language modes)
 ├── js/
-│   └── main.js                         # Checkbox state, navigation helpers
+│   ├── language.js                     # Language persistence, routing, visibility
+│   ├── main.js                         # Checkbox state, navigation helpers, lightbox
+│   └── audio-player.js                 # Persian audio player (pilot phase)
+├── assets/
+│   └── locales/
+│       ├── en.json                     # English locale strings
+│       ├── fa.json                     # Persian locale strings
+│       └── zh.json                     # Chinese locale strings
+├── PROJECT_PROGRESS.md                 # Detailed progress and architecture docs
+├── CHANGELOG.md                        # Dated modification log
 └── README.md
 ```
 

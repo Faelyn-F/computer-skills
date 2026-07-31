@@ -1,0 +1,91 @@
+{
+  "description": "Persian audio transcripts for the Write and Send an Email module (12 units). English interface terms are accompanied by phonetic Persian renderings for pronunciation clarity. Each transcript uses simple conversational Persian suitable for adult beginner computer users. To be reviewed by a fluent Persian speaker before final recording.",
+  "reviewStatus": "awaiting-review",
+  "voiceNote": "English interface terms include Persian phonetic guides (e.g., Compose → کامپوز). The visible page shows original English terms. Audio reads the phonetic form for learner clarity.",
+  "modules": {
+    "write-send-intro": {
+      "file": "write-send-intro.mp3",
+      "step": "Introduction to Write and Send",
+      "persianTitle": "معرفی نوشتن و ارسال ایمیل",
+      "transcript": "در این بخش یاد می‌گیرید چطور یک ایمیل جدید بنویسید و ارسال کنید. برای شروع، باید دکمه Compose، یعنی کامپوز، را پیدا کنید و روی آن کلیک کنید. با کلیک روی Compose، یک پنجره جدید برای نوشتن ایمیل باز می‌شود. این پنجره چند بخش مهم دارد: قسمت To برای آدرس گیرنده، قسمت Subject برای عنوان، قسمت بزرگ متن برای پیام شما، دکمه Attach files برای پیوست کردن فایل، و دکمه Send برای ارسال. قدم به قدم همه این بخش‌ها را با هم یاد می‌گیریم.",
+      "englishSummary": "Learn how to write and send a new email. Find the Compose button, click it to open a new email window with several important fields: To, Subject, message body, Attach files, and Send."
+    },
+    "compose": {
+      "file": "compose.mp3",
+      "step": "Compose Button",
+      "persianTitle": "دکمه Compose — کامپوز",
+      "transcript": "دکمه Compose، یعنی کامپوز، معمولاً در بالای صفحه ایمیل و سمت چپ قرار دارد. شکل آن یک دکمه بزرگ و رنگی است که روی آن کلمه Compose نوشته شده است. برای نوشتن یک ایمیل جدید، اول باید روی این دکمه کلیک کنید. با کلیک روی دکمه Compose، یک صفحه جدید برای نوشتن ایمیل باز می‌شود.",
+      "englishSummary": "The Compose button is usually at the top left of the email page. It's a large colored button labeled Compose. Click it to open a new email window."
+    },
+    "to-field": {
+      "file": "to-field.mp3",
+      "step": "To Field",
+      "persianTitle": "قسمت To — تو",
+      "transcript": "قسمت To، یعنی تو، جایی است که آدرس ایمیل گیرنده را وارد می‌کنید. آدرس ایمیل را باید دقیق و بدون اشتباه تایپ کنید. اگر آدرس ایمیل اشتباه باشد، ایمیل شما به مقصد نمی‌رسد. همیشه قبل از ارسال، آدرس ایمیل را دوباره چک کنید.",
+      "englishSummary": "The To field is where you type the recipient's email address. Type it carefully — a wrong address means your email won't arrive. Always double-check before sending."
+    },
+    "subject": {
+      "file": "subject.mp3",
+      "step": "Subject Field",
+      "persianTitle": "قسمت Subject — سابجکت",
+      "transcript": "قسمت Subject، یعنی سابجکت، عنوان ایمیل شماست. عنوان باید کوتاه و واضح باشد و به گیرنده بگوید ایمیل شما درباره چیست. برای مثال می‌توانید بنویسید: جلسه دوشنبه، یا: عکس‌های مهمانی. عنوان را کوتاه بنویسید. دو تا پنج کلمه کافی است.",
+      "englishSummary": "The Subject field is your email's title. Keep it short and clear — 2 to 5 words. Examples: 'Monday meeting' or 'Party photos'."
+    },
+    "message-body": {
+      "file": "message-body.mp3",
+      "step": "Message Body Overview",
+      "persianTitle": "متن پیام — بخش اصلی ایمیل",
+      "transcript": "قسمت بزرگ وسط پنجره، متن پیام شماست. اینجا جایی است که پیام اصلی خود را می‌نویسید. یک ایمیل ساده و خوب، پنج بخش اصلی دارد که به ترتیب یاد می‌گیریم: سلام و احوال‌پرسی، دلیل نوشتن ایمیل، اطلاعات اصلی، جمله پایانی مودبانه، و در آخر نام شما.",
+      "englishSummary": "The large area in the middle is the message body. A simple email has five parts: greeting, reason for writing, main information, polite closing, and your name."
+    },
+    "email-greeting": {
+      "file": "email-greeting.mp3",
+      "step": "Email Greeting",
+      "persianTitle": "سلام و احوال‌پرسی در ایمیل",
+      "transcript": "بخش اول متن ایمیل، سلام و احوال‌پرسی است. ایمیل خود را با یک سلام ساده شروع کنید. می‌توانید بنویسید: سلام سارا، یا: سلام خانم چن، یا: با سلام و احترام. سلام را در خط اول بنویسید و بعد از آن به خط بعدی بروید تا پیام خود را شروع کنید.",
+      "englishSummary": "Start your email with a simple greeting: Hello Sarah, Dear Mrs. Chen, etc. Write the greeting on the first line, then go to the next line to begin your message."
+    },
+    "reason-for-writing": {
+      "file": "reason-for-writing.mp3",
+      "step": "Reason for Writing",
+      "persianTitle": "دلیل نوشتن ایمیل",
+      "transcript": "بخش دوم ایمیل، دلیل نوشتن است. به زبان ساده توضیح دهید چرا این ایمیل را می‌نویسید. برای مثال: می‌خواهم تأیید کنم که روز دوشنبه در کلاس شرکت می‌کنم. یا: لطفاً برنامه کلاسی هفته آینده را برای من بفرستید. دلیل نوشتن را واضح و مستقیم بیان کنید تا گیرنده سریع متوجه شود.",
+      "englishSummary": "Explain clearly why you are writing. For example: 'I want to confirm I will attend class on Monday.' Be direct so the reader understands immediately."
+    },
+    "closing-name": {
+      "file": "closing-name.mp3",
+      "step": "Closing and Name",
+      "persianTitle": "جمله پایانی و امضا",
+      "transcript": "بخش پایانی ایمیل دو قسمت دارد: جمله پایانی مودبانه و نام شما. برای جمله پایانی می‌توانید بنویسید: با تشکر، یا: ارادتمند، یا: با احترام. بعد از جمله پایانی، نام خود را در خط بعدی بنویسید. مثلاً: علی، یا: مریم. این کار نشان می‌دهد ایمیل شما تمام شده و چه کسی آن را فرستاده است.",
+      "englishSummary": "End your email with a polite closing like 'Kind regards' or 'Thank you', then write your name on the next line."
+    },
+    "attachment": {
+      "file": "attachment.mp3",
+      "step": "Attach Files",
+      "persianTitle": "پیوست کردن فایل",
+      "transcript": "اگر می‌خواهید یک فایل، مثل عکس یا سند، به ایمیل خود اضافه کنید، روی دکمه Attach files کلیک کنید. دکمه Attach files، یعنی اَتَچ فایلز، معمولاً شکل یک گیره کاغذ دارد. بعد از کلیک، پنجره‌ای باز می‌شود که می‌توانید فایل مورد نظر را از کامپیوتر خود انتخاب کنید. نام فایل پیوست شده در پایین پنجره ایمیل نشان داده می‌شود.",
+      "englishSummary": "To add a file like a photo or document, click the Attach files button (paperclip icon). A window opens to choose a file from your computer. The attached file name appears at the bottom."
+    },
+    "check-before-send": {
+      "file": "check-before-send.mp3",
+      "step": "Check Before Sending",
+      "persianTitle": "بررسی قبل از ارسال",
+      "transcript": "قبل از اینکه روی دکمه Send کلیک کنید، این پنج مورد را چک کنید: یک، آیا آدرس ایمیل گیرنده درست نوشته شده است؟ دو، آیا موضوع ایمیل واضح و کوتاه است؟ سه، آیا متن پیام شما کامل است؟ چهار، اگر فایلی پیوست کرده‌اید، آیا پیوست شده است؟ پنج، آیا نام خود را در انتهای ایمیل نوشته‌اید؟ همیشه قبل از ارسال این پنج مورد را بررسی کنید تا ایمیل درست و کامل ارسال شود.",
+      "englishSummary": "Before clicking Send, check five things: correct recipient address, clear subject, complete message, attachment included if needed, and your name at the end."
+    },
+    "send": {
+      "file": "send.mp3",
+      "step": "Send Button",
+      "persianTitle": "دکمه Send — سند",
+      "transcript": "بعد از اینکه ایمیل را نوشتید و همه چیز را چک کردید، وقت ارسال است. روی دکمه Send، یعنی سند، کلیک کنید. این دکمه معمولاً یک دکمه بزرگ و رنگی است که در پایین یا بالای پنجره ایمیل قرار دارد. با کلیک روی Send، ایمیل شما برای گیرنده ارسال می‌شود. چند لحظه صبر کنید تا پیام تأیید ارسال را ببینید.",
+      "englishSummary": "After writing and checking everything, click the Send button. Wait a moment to see the confirmation that your email was sent."
+    },
+    "send-vs-sent": {
+      "file": "send-vs-sent.mp3",
+      "step": "Send versus Sent",
+      "persianTitle": "تفاوت Send و Sent",
+      "transcript": "توجه کنید که Send و Sent با هم فرق دارند. Send، یعنی سند، یک دکمه است. شما روی این دکمه کلیک می‌کنید تا ایمیل ارسال شود. Send یعنی عمل ارسال کردن. اما Sent، یعنی سِنت، یک پوشه است در منوی ایمیل شما. در پوشه Sent، همه ایمیل‌هایی که قبلاً ارسال کرده‌اید نگهداری می‌شود. Sent یعنی قبلاً ارسال شده. پس Send دکمه ارسال است، و Sent پوشه ایمیل‌های ارسال شده.",
+      "englishSummary": "Send (with 'd') is the action button you click to send. Sent (with 't') is the folder that stores emails you have already sent."
+    }
+  }
+}

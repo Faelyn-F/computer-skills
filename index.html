@@ -3,79 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Computer Skills — مهارت‌های کامپیوتری</title>
+  <title>Computer Skills Learning</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Language selection page — large accessible buttons */
+    .lang-select-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 75vh;
+      text-align: center;
+      padding: var(--spacing-lg);
+    }
+    .lang-select-main h1 {
+      font-size: 2.2rem;
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text);
+    }
+    .lang-select-main .lang-instruction {
+      font-size: var(--font-size-lg);
+      color: #666;
+      margin-bottom: var(--spacing-xl);
+      max-width: 500px;
+    }
+    .lang-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      width: 100%;
+      max-width: 420px;
+    }
+    .lang-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-xl) var(--spacing-lg);
+      background: var(--color-card);
+      border: 3px solid #ddd;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 100px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lang-card:hover,
+    .lang-card:focus-visible {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      outline: none;
+    }
+    .lang-card:focus-visible {
+      box-shadow: 0 0 0 4px rgba(240, 165, 0, 0.4);
+    }
+    .lang-card .lang-main {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+    }
+    .lang-card .lang-sub {
+      font-size: var(--font-size-base);
+      color: #888;
+    }
+    /* Language-specific text styling */
+    .lang-card .lang-main[lang="fa"] {
+      font-family: var(--font-family-fa);
+    }
+    .lang-card .lang-main[lang="zh-CN"] {
+      font-family: var(--font-family-fa); /* fallback — system Chinese font usually available */
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Skip to main content (accessibility) -->
-  <a href="#main-content" class="skip-link">Skip to content / رفتن به محتوا</a>
-
   <!-- Header -->
   <header class="page-header">
-    <h1>🖥️ Computer Skills</h1>
-    <p class="subtitle" lang="fa" dir="rtl" style="font-family: var(--font-family-fa);">
-      💻 مهارت‌های کامپیوتری
-    </p>
-    <p style="font-size: var(--font-size-base); max-width: 700px; margin: var(--spacing-sm) auto 0; color: var(--color-text-on-dark);">
-      Learn step by step. English and Persian together.<br>
-      <span lang="fa" dir="rtl" style="font-family: var(--font-family-fa); display: inline-block; margin-top: 4px;">
-        گام به گام یاد بگیرید. انگلیسی و فارسی با هم.
-      </span>
-    </p>
+    <h1>🖥️ Computer Skills Learning</h1>
   </header>
 
   <!-- Main Content -->
-  <main id="main-content" tabindex="-1">
-    <div class="container">
-      <div class="card-grid">
+  <main id="main-content" class="lang-select-main">
+    <p class="lang-instruction">Choose your learning language</p>
 
-        <!-- Email Card — links to Email introduction page -->
-        <a href="lessons/email.html" class="card-link">
-          <article class="card">
-            <span class="icon" aria-hidden="true">📧</span>
-            <span class="en-title">Email</span>
-            <span class="fa-title" lang="fa">ایمیل</span>
-          </article>
-        </a>
+    <div class="lang-grid">
 
-        <!-- Document Card -->
-        <a href="lessons/document.html" class="card-link">
-          <article class="card">
-            <span class="icon" aria-hidden="true">📄</span>
-            <span class="en-title">Create a Document</span>
-            <span class="fa-title" lang="fa">ایجاد سند</span>
-          </article>
-        </a>
+      <!-- English -->
+      <a href="en/index.html" class="lang-card" onclick="selectAndGo(event, 'en')">
+        <span class="lang-main" lang="en">English</span>
+        <span class="lang-sub">English only</span>
+      </a>
 
-        <!-- Google Drive Card -->
-        <a href="lessons/drive.html" class="card-link">
-          <article class="card">
-            <span class="icon" aria-hidden="true">☁️</span>
-            <span class="en-title">Google Drive</span>
-            <span class="fa-title" lang="fa">گوگل درایو</span>
-          </article>
-        </a>
+      <!-- Persian -->
+      <a href="fa/index.html" class="lang-card" onclick="selectAndGo(event, 'fa')">
+        <span class="lang-main" lang="fa" dir="rtl">فارسی</span>
+        <span class="lang-sub">English + Persian</span>
+      </a>
 
-        <!-- Internet Basics Card -->
-        <a href="lessons/internet.html" class="card-link">
-          <article class="card">
-            <span class="icon" aria-hidden="true">🌐</span>
-            <span class="en-title">Internet Basics</span>
-            <span class="fa-title" lang="fa">مبانی اینترنت</span>
-          </article>
-        </a>
+      <!-- Chinese -->
+      <a href="zh/index.html" class="lang-card" onclick="selectAndGo(event, 'zh')">
+        <span class="lang-main" lang="zh-CN">中文</span>
+        <span class="lang-sub">English + Chinese</span>
+      </a>
 
-        <!-- Keyboard & Mouse Card -->
-        <a href="lessons/keyboard.html" class="card-link">
-          <article class="card">
-            <span class="icon" aria-hidden="true">⌨️</span>
-            <span class="en-title">Keyboard &amp; Mouse</span>
-            <span class="fa-title" lang="fa">صفحه‌کلید و ماوس</span>
-          </article>
-        </a>
-
-      </div>
     </div>
   </main>
 
@@ -84,6 +117,42 @@
     <p>Computer Skills Website &mdash; Designed for Deaf Learners &mdash; GitHub Pages</p>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var STORAGE_KEY = 'computerSkillsPreferredLanguage';
+
+      // Expose click handler for language cards
+      window.selectAndGo = function (event, lang) {
+        try {
+          localStorage.setItem(STORAGE_KEY, lang);
+        } catch (e) {
+          // Ignore — navigation continues
+        }
+        // Navigation proceeds via the href attribute
+      };
+
+      // Auto-redirect if language is already saved
+      (function () {
+        var url = new URL(window.location.href);
+        // If user explicitly wants to choose, stay on this page
+        if (url.searchParams.get('chooseLanguage') === 'true') return;
+
+        var saved = null;
+        try {
+          saved = localStorage.getItem(STORAGE_KEY);
+        } catch (e) {
+          // Ignore
+        }
+
+        var valid = ['en', 'fa', 'zh'];
+        if (saved && valid.indexOf(saved) !== -1) {
+          window.location.replace(saved + '/index.html');
+        }
+      })();
+    })();
+  </script>
+
 </body>
 </html>

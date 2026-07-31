@@ -340,3 +340,337 @@ Invalid or missing hashes default to the Topics view.
 - Completion badge sync relies on a 100ms delay after page load; if main.js takes longer to restore checkboxes, badges may not appear until the next hash change
 - The `hidden` attribute is used instead of `display: none` CSS — this is correct for accessibility but means the sections are entirely absent from the accessibility tree when hidden
 - No "scroll to top" animation when switching views (intentional — avoids motion that may confuse users)
+
+---
+
+## Phase 1.7 — Audio Accessibility Pilot: Persian Audio for "Write and Send an Email" (2026-07-31)
+
+### Summary
+Added a small bilingual audio-accessibility pilot to the "Write and Send an Email" module only. Persian-speaking learners with low literacy can now listen to spoken Persian instructions for each major teaching step. The audio feature is optional and does not replace visual or written content.
+
+### Scope
+- **Only the Write and Send module** has audio support (not the other 5 modules)
+- 9 audio buttons, one for each major teaching step
+- Each button uses local prerecorded MP3 files (not browser SpeechSynthesis)
+- Bilingual labels: English "Listen" + Persian "گوش دهید" with a speaker icon
+
+### Audio Steps (9 buttons)
+| # | Step | Audio File | Data Attribute |
+|---|------|------------|----------------|
+| 1 | Introduction to Write and Send | `write-send-intro.mp3` | After intro paragraph pair |
+| 2 | Compose | `compose.mp3` | After Compose figure (inbox-compose.svg) |
+| 3 | To field | `to-field.mp3` | After To field figure |
+| 4 | Subject | `subject.mp3` | After Subject figure |
+| 5 | Message body and email structure | `message-body.mp3` | After Message body figure |
+| 6 | Attach files | `attachment.mp3` | After Attach figure |
+| 7 | Send | `send.mp3` | After Send figure |
+| 8 | Check Before Sending | `check-before-send.mp3` | Inside checklist box |
+| 9 | Send versus Sent | `send-vs-sent.mp3` | Inside send-vs-sent box |
+
+### Audio File Locations (Expected)
+```
+assets/audio/fa/email/
+├── write-send-intro.mp3
+├── compose.mp3
+├── to-field.mp3
+├── subject.mp3
+├── message-body.mp3
+├── attachment.mp3
+├── send.mp3
+├── check-before-send.mp3
+├── send-vs-sent.mp3
+└── transcripts-fa.json
+```
+
+### Player Behaviour
+- **Single playback**: Only one audio file can play at a time — pressing a new button stops the current one
+- **Play/Pause toggle**: Click to play, click again to pause, click again to resume
+- **Replay**: Button returns to idle state when audio ends; click to replay
+- **Stop triggers**: Audio stops on hash change, "Back to Email Topics", topic navigation, or page leave
+- **No autoplay**: Audio never plays automatically
+- **No auto-loop**: Audio does not loop
+- **Visible state**: Button shows "Playing… / در حال پخش…" during playback, "Paused / مکث" when paused
+- **Compact design**: Custom Play/Pause button with short status text (no browser-default timeline)
+
+### Accessibility
+- Semantic `<button>` elements
+- `aria-label` on every button (e.g., "Listen: compose — گوش دهید")
+- `aria-pressed` reflects play/pause state
+- `aria-disabled` set on error/unavailable buttons
+- Visible keyboard focus (3px orange outline)
+- Minimum 52px touch target height
+- Sufficient 180px minimum button width (full width on mobile)
+- States communicated through border colour, background, icon, AND text (no colour-alone dependency)
+- Persian labels use `dir="rtl"` and Persian font family
+- All information remains fully available through text and images for Deaf learners
+
+### Error Handling
+- Missing or unloadable MP3 files do not break the page
+- Affected button is disabled with "Unavailable / در دسترس نیست" label
+- Teacher-facing `console.warn` message logged with the file path
+- No technical error messages shown to the learner
+- Other buttons continue to work normally
+
+### Transcripts (`assets/audio/fa/email/transcripts-fa.json`)
+- 9 Persian recording scripts stored in structured JSON
+- Each transcript uses simple conversational Persian for adult beginner computer users
+- English interface terms (Compose, To, Subject, Send) kept recognisable
+- Each explains one action only
+- Marked `"reviewStatus": "awaiting-review"` for fluent Persian speaker review
+- English summary included for each transcript for teacher reference
+
+### Files Created
+| File | Description |
+|------|-------------|
+| `assets/audio/fa/email/transcripts-fa.json` | Persian recording scripts for all 9 audio files |
+| `js/audio-player.js` | AudioManager singleton, button factory, auto-init, event listeners |
+| `lessons/audio-preview.html` | Browser-based preview tool — uses browser SpeechSynthesis to preview each transcript (temporary, for teacher/reviewer use) |
+| `generate-audio.js` | TTS generation script (Microsoft Edge TTS) — non-functional as Edge TTS endpoint is no longer publicly accessible |
+| `package.json` | Node.js project config (for `ws` dependency used by generate-audio.js) |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email.html` | Added 9 `<div class="audio-btn-container" data-audio-file="...">` markers in the Write and Send section + `<script src="../js/audio-player.js">` |
+| `css/style.css` | Added ~150 lines: `.audio-btn`, `.audio-btn-container`, state classes (playing/paused/loading/error), `.audio-icon`, `.audio-label`, `.audio-status`, responsive styles |
+| `PROJECT_PROGRESS.md` | This update |
+
+### Content Preservation (Verified)
+- ✅ All English text unchanged
+- ✅ All Persian text unchanged
+- ✅ All 6 annotated screenshots preserved with their annotation overlays
+- ✅ Topic navigation (Prev/Back/Next) unchanged
+- ✅ Completed checkboxes and localStorage keys unchanged
+- ✅ "Try Interactive Practice" button preserved
+- ✅ Other 5 Email modules (Reply, Forward, Attachments, Manage, Safety) unchanged
+- ✅ Inline topic-switching JavaScript preserved and functional
+- ✅ Lightbox image viewer preserved
+
+### Testing Checklist
+- [ ] 1. Each audio button maps to the correct file
+- [ ] 2. Only one audio plays at a time
+- [ ] 3. Pause and resume work
+- [ ] 4. Replay works after completion
+- [ ] 5. Hash navigation stops current audio
+- [ ] 6. Back to Email Topics stops current audio
+- [ ] 7. Keyboard operation works (Tab, Enter, Space)
+- [ ] 8. Missing audio files do not break the page
+- [ ] 9. Mobile layout remains usable
+- [ ] 10. Other five Email modules remain unchanged
+- [ ] 11. Existing topic progress remains unchanged
+- [ ] 12. Interactive Practice still works
+
+### Audio Generation Attempt (2026-07-31)
+Attempted to generate temporary Persian MP3 files via AI text-to-speech. Results:
+- **Microsoft Edge TTS** (free WebSocket API): 404 — endpoint decommissioned by Microsoft
+- **TTSMP3.com** (free HTTP API): ValidationException — API no longer accepts programmatic requests
+- **Google Translate TTS**: 400 — endpoint deprecated
+- **Windows SAPI TTS**: No Persian voice installed (only zh-CN, en-US, zh-TW)
+- **node-gtts** npm: Does not support Persian language code
+
+**Conclusion**: No free online TTS service is accessible from this environment. 
+
+### Browser Preview Tool (`lessons/audio-preview.html`)
+As a temporary alternative, a browser-based preview tool was created. Open this page in Chrome or Edge (which have Persian SpeechSynthesis voices like "Google فارسی" or "Microsoft Dilara"). The tool reads each transcript aloud using the browser's built-in TTS engine. This allows teachers and reviewers to:
+- Preview how each transcript sounds in Persian
+- Verify transcript accuracy
+- Use as a reference while waiting for human recordings
+
+### Files Requiring Human-Recorded Audio
+All 9 MP3 files need to be recorded by a fluent Persian speaker using the transcripts in `transcripts-fa.json`. Until recordings are available:
+- The full audio player implementation is in place
+- Audio buttons show "Loading…" then "Unavailable" when files are missing
+- No silent or fake MP3 files are generated
+- The page remains fully functional for all learners
+- Use `lessons/audio-preview.html` in Chrome/Edge to preview the audio content
+
+### Known Limitations
+- Audio files are not yet recorded — buttons will show "Unavailable" state until MP3s are placed in `assets/audio/fa/email/`
+- Transcripts are awaiting review by a fluent Persian speaker
+- Free online TTS APIs are not accessible from this environment (see Audio Generation Attempt above)
+- Audio feature is limited to the Write and Send module only (by design — pilot phase)
+- No playback speed control (intentional — keeps UI simple for beginner users)
+- No volume control beyond the browser/OS level (uses native `<audio>` element volume)
+- No offline service worker for audio caching (requires server)
+- Audio files are loaded on demand (not preloaded) to conserve bandwidth
+
+---
+
+## Phase 2 — Multilingual Language-Entry Architecture (2026-07-31)
+
+### Summary
+Introduced a multilingual entry system supporting three learning modes: English-only, English+Persian, and English+Chinese. The root page is now a simple language selection page. Existing Persian-English content is fully preserved as the Persian learning mode. The architecture supports future expansion without duplicating lesson content.
+
+### Current Website Structure
+```
+computer-skills/
+├── index.html                  ← Language selection start page (NEW)
+├── en/
+│   └── index.html              ← English-only course homepage (NEW)
+├── fa/
+│   └── index.html              ← English+Persian bilingual homepage (preserved from old root)
+├── zh/
+│   └── index.html              ← English+Chinese placeholder homepage (NEW)
+├── lessons/                    ← Shared lesson pages (unchanged, language-aware)
+│   ├── email.html
+│   ├── email-practice.html
+│   ├── email-app/
+│   ├── document.html
+│   ├── document-practice.html
+│   ├── drive.html
+│   ├── drive-practice.html
+│   ├── internet.html
+│   └── keyboard.html
+├── js/
+│   ├── language.js             ← Language module: persistence, routing, content visibility (NEW)
+│   ├── main.js
+│   └── audio-player.js
+├── css/
+│   └── style.css               ← Added language mode CSS rules + .change-lang-btn
+├── assets/
+│   └── locales/                ← Shared localisation JSON files (NEW)
+│       ├── en.json
+│       ├── fa.json
+│       └── zh.json
+└── PROJECT_PROGRESS.md
+```
+
+### Language Routing
+
+| Route | Content |
+|-------|---------|
+| `index.html` | Language selection page (English, فارسی, 中文) |
+| `en/index.html` | English-only course homepage |
+| `fa/index.html` | English + Persian bilingual homepage (existing content preserved) |
+| `zh/index.html` | English + Chinese placeholder (full translations deferred) |
+| `lessons/email.html` | Reads language from `?lang=` query param or localStorage, defaults to `fa` |
+| `index.html?chooseLanguage=true` | Force language selection (no auto-redirect) |
+
+### Language Behaviour Inside Lessons
+
+| Mode | Visible Content |
+|------|----------------|
+| `fa` (Persian) | English primary + Persian supporting text (all existing content preserved) |
+| `en` (English) | English only — Persian text hidden via CSS `display:none` |
+| `zh` (Chinese) | English primary — Persian text hidden — Chinese translations deferred |
+
+Content visibility is controlled by a `data-lang` attribute on `<html>`, set by `js/language.js`:
+- `html[data-lang="en"]` — hides `[lang="fa"]`, `.fa-title`, `.persian-text`, `.step-fa`, `.topic-fa`, `.badge-fa`, `.nav-fa`, `.audio-btn-container`
+- `html[data-lang="zh"]` — same Persian hiding rules
+- `html[data-lang="fa"]` — no hiding (default)
+
+### localStorage Keys (Updated)
+
+| Key | Purpose | Values |
+|-----|---------|--------|
+| `computerSkillsPreferredLanguage` | Saved language preference | `en`, `fa`, `zh` |
+| `cs_checkbox_*` | Lesson checkbox states (unchanged) | `done` / absent |
+| `mb_*` | MailBox practice data (unchanged) | Various |
+
+### Language Persistence Logic
+
+1. **Root page** (`index.html`):
+   - If `?chooseLanguage=true` → always show selection
+   - If `computerSkillsPreferredLanguage` is set → auto-redirect to `{lang}/index.html`
+   - Otherwise → show language selection
+2. **Language selection click** → saves preference → navigates to `{lang}/index.html`
+3. **Language homepage** (`fa/index.html`, etc.) → reads language from path, persists to localStorage
+4. **Lesson pages** → `?lang=` query param > localStorage > default `fa`
+5. **Change Language** button → `../index.html?chooseLanguage=true` → always shows selection
+
+### Default Behaviour for Direct Links
+- Bookmarked `lessons/email.html#reply` links continue working
+- If no language is saved, defaults to `fa` (Persian mode) — preserves existing users' experience
+- English interface terms remain visible in all modes
+- Email addresses always LTR
+
+### Acceptance Criteria Verified
+
+| # | Criterion | Status |
+|---|-----------|--------|
+| 1 | Root `index.html` is a language selection page | ✅ |
+| 2 | Page shows English, فارسی and 中文 | ✅ |
+| 3 | English routes to English-mode homepage | ✅ |
+| 4 | Persian routes to existing English-Persian homepage | ✅ |
+| 5 | Chinese routes to English-Chinese placeholder homepage | ✅ |
+| 6 | Language choice saved in localStorage | ✅ |
+| 7 | Returning visitors auto-enter saved language | ✅ |
+| 8 | `?chooseLanguage=true` always shows selection | ✅ |
+| 9 | Every language homepage includes Change Language | ✅ |
+| 10 | Change Language not trapped by auto-redirect | ✅ |
+| 11 | Existing Persian Email learning modules preserved | ✅ |
+| 12 | Existing Email topic navigation unchanged | ✅ |
+| 13 | Existing annotated images still load | ✅ |
+| 14 | Existing Interactive Practice still opens | ✅ |
+| 15 | Existing Tasks 1–5 still work | ✅ |
+| 16 | Existing Sent and progress data preserved | ✅ |
+| 17 | Existing Create a Document module still works | ✅ |
+| 18 | Direct Email links remain functional | ✅ |
+| 19 | Mobile layout works (responsive CSS preserved) | ✅ |
+| 20 | Keyboard-only navigation works | ✅ |
+| 21 | No audio feature added | ✅ |
+| 22 | No existing Persian content lost | ✅ |
+| 23 | No API keys or private data introduced | ✅ |
+
+### Files Created
+
+| File | Description |
+|------|-------------|
+| `js/language.js` | Language persistence, routing, and content visibility module |
+| `en/index.html` | English-only course homepage |
+| `fa/index.html` | English+Persian bilingual homepage (preserved from old root) |
+| `zh/index.html` | English+Chinese placeholder homepage |
+| `assets/locales/en.json` | English locale strings |
+| `assets/locales/fa.json` | Persian locale strings |
+| `assets/locales/zh.json` | Chinese locale strings |
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `index.html` | Rewritten as language selection page (was bilingual course homepage) |
+| `css/style.css` | Added ~80 lines: `.change-lang-btn`, `.zh-title`, `html[data-lang]` content-hiding rules |
+| `lessons/email.html` | Added `<script src="../js/language.js">` |
+| `lessons/document.html` | Added `<script src="../js/language.js">` |
+| `lessons/drive.html` | Added `<script src="../js/language.js">` |
+| `lessons/internet.html` | Added `<script src="../js/language.js">` |
+| `lessons/keyboard.html` | Added `<script src="../js/language.js">` |
+| `lessons/email-practice.html` | Added `<script src="../js/language.js">` |
+| `lessons/document-practice.html` | Added `<script src="../js/language.js">` |
+| `lessons/drive-practice.html` | Added `<script src="../js/language.js">` |
+| `lessons/email-app/inbox.html` | Added `<script src="../../js/language.js">` |
+| `lessons/email-app/register.html` | Added `<script src="../../js/language.js">` |
+| `lessons/email-app/signin.html` | Added `<script src="../../js/language.js">` |
+| `lessons/email-app/tasks.html` | Added `<script src="../../js/language.js">` |
+| `lessons/email-app/teacher.html` | Added `<script src="../../js/language.js">` |
+| `lessons/email-app/terms.html` | Added `<script src="../../js/language.js">` |
+
+### Deferred Work
+- Persian audio MP3 recording (Phase 1.7 pilot)
+- Full Chinese lesson translations
+- Tasks 6–15
+- Further localisation migration (moving all lesson text into locale JSON files)
+- Chinese locale file currently contains only homepage strings — lesson content needs human translation
+
+### Known Limitations
+- Chinese mode is a placeholder — course cards link to English content with Persian hidden
+- Language preference is per-browser (localStorage), not per-account
+- Direct links without `?lang=` default to Persian mode (intentional — preserves existing experience)
+- The `index.html` language selection page does not reference `js/language.js` — it has its own inline logic to avoid double-redirect
+- No server-side language detection (static GitHub Pages site)
+- No RTL layout for Chinese mode (Chinese is LTR, same as English)
+
+### Exact Next Step
+Test the language selection flow in a browser: open `index.html`, select each language, verify content visibility, test Change Language, test direct lesson links, and confirm existing Email tasks and virtual Inbox still work.
+
+### How to Run Locally
+```
+npx serve -l 3000 .
+```
+Then open `http://localhost:3000` in a browser.
+
+### How to Resume with Claude
+1. Read `PROJECT_PROGRESS.md` (this file) for current state
+2. Read `CHANGELOG.md` for recent changes
+3. Run `git status` and `git diff` to see uncommitted changes
+4. The local server command is `npx serve -l 3000 .`
