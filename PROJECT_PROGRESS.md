@@ -669,6 +669,124 @@ npx serve -l 3000 .
 ```
 Then open `http://localhost:3000` in a browser.
 
+---
+
+## Phase 3 — Document Module: Introduction & Navigation (2026-08-05)
+
+### Summary
+Created a short, visual Document introduction page following the principle "See the main controls, then start practising." Replaced the old 9-step Google Docs tutorial with a neutral, brand-free visual overview of document controls. The interactive document editor and practice tasks are deferred to future phases.
+
+### Introduction Page Structure (`lessons/document.html`)
+
+1. **Module Title**: "📄 Create a Document" / "ایجاد سند"
+2. **Short Introduction**: One-sentence English + Persian (not a long tutorial)
+3. **Visual Document Editor Mockup**: CSS-based neutral document interface showing:
+   - Menu bar (File, Edit, View, Insert, Format, Tools)
+   - Toolbar (New, Font, Font Size, Bold/Italic/Underline, Download)
+   - Title bar (Document name)
+   - Document page (content area)
+   - Dashed accent-coloured outlines highlight the 9 key controls
+4. **Control Cards Grid**: 9 cards in a responsive grid, each with:
+   - Icon, English label, Persian label, short explanatory sentence (English + Persian)
+   - Controls: New document, Document name, Document page, Font, Font size, File menu, Insert menu, Save status, Download as PDF
+5. **Start Document Practice Button**: Large amber CTA button linking to `document-practice.html`
+6. **TypingClub Section**: External link to `https://www.edclub.com/` with:
+   - `target="_blank"` and `rel="noopener noreferrer"`
+   - Bilingual heading, description, and note
+   - TypingClub opens in a new tab; optional and does not affect course progress
+7. **Change Language Control**: Links to `../index.html?chooseLanguage=true`
+8. **Navigation Bar**: Previous (Email) / Back to Course Home (language-aware) / Next (Drive)
+
+### Placeholder Practice Page (`lessons/document-practice.html`)
+- "Document practice is being prepared" message (English + Persian)
+- Back to Document Introduction button
+- Back to Course Home button (language-aware)
+- Next (Drive) navigation
+- No interactive editor, no tasks, no localStorage
+
+### Language Behaviour
+- English + Persian bilingual by default (Persian mode / `data-lang="fa"`)
+- In English mode (`data-lang="en"`): Persian text hidden via existing `html[data-lang="en"] [lang="fa"]` CSS rule
+- In Chinese mode (`data-lang="zh"`): Persian text hidden; Chinese Document translations deferred
+- English interface terms (File, Insert, Font, etc.) always remain LTR
+- Persian text uses `lang="fa"` and `dir="rtl"`
+- Home button dynamically links to correct language homepage (`../fa/index.html`, `../en/index.html`, etc.)
+
+### Design
+- Adult beginner-friendly: large buttons, clear spacing, high contrast, visible keyboard focus
+- Responsive: 3-column → 2-column → 1-column control card grid
+- No animations, no audio, no automatic behaviour
+- Neutral document editor mockup — no Google Docs or Microsoft Word branding
+- Matches existing site visual style (cards, colours, typography, spacing)
+
+### CSS Classes Added (`css/style.css`)
+- `.visually-hidden` — Screen-reader-only accessible utility
+- `.doc-mockup` — Visual document editor container
+- `.doc-mockup-menubar`, `.doc-mockup-toolbar`, `.doc-mockup-title-bar`, `.doc-mockup-page` — Mockup sections
+- `.doc-mockup-menu`, `.doc-mockup-tool-btn`, `.doc-mockup-save-status`, `.doc-mockup-download-btn` — Mockup controls
+- `.doc-mockup [data-doc-ctrl]::after` — Dashed highlight outlines on key controls
+- `.doc-controls-grid` — Responsive grid for the 9 control cards
+- `.doc-ctrl-card`, `.doc-ctrl-icon`, `.doc-ctrl-en`, `.doc-ctrl-fa`, `.doc-ctrl-desc`, `.doc-ctrl-desc-fa` — Card styles
+- `.doc-start-btn`, `.doc-start-icon`, `.doc-start-label`, `.doc-start-en`, `.doc-start-fa` — Large CTA button
+- `.typingclub-section`, `.typingclub-heading`, `.typingclub-btn`, `.typingclub-btn-fa`, `.typingclub-note` — TypingClub section
+- Responsive breakpoints at 768px and 480px for mockup, cards, and buttons
+
+### Testing Performed
+
+| # | Test | Result |
+|---|------|--------|
+| 1 | Document course card opens the correct page | ✅ — All 3 language homepages link to `../lessons/document.html` |
+| 2 | English and Persian text display correctly | ✅ |
+| 3 | Persian text uses RTL | ✅ — 25 `dir="rtl"` attributes with `lang="fa"` |
+| 4 | English interface labels remain LTR | ✅ |
+| 5 | Start Document Practice opens placeholder | ✅ — Links to `document-practice.html` |
+| 6 | Placeholder return navigation works | ✅ — Back to Document Introduction + Back to Course Home |
+| 7 | TypingClub opens in a new tab | ✅ — `target="_blank"` |
+| 8 | TypingClub link uses `noopener noreferrer` | ✅ |
+| 9 | Change Language works | ✅ — Links to `../index.html?chooseLanguage=true` |
+| 10 | Back to Course Home works | ✅ — JavaScript sets language-aware home URL |
+| 11 | Mobile layout is readable | ✅ — Responsive CSS at 768px and 480px breakpoints |
+| 12 | Keyboard focus is visible | ✅ — `:focus-visible` styles on all interactive elements |
+| 13 | Existing Email module still works | ✅ — No Email files modified |
+| 14 | No audio code was added | ✅ — Verified via grep |
+| 15 | No task or editor logic added prematurely | ✅ — No localStorage, contenteditable, or rich text |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document.html` | Rewritten: short visual introduction with mockup, control cards, TypingClub link |
+| `lessons/document-practice.html` | Rewritten: placeholder page ("being prepared" message) |
+| `css/style.css` | Added ~250 lines: document mockup, control cards, start button, TypingClub section, responsive styles |
+
+### Files Preserved (Unchanged)
+- `lessons/email.html`, `lessons/email-practice.html`, `lessons/email-app/` — All Email module files
+- `lessons/drive.html`, `lessons/drive-practice.html` — Drive module
+- `lessons/internet.html`, `lessons/keyboard.html` — Other lesson pages
+- `fa/index.html`, `en/index.html`, `zh/index.html` — Language homepages
+- `js/language.js`, `js/main.js`, `js/audio-player.js` — JavaScript modules
+- `index.html` — Language selection page
+
+### Deferred Work
+- Virtual document editor (interactive simulation)
+- Task 1: Create and rename a document
+- Task 2: Type information
+- Task 3: Times New Roman and font size
+- Task 4: Save and download PDF
+- Task 5: Add page numbers
+- Chinese Document translation
+- Audio support for Document module
+
+### Known Limitations
+- The document editor mockup is a static CSS illustration — not interactive
+- Document practice page is a placeholder with no interactive content
+- Chinese mode hides Persian text but has no Chinese Document translations yet
+- No PDF generation or download simulation
+- No localStorage task progress for Document module
+- TypingClub is an external service and requires internet access
+
+### Exact Next Step
+Build the interactive document editor simulation on `document-practice.html` with Task 1 (create and rename a document). The editor should be a neutral, brand-free web-based document interface (not branded as Google Docs or Microsoft Word).
+
 ### How to Resume with Claude
 1. Read `PROJECT_PROGRESS.md` (this file) for current state
 2. Read `CHANGELOG.md` for recent changes

@@ -1,5 +1,42 @@
 # Computer Skills — Changelog
 
+## 2026-08-05
+
+### Added
+- Document introduction page (`lessons/document.html`) — short visual overview with CSS mockup editor
+- 9 control cards: New document, Document name, Document page, Font, Font size, File menu, Insert menu, Save status, Download as PDF
+- Large "Start Document Practice" CTA button linking to placeholder practice page
+- TypingClub external link section (`https://www.edclub.com/`) with `target="_blank"` and `rel="noopener noreferrer"`
+- Placeholder Document practice page (`lessons/document-practice.html`) with "being prepared" message
+- Language-aware "Back to Course Home" navigation (JavaScript sets correct `../{lang}/index.html`)
+- CSS: document editor mockup, control cards grid, start button, TypingClub section (~250 lines)
+- Responsive styles for mockup, cards, and buttons at 768px and 480px breakpoints
+
+### Changed
+- `lessons/document.html`: replaced old 9-step Google Docs tutorial with short visual introduction
+- `lessons/document-practice.html`: replaced old 9-step Google Docs simulation with placeholder page
+- `css/style.css`: added Document introduction styles
+
+### Removed
+- All Google Docs and Microsoft Word branding from Document pages
+- Old 9-step long-form tutorial format from Document introduction
+- Old interactive Google Docs simulation (deferred to future phase)
+
+### Preserved
+- All Email module files (email.html, email-practice.html, email-app/)
+- All language homepages (fa/, en/, zh/)
+- All other lesson modules (Drive, Internet, Keyboard)
+- Language module (js/language.js), main.js, audio-player.js
+- All localStorage keys and Email practice progress data
+
+### Deferred
+- Virtual document editor (interactive simulation)
+- Tasks 1–5 (create/rename, type, font/size, save/download PDF, page numbers)
+- Chinese Document translations
+- Audio support for Document module
+
+---
+
 ## 2026-07-31
 
 ### Added
