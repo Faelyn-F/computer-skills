@@ -1,5 +1,53 @@
 # Computer Skills — Changelog
 
+## 2026-08-05 — Phase 2 Fix: Document Practice Editor Layout
+
+### Root Cause
+The editor workspace inherited the dark navy body background (`#1a1a2e`) instead of a neutral light-grey workspace. The `.doc-editor-wrapper` had no background override. Toolbar buttons used undersized browser-default styling (`font-size: 14px`, `min-height: 36px`). English and Persian labels were crowded together inside narrow buttons. The document name input sat in a separate bar below the toolbar, floating in the dark workspace. The save status used a cloud emoji (☁️) and tiny text.
+
+### Fixed
+- **Workspace background**: Changed from dark navy (`#1a1a2e`) to light grey (`#e8eaed`) so the white document page is clearly visible
+- **Toolbar buttons**: Enlarged (`font-size: 15px`, `min-height: 40px`, `padding: 8px 14px`), added visible borders, white background — matching site design system
+- **English-only toolbar labels**: Removed Persian text from inside buttons; added Persian `title` tooltips on every control
+- **Persian helper bar**: New row below toolbar with Persian translations (راهنما: جدید · نام سند · برگردان · پررنگ · قلم · اندازه قلم · فایل · درج)
+- **Document name in toolbar**: Moved the editable name input into the toolbar between New and Undo buttons (was in a separate bar below)
+- **Save status**: Enlarged, removed cloud icon, uses clear bilingual text with colored background on state change (amber for saving, green for saved)
+- **Next button removed**: Deleted the premature "Next ▶" navigation link
+- **Navigation downsized**: Reduced button size for editor page (17px font, 44px min-height)
+- **White document page**: Set `min-height: 800px` with generous padding (50px/60px) and clear shadow boundary
+- **Side panel**: Wider (220px), larger placeholder text, clearer task-deferred message
+- **Editor layout height**: `min-height: 650px` on layout, `min-height: 800px` on page — centred and immediately visible at 1366×768
+
+### Preserved
+- All 11 editor interactions (New/Undo/Bold/Font/Size/File/Insert/Save/Page numbers/Download/Print)
+- All localStorage keys and persistence logic
+- All keyboard shortcuts and accessibility features
+- Document introduction page (`lessons/document.html`)
+- Email module (no files touched)
+- All existing JavaScript functionality
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Restructured toolbar, moved doc name, removed Next button, English-only labels + title tooltips, Persian helper bar |
+| `css/style.css` | Replaced ~490 lines of editor styles: light workspace, larger buttons, toolbar doc name, save status, responsive fixes |
+
+### Tests Performed
+1. White page visible immediately ✅
+2. White page accepts typing ✅
+3. Document name in toolbar ✅
+4. Toolbar controls readable and consistently styled ✅
+5. English and Persian do not overlap ✅
+6. Save status has readable text ✅
+7. No Next button ✅
+8. Task placeholder visible ✅
+9. Desktop layout at 1366×768 ✅
+10. Narrow-screen layout usable ✅
+11. No Google/Microsoft branding ✅
+12. No Email keys in Document files ✅
+
+---
+
 ## 2026-08-05 — Phase 2: Document Practice Editor
 
 ### Added

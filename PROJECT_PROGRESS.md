@@ -976,3 +976,73 @@ Add Task 1 and Task 2 to the stable Document editor.
 2. Read `CHANGELOG.md` for recent changes
 3. Run `git status` and `git diff` to see uncommitted changes
 4. The local server command is `npx serve -l 3000 .`
+
+---
+
+## Phase 4 Fix — Document Practice Editor Layout (2026-08-05)
+
+### Root Cause
+The deployed editor had 10 visible layout problems. Root cause: the editor workspace inherited the dark navy body background (`#1a1a2e`) instead of using a neutral light-grey workspace. `.doc-editor-wrapper` had no background override. Toolbar buttons used undersized `font-size: 14px` / `min-height: 36px`. English and Persian labels were crowded inside the same narrow buttons via `.doc-tb-fa` spans. The document name input sat in a separate `.doc-name-bar` below the toolbar, floating alone in dark space. Save status used a cloud emoji (☁️) and 13px text. A hardcoded "Next ▶" link pointed to `drive.html` even though no tasks exist. Navigation buttons were full-size (`font-size: 22px`, `min-height: 52px`).
+
+### Fixes Applied
+
+| # | Problem | Fix |
+|---|---------|-----|
+| 1 | Dark workspace instead of light grey | Set `.doc-editor-wrapper` background to `#e8eaed` |
+| 2 | White document page not visible | Set `.doc-page` min-height 800px, clear shadow, `.doc-editor-layout` min-height 650px |
+| 3 | Tiny toolbar buttons | Increased to `font-size: 15px`, `min-height: 40px`, `padding: 8px 14px`, white background with visible borders |
+| 4 | English+Persian crowded in controls | Removed `.doc-tb-fa` spans; English-only labels with Persian `title` tooltips; new `.doc-persian-help` bar below toolbar |
+| 5 | Document name in wrong location | Moved `#doc-name-input` into `.doc-editor-toolbar` between New and Undo; removed separate `.doc-name-bar` |
+| 6 | Save status not clear | Removed cloud emoji; `font-size: 15px`, `font-weight: 600`; colored background on state change (amber bg for saving, green bg for saved) |
+| 7 | Document icon without editing page | Fixed by root cause #1 (white page now visible due to light workspace + proper dimensions) |
+| 8 | Navigation too large | Added `.doc-nav-bar .nav-btn` overrides: `font-size: 17px`, `min-height: 44px` |
+| 9 | Next button exists | Removed `<a href="drive.html" class="nav-btn next">Next ▶</a>` from navigation |
+| 10 | Task placeholder not clear | Enlarged side panel (220px), larger icon (36px), updated text to "Practice tasks will be added in the next phase." |
+
+### Toolbar Order (Corrected)
+```
+[＋ New] [Document name.........] [↩ Undo] [B] [Font ▾] [Size ▾] | [File ▾] [Insert ▾] | [Saved]
+```
+
+### Persian Helper Bar
+New row below toolbar shows Persian equivalents:
+`راهنما: جدید · نام سند · برگردان · پررنگ · قلم · اندازه قلم · فایل · درج`
+
+All toolbar buttons also carry Persian `title` tooltips.
+
+### Functional Regression Tests
+All 11 editor interactions verified after layout fix:
+- New document (with confirmation) ✅
+- Document name editing ✅
+- Typing / Enter / Backspace / text selection ✅
+- Font dropdown (4 fonts) ✅
+- Font size dropdown (8 sizes) ✅
+- Bold toggle + Ctrl+B ✅
+- Undo ✅
+- File menu (New/Save/Download text/PDF placeholder/Print) ✅
+- Insert menu (Page numbers/Date/Page break) ✅
+- Save status (Saving... → Saved, 800ms debounce) ✅
+- Page numbers (top/bottom/none, localStorage persistent) ✅
+- localStorage restore across refresh ✅
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Restructured toolbar, moved doc name into toolbar, removed Next button, English-only labels with title tooltips, Persian helper bar, updated placeholder text |
+| `css/style.css` | Replaced ~490 lines of Document Practice editor styles: light workspace, larger buttons, toolbar doc name input, save status overhaul, nav downsizing, responsive fixes |
+
+### Files Preserved (Unchanged)
+- `lessons/document.html` — Phase 1 introduction page
+- All Email module files
+- All other lesson modules
+- All JS modules
+
+### Remaining Limitations
+- PDF download is still a placeholder
+- Page break is visual-only (no multi-page editing)
+- No Redo button
+- No task system yet
+- Chinese Document translations deferred
+
+### Exact Next Step
+`Test the stable editor manually before adding Task 1 and Task 2.`

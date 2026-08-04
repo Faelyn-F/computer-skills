@@ -25,29 +25,32 @@
     <div class="doc-editor-toolbar" role="toolbar" aria-label="Document editor toolbar">
 
       <!-- New document -->
-      <button type="button" class="doc-tb-btn" id="btn-new" aria-label="New document">
+      <button type="button" class="doc-tb-btn" id="btn-new" aria-label="New document" title="New document — سند جدید">
         <span aria-hidden="true">＋</span> New
-        <span class="doc-tb-fa" lang="fa" dir="rtl">جدید</span>
       </button>
+
+      <span class="doc-tb-sep"></span>
+
+      <!-- Document name (in toolbar) -->
+      <input type="text" class="doc-name-input" id="doc-name-input" value="Untitled document" aria-label="Document name" dir="ltr" title="Document name — نام سند">
 
       <span class="doc-tb-sep"></span>
 
       <!-- Undo -->
-      <button type="button" class="doc-tb-btn" id="btn-undo" aria-label="Undo">
+      <button type="button" class="doc-tb-btn" id="btn-undo" aria-label="Undo" title="Undo — برگردان">
         <span aria-hidden="true">↩</span> Undo
-        <span class="doc-tb-fa" lang="fa" dir="rtl">برگردان</span>
+      </button>
+
+      <!-- Bold -->
+      <button type="button" class="doc-tb-btn doc-bold-btn" id="btn-bold" aria-label="Bold" aria-pressed="false" title="Bold — پررنگ">
+        <strong>B</strong>
       </button>
 
       <span class="doc-tb-sep"></span>
 
-      <!-- Bold -->
-      <button type="button" class="doc-tb-btn doc-bold-btn" id="btn-bold" aria-label="Bold" aria-pressed="false">
-        <strong>B</strong>
-      </button>
-
       <!-- Font dropdown -->
       <span class="doc-tb-dropdown-wrapper" id="font-dropdown-wrapper">
-        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-font" aria-label="Font" aria-haspopup="listbox">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-font" aria-label="Font" aria-haspopup="listbox" title="Font — قلم">
           <span id="btn-font-label">Arial</span> ▾
         </button>
         <ul class="doc-tb-dropdown-menu" id="font-menu" role="listbox" aria-label="Font family" hidden>
@@ -60,7 +63,7 @@
 
       <!-- Font size dropdown -->
       <span class="doc-tb-dropdown-wrapper" id="fontsize-dropdown-wrapper">
-        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-fontsize" aria-label="Font size" aria-haspopup="listbox">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-fontsize" aria-label="Font size" aria-haspopup="listbox" title="Font size — اندازه قلم">
           <span id="btn-fontsize-label">11</span> ▾
         </button>
         <ul class="doc-tb-dropdown-menu" id="fontsize-menu" role="listbox" aria-label="Font size" hidden>
@@ -79,7 +82,7 @@
 
       <!-- File menu -->
       <span class="doc-tb-dropdown-wrapper" id="file-dropdown-wrapper">
-        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-file" aria-label="File menu" aria-haspopup="menu">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-file" aria-label="File menu" aria-haspopup="menu" title="File menu — منوی فایل">
           File ▾
         </button>
         <ul class="doc-tb-dropdown-menu" id="file-menu" role="menu" aria-label="File" hidden>
@@ -95,7 +98,7 @@
 
       <!-- Insert menu -->
       <span class="doc-tb-dropdown-wrapper" id="insert-dropdown-wrapper">
-        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-insert" aria-label="Insert menu" aria-haspopup="menu">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-insert" aria-label="Insert menu" aria-haspopup="menu" title="Insert menu — منوی درج">
           Insert ▾
         </button>
         <ul class="doc-tb-dropdown-menu" id="insert-menu" role="menu" aria-label="Insert" hidden>
@@ -115,11 +118,23 @@
 
       <!-- Save status -->
       <span class="doc-tb-save-status" id="save-status" aria-live="polite">
-        <span class="doc-save-icon" aria-hidden="true">☁️</span>
         <span class="doc-save-en">Saved</span>
         <span class="doc-save-fa" lang="fa" dir="rtl">ذخیره شد</span>
       </span>
 
+    </div>
+
+    <!-- Persian helper bar -->
+    <div class="doc-persian-help" lang="fa" dir="rtl">
+      <span>راهنما:</span>
+      <span>جدید</span> ·
+      <span>نام سند</span> ·
+      <span>برگردان</span> ·
+      <span>پررنگ</span> ·
+      <span>قلم</span> ·
+      <span>اندازه قلم</span> ·
+      <span>فایل</span> ·
+      <span>درج</span>
     </div>
 
     <!-- ============================================================
@@ -130,22 +145,16 @@
       <!-- Side panel (future tasks) -->
       <aside class="doc-side-panel" aria-label="Tasks panel">
         <div class="doc-side-placeholder">
-          <span aria-hidden="true" style="font-size:32px;display:block;margin-bottom:8px;">📋</span>
-          <p class="doc-side-en">Tasks will be added in the next phase.</p>
-          <p class="doc-side-fa" lang="fa" dir="rtl">تمرین‌ها در مرحله بعدی اضافه خواهند شد.</p>
+          <span aria-hidden="true" class="doc-side-icon">📋</span>
+          <p class="doc-side-en">Practice tasks will be added in the next phase.</p>
+          <p class="doc-side-fa" lang="fa" dir="rtl">تمرین‌ها در مرحله بعد اضافه می‌شوند.</p>
         </div>
       </aside>
 
       <!-- Document area -->
       <div class="doc-editor-main">
 
-        <!-- Document name bar -->
-        <div class="doc-name-bar">
-          <span aria-hidden="true" style="font-size:20px;">📄</span>
-          <input type="text" class="doc-name-input" id="doc-name-input" value="Untitled document" aria-label="Document name" dir="ltr">
-        </div>
-
-        <!-- Document page -->
+        <!-- Document page wrapper (light grey workspace) -->
         <div class="doc-page-wrapper">
           <div class="doc-page" id="doc-page" role="document" aria-label="Document page">
 
@@ -170,7 +179,7 @@
           </div>
         </div>
 
-        <!-- Footer area for future page numbers info -->
+        <!-- Footer bar below page -->
         <div class="doc-page-footer" id="page-footer">
           <span class="doc-footer-label">Page:</span> <span id="page-footer-num">1</span>
           <span class="doc-footer-label-fa" lang="fa" dir="rtl">صفحه:</span>
@@ -181,17 +190,16 @@
     </div>
 
     <!-- ============================================================
-         PDF Placeholder Toast
+         Toast
          ============================================================ -->
     <div class="doc-toast" id="doc-toast" aria-live="polite" hidden></div>
 
   </main>
 
   <!-- Navigation -->
-  <nav class="nav-bar" aria-label="Page navigation">
+  <nav class="nav-bar doc-nav-bar" aria-label="Page navigation">
     <a href="document.html" class="nav-btn prev">◀ Back to Document Introduction</a>
     <a href="../fa/index.html" id="home-btn" class="nav-btn home">🏠 Back to Course Home</a>
-    <a href="drive.html" class="nav-btn next">Next ▶</a>
   </nav>
 
   <!-- Footer -->
@@ -346,9 +354,7 @@
     function applyFontSizeToEditor(size) {
       currentFontSize = size;
       docContent.style.fontSize = size + 'pt';
-      // execCommand fontSize uses 1-7 mapping; use CSS for precision
       try {
-        // Map pt to 1-7 for execCommand as best-effort
         var map = {10:1, 11:1, 12:2, 14:3, 16:4, 18:5, 20:6, 24:7};
         document.execCommand('fontSize', false, map[size] || 3);
       } catch(e) {}
@@ -358,7 +364,6 @@
     function updateFontLabel() {
       var lbl = document.getElementById('btn-font-label');
       if (lbl) lbl.textContent = currentFont;
-      // Update font menu selection
       var items = document.querySelectorAll('#font-menu [role="option"]');
       items.forEach(function(item) {
         item.setAttribute('aria-selected', item.getAttribute('data-value') === currentFont ? 'true' : 'false');
@@ -421,7 +426,6 @@
     /* ---- New Document ---- */
 
     function newDocument() {
-      // Check if content is non-empty
       var hasContent = docContent.innerText.trim().length > 0 ||
         docNameInput.value !== 'Untitled document';
       if (hasContent) {
@@ -446,7 +450,6 @@
       updatePageNumberDisplay();
       showSaving();
       persistAll();
-      // Short delay then show saved
       if (saveTimer) clearTimeout(saveTimer);
       saveTimer = setTimeout(function() { showSaved(); }, 400);
       docContent.focus();
@@ -500,7 +503,6 @@
       try {
         document.execCommand('insertText', false, dateStr);
       } catch(e) {
-        // Fallback
         var sel = window.getSelection();
         if (sel.rangeCount) {
           var range = sel.getRangeAt(0);
@@ -525,7 +527,6 @@
       try {
         document.execCommand('insertHTML', false, hr.outerHTML);
       } catch(e) {
-        // Fallback
         var sel = window.getSelection();
         if (sel.rangeCount) {
           var range = sel.getRangeAt(0);
@@ -553,7 +554,6 @@
         closeAllDropdowns();
         menu.hidden = false;
         openDropdown = { menu: menu, btn: btn };
-        // Position submenu correctly
         positionSubmenus(menu);
       } else {
         menu.hidden = true;
@@ -626,7 +626,6 @@
     // Document content changes
     docContent.addEventListener('input', function() {
       debounceSave();
-      // Check if bold state changed
       var isBold = document.queryCommandState('bold');
       if (isBold !== boldActive) {
         boldActive = isBold;
@@ -699,7 +698,6 @@
       if (!item) return;
       var action = item.getAttribute('data-action');
       if (action) handleMenuAction(action);
-      // Also check submenu items
       var subItem = e.target.closest('.doc-tb-dropdown-submenu [role="menuitem"]');
       if (subItem) {
         var subAction = subItem.getAttribute('data-action');
@@ -717,7 +715,6 @@
       pageNumbersMenuItem.addEventListener('mouseleave', function() {
         pageNumbersSubmenu.hidden = true;
       });
-      // Keep open when hovering submenu
       pageNumbersSubmenu.addEventListener('mouseenter', function() {
         pageNumbersSubmenu.hidden = false;
       });
@@ -737,7 +734,6 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         closeAllDropdowns();
-        // Focus back to the button that opened the menu
         if (openDropdown && openDropdown.btn) {
           openDropdown.btn.focus();
         }
@@ -749,9 +745,6 @@
       if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
         e.preventDefault();
         toggleBold();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-        // Let browser handle undo natively via execCommand
       }
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
