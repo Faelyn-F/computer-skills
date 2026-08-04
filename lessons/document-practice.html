@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <a href="#main-content" class="skip-link">Skip to practice / رفتن به تمرین</a>
+  <a href="#main-content" class="skip-link">Skip to editor / رفتن به ویرایشگر</a>
 
   <header class="page-header">
     <h1>📄 Document Practice</h1>
@@ -17,24 +17,173 @@
     </p>
   </header>
 
-  <main id="main-content" class="main-content" tabindex="-1">
+  <main id="main-content" class="doc-editor-wrapper" tabindex="-1">
 
-    <!-- Placeholder Message -->
-    <div class="coming-soon" style="margin-top:0;">
-      <span class="cs-icon" aria-hidden="true" style="font-size:64px;display:block;margin-bottom:var(--spacing-md);">🚧</span>
-      <h2 style="color:var(--color-text);margin-bottom:var(--spacing-sm);">
-        Document practice is being prepared.
-      </h2>
-      <p lang="fa" dir="rtl" style="font-family:var(--font-family-fa);font-size:var(--font-size-lg);color:#555;margin-bottom:var(--spacing-md);">
-        تمرین سند در حال آماده‌سازی است.
-      </p>
-      <p style="color:#888;max-width:500px;margin-left:auto;margin-right:auto;">
-        The interactive document editor and practice tasks will be available soon. Please check back later.
-      </p>
-      <p lang="fa" dir="rtl" style="font-family:var(--font-family-fa);color:#888;max-width:500px;margin-left:auto;margin-right:auto;">
-        ویرایشگر تعاملی سند و تمرین‌های عملی به زودی در دسترس خواهد بود. لطفاً بعداً دوباره بررسی کنید.
-      </p>
+    <!-- ============================================================
+         Editor Toolbar
+         ============================================================ -->
+    <div class="doc-editor-toolbar" role="toolbar" aria-label="Document editor toolbar">
+
+      <!-- New document -->
+      <button type="button" class="doc-tb-btn" id="btn-new" aria-label="New document">
+        <span aria-hidden="true">＋</span> New
+        <span class="doc-tb-fa" lang="fa" dir="rtl">جدید</span>
+      </button>
+
+      <span class="doc-tb-sep"></span>
+
+      <!-- Undo -->
+      <button type="button" class="doc-tb-btn" id="btn-undo" aria-label="Undo">
+        <span aria-hidden="true">↩</span> Undo
+        <span class="doc-tb-fa" lang="fa" dir="rtl">برگردان</span>
+      </button>
+
+      <span class="doc-tb-sep"></span>
+
+      <!-- Bold -->
+      <button type="button" class="doc-tb-btn doc-bold-btn" id="btn-bold" aria-label="Bold" aria-pressed="false">
+        <strong>B</strong>
+      </button>
+
+      <!-- Font dropdown -->
+      <span class="doc-tb-dropdown-wrapper" id="font-dropdown-wrapper">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-font" aria-label="Font" aria-haspopup="listbox">
+          <span id="btn-font-label">Arial</span> ▾
+        </button>
+        <ul class="doc-tb-dropdown-menu" id="font-menu" role="listbox" aria-label="Font family" hidden>
+          <li role="option" data-value="Arial" aria-selected="true">Arial</li>
+          <li role="option" data-value="Times New Roman">Times New Roman</li>
+          <li role="option" data-value="Calibri">Calibri</li>
+          <li role="option" data-value="Georgia">Georgia</li>
+        </ul>
+      </span>
+
+      <!-- Font size dropdown -->
+      <span class="doc-tb-dropdown-wrapper" id="fontsize-dropdown-wrapper">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-fontsize" aria-label="Font size" aria-haspopup="listbox">
+          <span id="btn-fontsize-label">11</span> ▾
+        </button>
+        <ul class="doc-tb-dropdown-menu" id="fontsize-menu" role="listbox" aria-label="Font size" hidden>
+          <li role="option" data-value="10">10</li>
+          <li role="option" data-value="11" aria-selected="true">11</li>
+          <li role="option" data-value="12">12</li>
+          <li role="option" data-value="14">14</li>
+          <li role="option" data-value="16">16</li>
+          <li role="option" data-value="18">18</li>
+          <li role="option" data-value="20">20</li>
+          <li role="option" data-value="24">24</li>
+        </ul>
+      </span>
+
+      <span class="doc-tb-sep"></span>
+
+      <!-- File menu -->
+      <span class="doc-tb-dropdown-wrapper" id="file-dropdown-wrapper">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-file" aria-label="File menu" aria-haspopup="menu">
+          File ▾
+        </button>
+        <ul class="doc-tb-dropdown-menu" id="file-menu" role="menu" aria-label="File" hidden>
+          <li role="menuitem" data-action="new">📄 New document</li>
+          <li role="menuitem" data-action="save">💾 Save</li>
+          <li role="separator"></li>
+          <li role="menuitem" data-action="download-txt">📥 Download as text</li>
+          <li role="menuitem" data-action="download-pdf">📕 Download as PDF</li>
+          <li role="separator"></li>
+          <li role="menuitem" data-action="print">🖨️ Print</li>
+        </ul>
+      </span>
+
+      <!-- Insert menu -->
+      <span class="doc-tb-dropdown-wrapper" id="insert-dropdown-wrapper">
+        <button type="button" class="doc-tb-btn doc-tb-dropdown-btn" id="btn-insert" aria-label="Insert menu" aria-haspopup="menu">
+          Insert ▾
+        </button>
+        <ul class="doc-tb-dropdown-menu" id="insert-menu" role="menu" aria-label="Insert" hidden>
+          <li role="menuitem" data-action="page-numbers">🔢 Page numbers
+            <span class="doc-menu-submenu-arrow">▸</span>
+            <ul class="doc-tb-dropdown-submenu" hidden>
+              <li role="menuitem" data-action="pn-top">⬆ Top of page</li>
+              <li role="menuitem" data-action="pn-bottom">⬇ Bottom of page</li>
+              <li role="menuitem" data-action="pn-none">✕ None</li>
+            </ul>
+          </li>
+          <li role="menuitem" data-action="insert-date">📅 Date</li>
+          <li role="separator"></li>
+          <li role="menuitem" data-action="page-break">➖ Page break</li>
+        </ul>
+      </span>
+
+      <!-- Save status -->
+      <span class="doc-tb-save-status" id="save-status" aria-live="polite">
+        <span class="doc-save-icon" aria-hidden="true">☁️</span>
+        <span class="doc-save-en">Saved</span>
+        <span class="doc-save-fa" lang="fa" dir="rtl">ذخیره شد</span>
+      </span>
+
     </div>
+
+    <!-- ============================================================
+         Editor Layout: Side Panel + Document Area
+         ============================================================ -->
+    <div class="doc-editor-layout">
+
+      <!-- Side panel (future tasks) -->
+      <aside class="doc-side-panel" aria-label="Tasks panel">
+        <div class="doc-side-placeholder">
+          <span aria-hidden="true" style="font-size:32px;display:block;margin-bottom:8px;">📋</span>
+          <p class="doc-side-en">Tasks will be added in the next phase.</p>
+          <p class="doc-side-fa" lang="fa" dir="rtl">تمرین‌ها در مرحله بعدی اضافه خواهند شد.</p>
+        </div>
+      </aside>
+
+      <!-- Document area -->
+      <div class="doc-editor-main">
+
+        <!-- Document name bar -->
+        <div class="doc-name-bar">
+          <span aria-hidden="true" style="font-size:20px;">📄</span>
+          <input type="text" class="doc-name-input" id="doc-name-input" value="Untitled document" aria-label="Document name" dir="ltr">
+        </div>
+
+        <!-- Document page -->
+        <div class="doc-page-wrapper">
+          <div class="doc-page" id="doc-page" role="document" aria-label="Document page">
+
+            <!-- Page number: top -->
+            <div class="doc-page-number doc-page-number-top" id="page-number-top" aria-hidden="true">1</div>
+
+            <!-- Editable content -->
+            <div
+              class="doc-content"
+              id="doc-content"
+              contenteditable="true"
+              role="textbox"
+              aria-multiline="true"
+              aria-label="Document content. Type your text here."
+              spellcheck="true"
+              style="font-family:Arial;font-size:11pt;"
+            ></div>
+
+            <!-- Page number: bottom -->
+            <div class="doc-page-number doc-page-number-bottom" id="page-number-bottom" aria-hidden="true">1</div>
+
+          </div>
+        </div>
+
+        <!-- Footer area for future page numbers info -->
+        <div class="doc-page-footer" id="page-footer">
+          <span class="doc-footer-label">Page:</span> <span id="page-footer-num">1</span>
+          <span class="doc-footer-label-fa" lang="fa" dir="rtl">صفحه:</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+         PDF Placeholder Toast
+         ============================================================ -->
+    <div class="doc-toast" id="doc-toast" aria-live="polite" hidden></div>
 
   </main>
 
@@ -53,14 +202,577 @@
   <script src="../js/language.js"></script>
   <script src="../js/main.js"></script>
   <script>
-    /* Set Home button to the correct language homepage */
-    (function() {
-      var lang = document.documentElement.getAttribute('data-lang') || 'fa';
-      var homeBtn = document.getElementById('home-btn');
-      if (homeBtn) {
-        homeBtn.href = '../' + lang + '/index.html';
+  /* ============================================================
+     Document Practice — Virtual Editor
+     Phase 2: Editor framework, no tasks yet
+     ============================================================ */
+  (function() {
+    'use strict';
+
+    /* ---- localStorage keys ---- */
+    var KEYS = {
+      NAME: 'computerSkillsDocumentName',
+      CONTENT: 'computerSkillsDocumentContent',
+      SETTINGS: 'computerSkillsDocumentSettings',
+      PAGE_NUMBERS: 'computerSkillsDocumentPageNumbers'
+    };
+
+    /* ---- DOM refs ---- */
+    var docContent = document.getElementById('doc-content');
+    var docNameInput = document.getElementById('doc-name-input');
+    var saveStatus = document.getElementById('save-status');
+    var btnBold = document.getElementById('btn-bold');
+    var btnUndo = document.getElementById('btn-undo');
+    var btnNew = document.getElementById('btn-new');
+    var docToast = document.getElementById('doc-toast');
+    var pageNumberTop = document.getElementById('page-number-top');
+    var pageNumberBottom = document.getElementById('page-number-bottom');
+    var pageFooterNum = document.getElementById('page-footer-num');
+
+    /* ---- State ---- */
+    var currentFont = 'Arial';
+    var currentFontSize = '11';
+    var boldActive = false;
+    var saveTimer = null;
+    var pageNumberPos = 'none'; // 'top' | 'bottom' | 'none'
+
+    /* ---- Helpers ---- */
+
+    function showSaving() {
+      saveStatus.className = 'doc-tb-save-status saving';
+      var en = saveStatus.querySelector('.doc-save-en');
+      var fa = saveStatus.querySelector('.doc-save-fa');
+      if (en) en.textContent = 'Saving...';
+      if (fa) fa.textContent = 'در حال ذخیره...';
+    }
+
+    function showSaved() {
+      saveStatus.className = 'doc-tb-save-status saved';
+      var en = saveStatus.querySelector('.doc-save-en');
+      var fa = saveStatus.querySelector('.doc-save-fa');
+      if (en) en.textContent = 'Saved';
+      if (fa) fa.textContent = 'ذخیره شد';
+    }
+
+    function debounceSave() {
+      showSaving();
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(function() {
+        persistAll();
+        showSaved();
+      }, 800);
+    }
+
+    function showToast(msgEn, msgFa, duration) {
+      duration = duration || 2500;
+      docToast.innerHTML =
+        '<span class="doc-toast-en">' + msgEn + '</span>' +
+        '<span class="doc-toast-fa" lang="fa" dir="rtl">' + msgFa + '</span>';
+      docToast.hidden = false;
+      docToast.className = 'doc-toast visible';
+      clearTimeout(docToast._timeout);
+      docToast._timeout = setTimeout(function() {
+        docToast.className = 'doc-toast';
+        setTimeout(function() { docToast.hidden = true; }, 300);
+      }, duration);
+    }
+
+    /* ---- Persistence ---- */
+
+    function persistAll() {
+      try {
+        localStorage.setItem(KEYS.NAME, docNameInput.value);
+        localStorage.setItem(KEYS.CONTENT, docContent.innerHTML);
+        localStorage.setItem(KEYS.SETTINGS, JSON.stringify({
+          font: currentFont,
+          fontSize: currentFontSize,
+          boldActive: boldActive
+        }));
+        localStorage.setItem(KEYS.PAGE_NUMBERS, JSON.stringify({
+          position: pageNumberPos
+        }));
+      } catch (e) {
+        // localStorage full or unavailable
       }
-    })();
+    }
+
+    function restoreAll() {
+      try {
+        var name = localStorage.getItem(KEYS.NAME);
+        if (name !== null && name !== '') {
+          docNameInput.value = name;
+        }
+
+        var content = localStorage.getItem(KEYS.CONTENT);
+        if (content !== null) {
+          docContent.innerHTML = content;
+        }
+
+        var settings = localStorage.getItem(KEYS.SETTINGS);
+        if (settings) {
+          var s = JSON.parse(settings);
+          currentFont = s.font || 'Arial';
+          currentFontSize = s.fontSize || '11';
+          boldActive = s.boldActive || false;
+          applyFontToEditor(currentFont);
+          applyFontSizeToEditor(currentFontSize);
+          updateBoldState();
+          updateFontLabel();
+          updateFontSizeLabel();
+        }
+
+        var pn = localStorage.getItem(KEYS.PAGE_NUMBERS);
+        if (pn) {
+          var p = JSON.parse(pn);
+          pageNumberPos = p.position || 'none';
+          updatePageNumberDisplay();
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    /* ---- Font & Formatting ---- */
+
+    function applyFontToEditor(font) {
+      currentFont = font;
+      docContent.style.fontFamily = font;
+      try {
+        document.execCommand('fontName', false, font);
+      } catch (e) {}
+      updateFontLabel();
+    }
+
+    function applyFontSizeToEditor(size) {
+      currentFontSize = size;
+      docContent.style.fontSize = size + 'pt';
+      // execCommand fontSize uses 1-7 mapping; use CSS for precision
+      try {
+        // Map pt to 1-7 for execCommand as best-effort
+        var map = {10:1, 11:1, 12:2, 14:3, 16:4, 18:5, 20:6, 24:7};
+        document.execCommand('fontSize', false, map[size] || 3);
+      } catch(e) {}
+      updateFontSizeLabel();
+    }
+
+    function updateFontLabel() {
+      var lbl = document.getElementById('btn-font-label');
+      if (lbl) lbl.textContent = currentFont;
+      // Update font menu selection
+      var items = document.querySelectorAll('#font-menu [role="option"]');
+      items.forEach(function(item) {
+        item.setAttribute('aria-selected', item.getAttribute('data-value') === currentFont ? 'true' : 'false');
+      });
+    }
+
+    function updateFontSizeLabel() {
+      var lbl = document.getElementById('btn-fontsize-label');
+      if (lbl) lbl.textContent = currentFontSize;
+      var items = document.querySelectorAll('#fontsize-menu [role="option"]');
+      items.forEach(function(item) {
+        item.setAttribute('aria-selected', item.getAttribute('data-value') === currentFontSize ? 'true' : 'false');
+      });
+    }
+
+    function updateBoldState() {
+      if (boldActive) {
+        btnBold.classList.add('active');
+        btnBold.setAttribute('aria-pressed', 'true');
+      } else {
+        btnBold.classList.remove('active');
+        btnBold.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    function toggleBold() {
+      boldActive = !boldActive;
+      try {
+        document.execCommand('bold');
+      } catch(e) {}
+      updateBoldState();
+      debounceSave();
+      docContent.focus();
+    }
+
+    /* ---- Page Numbers ---- */
+
+    function updatePageNumberDisplay() {
+      if (pageNumberPos === 'top') {
+        pageNumberTop.style.display = 'block';
+        pageNumberBottom.style.display = 'none';
+        pageFooterNum.textContent = '1';
+      } else if (pageNumberPos === 'bottom') {
+        pageNumberTop.style.display = 'none';
+        pageNumberBottom.style.display = 'block';
+        pageFooterNum.textContent = '1';
+      } else {
+        pageNumberTop.style.display = 'none';
+        pageNumberBottom.style.display = 'none';
+        pageFooterNum.textContent = '—';
+      }
+    }
+
+    function setPageNumberPosition(pos) {
+      pageNumberPos = pos;
+      updatePageNumberDisplay();
+      debounceSave();
+    }
+
+    /* ---- New Document ---- */
+
+    function newDocument() {
+      // Check if content is non-empty
+      var hasContent = docContent.innerText.trim().length > 0 ||
+        docNameInput.value !== 'Untitled document';
+      if (hasContent) {
+        if (!confirm(
+          'Start a new document? Current content will be lost.\n\n' +
+          'یک سند جدید شروع کنید؟ محتوای فعلی از بین می‌رود.'
+        )) {
+          return;
+        }
+      }
+      docContent.innerHTML = '';
+      docNameInput.value = 'Untitled document';
+      currentFont = 'Arial';
+      currentFontSize = '11';
+      boldActive = false;
+      pageNumberPos = 'none';
+      docContent.style.fontFamily = 'Arial';
+      docContent.style.fontSize = '11pt';
+      applyFontToEditor('Arial');
+      applyFontSizeToEditor('11');
+      updateBoldState();
+      updatePageNumberDisplay();
+      showSaving();
+      persistAll();
+      // Short delay then show saved
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(function() { showSaved(); }, 400);
+      docContent.focus();
+    }
+
+    /* ---- Download as text ---- */
+
+    function downloadAsText() {
+      var text = docContent.innerText || '';
+      var name = docNameInput.value.replace(/\.txt$/i, '') || 'document';
+      var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(
+        'Downloaded as text file.',
+        'فایل متنی دانلود شد.',
+        2000
+      );
+    }
+
+    /* ---- Download as PDF (placeholder) ---- */
+
+    function downloadAsPDF() {
+      showToast(
+        'PDF download will be added in a later phase.',
+        'دانلود PDF در مرحله بعدی اضافه خواهد شد.',
+        3000
+      );
+    }
+
+    /* ---- Print ---- */
+
+    function printDocument() {
+      window.print();
+    }
+
+    /* ---- Insert Date ---- */
+
+    function insertDate() {
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      docContent.focus();
+      try {
+        document.execCommand('insertText', false, dateStr);
+      } catch(e) {
+        // Fallback
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+          var range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(dateStr));
+          range.collapse(false);
+        }
+      }
+      debounceSave();
+      showToast('Date inserted.', 'تاریخ درج شد.', 1500);
+    }
+
+    /* ---- Insert Page Break (placeholder) ---- */
+
+    function insertPageBreak() {
+      docContent.focus();
+      var hr = document.createElement('hr');
+      hr.style.border = 'none';
+      hr.style.borderTop = '2px dashed #ccc';
+      hr.style.margin = '16px 0';
+      hr.setAttribute('data-page-break', 'true');
+      try {
+        document.execCommand('insertHTML', false, hr.outerHTML);
+      } catch(e) {
+        // Fallback
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+          var range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(hr);
+          range.collapse(false);
+        }
+      }
+      debounceSave();
+      showToast('Page break added (visual only).', 'جداساز صفحه اضافه شد (فقط تصویری).', 2000);
+    }
+
+    /* ---- Dropdown management ---- */
+
+    var openDropdown = null;
+
+    function closeAllDropdowns() {
+      var menus = document.querySelectorAll('.doc-tb-dropdown-menu, .doc-tb-dropdown-submenu');
+      menus.forEach(function(m) { m.hidden = true; });
+      openDropdown = null;
+    }
+
+    function toggleDropdown(menu, btn) {
+      if (menu.hidden) {
+        closeAllDropdowns();
+        menu.hidden = false;
+        openDropdown = { menu: menu, btn: btn };
+        // Position submenu correctly
+        positionSubmenus(menu);
+      } else {
+        menu.hidden = true;
+        openDropdown = null;
+      }
+    }
+
+    function positionSubmenus(menu) {
+      var submenus = menu.querySelectorAll('.doc-tb-dropdown-submenu');
+      submenus.forEach(function(sub) {
+        sub.hidden = true;
+      });
+    }
+
+    /* ---- Menu action dispatcher ---- */
+
+    function handleMenuAction(action) {
+      switch(action) {
+        case 'new': newDocument(); break;
+        case 'save': persistAll(); showSaved(); showToast('Document saved.', 'سند ذخیره شد.', 1500); break;
+        case 'download-txt': downloadAsText(); break;
+        case 'download-pdf': downloadAsPDF(); break;
+        case 'print': printDocument(); break;
+        case 'page-numbers': /* handled by submenu hover */ break;
+        case 'pn-top': setPageNumberPosition('top'); showToast('Page number: top of page.', 'شماره صفحه: بالای صفحه.', 1500); break;
+        case 'pn-bottom': setPageNumberPosition('bottom'); showToast('Page number: bottom of page.', 'شماره صفحه: پایین صفحه.', 1500); break;
+        case 'pn-none': setPageNumberPosition('none'); showToast('Page number removed.', 'شماره صفحه حذف شد.', 1500); break;
+        case 'insert-date': insertDate(); break;
+        case 'page-break': insertPageBreak(); break;
+      }
+      closeAllDropdowns();
+    }
+
+    /* ---- Event Listeners ---- */
+
+    // New document
+    btnNew.addEventListener('click', newDocument);
+
+    // Undo
+    btnUndo.addEventListener('click', function() {
+      docContent.focus();
+      try {
+        document.execCommand('undo');
+      } catch(e) {}
+      debounceSave();
+    });
+
+    // Bold
+    btnBold.addEventListener('click', toggleBold);
+
+    // Document name
+    docNameInput.addEventListener('input', function() {
+      debounceSave();
+    });
+    docNameInput.addEventListener('blur', function() {
+      if (docNameInput.value.trim() === '') {
+        docNameInput.value = 'Untitled document';
+      }
+      persistAll();
+      showSaved();
+    });
+    docNameInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        docNameInput.blur();
+        docContent.focus();
+      }
+    });
+
+    // Document content changes
+    docContent.addEventListener('input', function() {
+      debounceSave();
+      // Check if bold state changed
+      var isBold = document.queryCommandState('bold');
+      if (isBold !== boldActive) {
+        boldActive = isBold;
+        updateBoldState();
+      }
+    });
+
+    // Track selection changes for bold state
+    document.addEventListener('selectionchange', function() {
+      if (document.activeElement === docContent || docContent.contains(document.activeElement)) {
+        try {
+          var isBold = document.queryCommandState('bold');
+          if (isBold !== boldActive) {
+            boldActive = isBold;
+            updateBoldState();
+          }
+        } catch(e) {}
+      }
+    });
+
+    // Font dropdown
+    document.getElementById('btn-font').addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleDropdown(document.getElementById('font-menu'), this);
+    });
+    document.getElementById('font-menu').addEventListener('click', function(e) {
+      var opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      var font = opt.getAttribute('data-value');
+      applyFontToEditor(font);
+      closeAllDropdowns();
+      docContent.focus();
+      debounceSave();
+    });
+
+    // Font size dropdown
+    document.getElementById('btn-fontsize').addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleDropdown(document.getElementById('fontsize-menu'), this);
+    });
+    document.getElementById('fontsize-menu').addEventListener('click', function(e) {
+      var opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      var size = opt.getAttribute('data-value');
+      applyFontSizeToEditor(size);
+      closeAllDropdowns();
+      docContent.focus();
+      debounceSave();
+    });
+
+    // File menu
+    document.getElementById('btn-file').addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleDropdown(document.getElementById('file-menu'), this);
+    });
+    document.getElementById('file-menu').addEventListener('click', function(e) {
+      var item = e.target.closest('[role="menuitem"]');
+      if (!item) return;
+      var action = item.getAttribute('data-action');
+      if (action) handleMenuAction(action);
+    });
+
+    // Insert menu
+    document.getElementById('btn-insert').addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleDropdown(document.getElementById('insert-menu'), this);
+    });
+    document.getElementById('insert-menu').addEventListener('click', function(e) {
+      var item = e.target.closest('[role="menuitem"]');
+      if (!item) return;
+      var action = item.getAttribute('data-action');
+      if (action) handleMenuAction(action);
+      // Also check submenu items
+      var subItem = e.target.closest('.doc-tb-dropdown-submenu [role="menuitem"]');
+      if (subItem) {
+        var subAction = subItem.getAttribute('data-action');
+        if (subAction) handleMenuAction(subAction);
+      }
+    });
+
+    // Submenu hover (Page numbers)
+    var pageNumbersMenuItem = document.querySelector('#insert-menu [data-action="page-numbers"]');
+    var pageNumbersSubmenu = pageNumbersMenuItem ? pageNumbersMenuItem.querySelector('.doc-tb-dropdown-submenu') : null;
+    if (pageNumbersMenuItem && pageNumbersSubmenu) {
+      pageNumbersMenuItem.addEventListener('mouseenter', function() {
+        pageNumbersSubmenu.hidden = false;
+      });
+      pageNumbersMenuItem.addEventListener('mouseleave', function() {
+        pageNumbersSubmenu.hidden = true;
+      });
+      // Keep open when hovering submenu
+      pageNumbersSubmenu.addEventListener('mouseenter', function() {
+        pageNumbersSubmenu.hidden = false;
+      });
+      pageNumbersSubmenu.addEventListener('mouseleave', function() {
+        pageNumbersSubmenu.hidden = true;
+      });
+    }
+
+    // Close dropdowns: click outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.doc-tb-dropdown-wrapper')) {
+        closeAllDropdowns();
+      }
+    });
+
+    // Close dropdowns: Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeAllDropdowns();
+        // Focus back to the button that opened the menu
+        if (openDropdown && openDropdown.btn) {
+          openDropdown.btn.focus();
+        }
+      }
+    });
+
+    // Keyboard shortcut: Ctrl+B for bold
+    docContent.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        toggleBold();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        // Let browser handle undo natively via execCommand
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        persistAll();
+        showSaved();
+        showToast('Document saved.', 'سند ذخیره شد.', 1500);
+      }
+    });
+
+    // Home button language
+    var lang = document.documentElement.getAttribute('data-lang') || 'fa';
+    var homeBtn = document.getElementById('home-btn');
+    if (homeBtn) {
+      homeBtn.href = '../' + lang + '/index.html';
+    }
+
+    /* ---- Init ---- */
+    restoreAll();
+    showSaved();
+
+  })();
   </script>
 </body>
 </html>

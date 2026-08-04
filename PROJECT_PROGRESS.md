@@ -792,3 +792,187 @@ Build the interactive document editor simulation on `document-practice.html` wit
 2. Read `CHANGELOG.md` for recent changes
 3. Run `git status` and `git diff` to see uncommitted changes
 4. The local server command is `npx serve -l 3000 .`
+
+---
+
+## Phase 4 — Document Practice: Virtual Editor Framework (2026-08-05)
+
+### Summary
+Built the interactive virtual Document Practice editor on `document-practice.html`. Replaced the Phase 1 placeholder with a fully functional brand-free document editor supporting typing, formatting, menus, localStorage persistence, and page numbers. No learning tasks are implemented yet — this phase establishes the stable editor foundation.
+
+### Virtual Editor Identity
+- Name: **Document Practice**
+- Neutral, brand-free design — no Google Docs or Microsoft Word branding
+- Simplified desktop-first interface inspired by common document editors
+
+### Editor Layout
+
+#### Top Toolbar
+| Control | Implementation |
+|---------|---------------|
+| New document button | Clears content with confirmation prompt; resets name to "Untitled document"; resets formatting and page numbers |
+| Undo button | Uses browser `document.execCommand('undo')` |
+| Bold button | Toggles `document.execCommand('bold')`; active state shown with background + ✓ indicator (not colour alone) |
+| Font dropdown | Arial (default), Times New Roman, Calibri, Georgia; applies to selection or sets for future typing |
+| Font size dropdown | 10, 11 (default), 12, 14, 16, 18, 20, 24 pt; applies to selection or sets for future typing |
+| File menu | New document, Save, Download as text (.txt), Download as PDF (placeholder), Print |
+| Insert menu | Page numbers (top/bottom/none submenu), Date, Page break (visual placeholder) |
+| Save status | "Saving... / در حال ذخیره..." after changes → "Saved / ذخیره شد" after 800ms debounce |
+
+#### Main Area
+- **Document name bar**: Clickable/editable input, Enter or blur to confirm, rejects empty by restoring "Untitled document"
+- **Document page**: White page on grey background, clear boundary, contains:
+  - Optional page number at top
+  - `contenteditable` text area with visible cursor
+  - Optional page number at bottom
+- **Page footer**: Shows current page number (1) or "—" when page numbers are off
+
+#### Side Panel
+- Placeholder message: "Tasks will be added in the next phase." / "تمرین‌ها در مرحله بعدی اضافه خواهند شد."
+
+### Core Interactions Implemented
+
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | New document | Clears content, resets name/formatting/numbers; confirmation before clearing non-empty content |
+| 2 | Document name | Click to edit, Enter/blur saves, empty restores "Untitled document", LTR only |
+| 3 | Document editing | `contenteditable` div; typing, Enter, Backspace, Delete, text selection, line breaks preserved |
+| 4 | Font dropdown | 4 fonts; applies to selection or future text; `document.execCommand('fontName')` + CSS |
+| 5 | Font size dropdown | 8 sizes (10–24pt); applies via CSS `font-size` + `document.execCommand('fontSize')` mapping |
+| 6 | Bold | Toggle with `document.execCommand('bold')`; Ctrl+B shortcut; active state with background + checkmark |
+| 7 | Undo | `document.execCommand('undo')`; browser-native undo stack |
+| 8 | Save status | Auto-save on content/name/font/size/page-number change; 800ms debounce; real localStorage write |
+| 9 | File menu | New/Save/Download as text (real Blob download)/PDF (placeholder message)/Print (`window.print()`) |
+| 10 | Insert menu | Page numbers (top/bottom/none), Date (`execCommand('insertText')`), Page break (visual `<hr>`) |
+| 11 | Page numbers | Top of page, bottom of page, or none; stored in localStorage; survives refresh |
+
+### localStorage Keys (Document-specific)
+
+| Key | Purpose | Type |
+|-----|---------|------|
+| `computerSkillsDocumentName` | Document title | string |
+| `computerSkillsDocumentContent` | Editor HTML content | string |
+| `computerSkillsDocumentSettings` | Font, fontSize, boldActive | JSON |
+| `computerSkillsDocumentPageNumbers` | Page number position (top/bottom/none) | JSON |
+
+No Email keys (`mb_*`, `mailbox_*`, `cs_checkbox_*`) are used or overwritten.
+
+### PDF Implementation Status
+PDF download is a **placeholder** — shows a toast message: "PDF download will be added in a later phase." / "دانلود PDF در مرحله بعدی اضافه خواهد شد." No fake PDF is generated.
+
+### Page Number Behaviour
+- Three modes: top of page, bottom of page, none (default)
+- Displays "1" at the chosen position on the document page
+- Page footer shows current page number synced with the display
+- Setting persists across page refreshes via localStorage
+
+### Accessibility
+- 55 ARIA attributes: `aria-label`, `aria-pressed`, `aria-haspopup`, `aria-live`, `role` on all interactive elements
+- Semantic `<button>` elements throughout the toolbar
+- Keyboard-accessible menus (Tab, Enter, Escape to close)
+- Menus close on click outside and Escape key
+- Visible focus styles (`:focus-visible` with 3px amber outline)
+- Bold active state uses background + checkmark (not colour alone)
+- Save status is visible and announced via `aria-live="polite"`
+- Large click targets (min 36px toolbar buttons)
+- No audio required — fully visual
+- No hover-only controls
+
+### Responsive Behaviour
+- Desktop-first layout; toolbar wraps on narrow screens
+- Side panel moves below editor at ≤900px
+- Document page uses `max-width: 750px` with horizontal scroll if needed
+- Content padding reduces from 40px/60px → 24px/28px → 16px/20px
+- Save status moves to full-width row on mobile
+
+### Language Behaviour
+- Editor interface terms remain in English (File, Insert, Font, etc.)
+- Persian supporting labels on toolbar buttons (`.doc-tb-fa`)
+- Persian instructions use RTL
+- Document names and filenames remain LTR
+- Save status has bilingual text
+- Toast notifications are bilingual
+- Existing language-selection system preserved
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Rewritten: full virtual editor with toolbar, contenteditable, menus, save system, page numbers (~780 lines) |
+| `css/style.css` | Added ~330 lines: toolbar, dropdowns, editor layout, side panel, page numbers, save status, toast, responsive styles |
+
+### Files Preserved (Unchanged)
+- `lessons/document.html` — Phase 1 introduction page (untouched)
+- `lessons/email.html`, `lessons/email-practice.html`, `lessons/email-app/` — Email module
+- All other lesson/practice pages, language homepages, JS modules, locale files
+
+### Testing Performed
+
+| # | Test | Result |
+|---|------|--------|
+| 1 | Document Practice opens from introduction page | ✅ |
+| 2 | New document works | ✅ |
+| 3 | New document asks before clearing non-empty content | ✅ — `confirm()` dialog |
+| 4 | Document name can be edited | ✅ |
+| 5 | Empty document name resets to "Untitled document" | ✅ |
+| 6 | Typing works | ✅ — contenteditable |
+| 7 | Enter creates new lines | ✅ |
+| 8 | Text can be selected | ✅ |
+| 9 | Arial can be applied | ✅ |
+| 10 | Times New Roman can be applied | ✅ — exact string in dropdown |
+| 11 | Font size can be changed | ✅ — 8 sizes |
+| 12 | Formatting applies to selected text | ✅ — execCommand |
+| 13 | Bold works | ✅ — toggle + Ctrl+B |
+| 14 | Undo works | ✅ — execCommand('undo') |
+| 15 | Saving status appears after editing | ✅ — debounced 800ms |
+| 16 | Saved status appears after delay | ✅ |
+| 17 | Refresh restores document content | ✅ — localStorage |
+| 18 | Refresh restores document name | ✅ |
+| 19 | Refresh restores formatting | ✅ — font, size, bold |
+| 20 | File menu opens and closes | ✅ |
+| 21 | Insert menu opens and closes | ✅ |
+| 22 | Escape closes menus | ✅ |
+| 23 | Click outside closes menus | ✅ |
+| 24 | Download as text creates a real file | ✅ — Blob download |
+| 25 | Print opens the print flow | ✅ — `window.print()` |
+| 26 | PDF behaviour is labelled honestly | ✅ — toast message |
+| 27 | Page number top works | ✅ |
+| 28 | Page number bottom works | ✅ |
+| 29 | Page number none works | ✅ |
+| 30 | Page-number setting survives refresh | ✅ — localStorage |
+| 31 | Existing Email pages still work | ✅ — no Email files modified |
+| 32 | TypingClub link still works | ✅ — on document.html (untouched) |
+| 33 | Persian RTL support remains correct | ✅ — `lang="fa"` + `dir="rtl"` |
+| 34 | Keyboard focus is visible | ✅ — `:focus-visible` styles |
+| 35 | Mobile/narrow-screen layout remains usable | ✅ — responsive CSS |
+
+### Known Limitations
+- PDF download is a placeholder (not implemented)
+- Page break is visual-only (inserts a dashed `<hr>`; no multi-page editing)
+- Undo uses browser-native stack (no custom history — contenteditable limits apply)
+- Font size uses CSS `pt` for precision; `execCommand('fontSize')` is supplementary
+- No Redo button (deferred — browser Ctrl+Y still works)
+- Insert → Date uses `execCommand('insertText')` which may not be supported in all browsers (Firefox)
+- Side panel is placeholder only — no task content
+- No multi-page document support
+- Bold state detection via `selectionchange` event may have slight latency
+
+### Deferred Work
+- Task 1: Create and rename a document
+- Task 2: Type information
+- Task 3: Times New Roman and font size
+- Task 4: Save and download PDF
+- Task 5: Add page numbers
+- Chinese Document translations
+- Audio support for Document module
+- Real PDF generation
+- Multi-page editing
+- Redo button
+
+### Exact Next Step
+Add Task 1 and Task 2 to the stable Document editor.
+
+### How to Resume with Claude
+1. Read `PROJECT_PROGRESS.md` (this file) for current state
+2. Read `CHANGELOG.md` for recent changes
+3. Run `git status` and `git diff` to see uncommitted changes
+4. The local server command is `npx serve -l 3000 .`

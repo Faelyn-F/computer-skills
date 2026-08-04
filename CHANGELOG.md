@@ -1,6 +1,44 @@
 # Computer Skills — Changelog
 
-## 2026-08-05
+## 2026-08-05 — Phase 2: Document Practice Editor
+
+### Added
+- Full virtual Document Practice editor (`lessons/document-practice.html`) — replaced placeholder
+- Editor toolbar: New document, Undo, Bold (with active state), Font dropdown (Arial/Times New Roman/Calibri/Georgia), Font size dropdown (10–24pt)
+- File menu: New document, Save, Download as text (.txt Blob download), Download as PDF (placeholder), Print
+- Insert menu: Page numbers (top/bottom/none with submenu), Date, Page break (visual)
+- `contenteditable` document editing area with visible page boundary
+- Editable document name bar (Enter/blur to confirm, empty resets to "Untitled document")
+- Save status indicator: "Saving... / در حال ذخیره..." → "Saved / ذخیره شد" with 800ms debounce
+- Page numbers: top of page, bottom of page, or none — persists in localStorage
+- Side panel placeholder: "Tasks will be added in the next phase."
+- localStorage keys: `computerSkillsDocumentName`, `computerSkillsDocumentContent`, `computerSkillsDocumentSettings`, `computerSkillsDocumentPageNumbers`
+- Keyboard shortcuts: Ctrl+B (bold), Ctrl+S (save), Ctrl+Z (undo)
+- Accessibility: 55 ARIA attributes, keyboard-accessible menus, Escape to close, visible focus, `aria-live` save status
+- Responsive layout: side panel stacks below editor at ≤900px, compact toolbar at ≤600px
+- CSS: ~330 lines (toolbar, dropdowns, editor layout, page numbers, save status, toast, responsive)
+
+### Changed
+- `lessons/document-practice.html`: from Phase 1 placeholder → full interactive editor (~780 lines)
+- `css/style.css`: added editor styles
+
+### Preserved
+- `lessons/document.html` — Phase 1 introduction page (untouched)
+- All Email module files (email.html, email-practice.html, email-app/)
+- All language homepages, other lesson modules, JavaScript modules
+- All Email localStorage keys (`mb_*`, `mailbox_*`, `cs_checkbox_*`)
+
+### Deferred
+- Tasks 1–5 (learning task system)
+- Real PDF generation
+- Multi-page editing
+- Redo button
+- Chinese Document translations
+- Audio support for Document module
+
+---
+
+## 2026-08-05 — Phase 1: Document Introduction
 
 ### Added
 - Document introduction page (`lessons/document.html`) — short visual overview with CSS mockup editor
