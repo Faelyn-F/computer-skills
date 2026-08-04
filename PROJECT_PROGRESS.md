@@ -1046,3 +1046,226 @@ All 11 editor interactions verified after layout fix:
 
 ### Exact Next Step
 `Test the stable editor manually before adding Task 1 and Task 2.`
+
+---
+
+## Phase 5 — Document Practice: Tasks 1 & 2 (2026-08-05)
+
+### Summary
+Replaced the task placeholder panel with a fully functional bilingual task system. Implemented Task 1 (create and rename a document) and Task 2 (type simple information). Each task has specific validation, targeted feedback messages (English + Persian), and persistent progress tracking via localStorage.
+
+### Interface Refinements (Part A)
+- Added "Name:" / "نام:" label in toolbar next to the document name input
+- Increased task panel width from 220px to 260px for bilingual instruction readability
+- Toolbar remains English-only with Persian `title` tooltips
+- No standalone "Next" navigation button
+- Document page padding: 50px/60px on desktop
+
+### Task 1: Create and Rename a Document
+
+**Learning goals:** Create a new blank document, recognise the document name, change it, distinguish filename from content.
+
+**Instruction (EN):** `Create a new blank document. Change the document name to "My First Document".`
+**Instruction (FA):** `یک سند خالی جدید ایجاد کنید. نام سند را به "My First Document" تغییر دهید.`
+
+**Required learner actions:**
+1. Click New
+2. Confirm clearing the current document (if non-empty)
+3. Click the document-name field
+4. Replace "Untitled document"
+5. Enter exactly "My First Document"
+6. Press Enter or click outside to confirm
+
+**Success conditions:**
+- `task1NewAction` flag is true (learner clicked New during this attempt)
+- Document content is blank (`innerText.trim().length === 0`)
+- Document name is exactly "My First Document" (case-sensitive, trimmed)
+
+**Validation feedback:**
+
+| Condition | English | Persian |
+|-----------|---------|---------|
+| New not clicked | Start by clicking New. | ابتدا روی New کلیک کنید. |
+| Document not blank | The new document should be blank. Click New to start fresh. | سند جدید باید خالی باشد. برای شروع روی New کلیک کنید. |
+| Name incorrect | Change the document name to "My First Document". | نام سند را به "My First Document" تغییر دهید. |
+| Success | Well done. You created and named a new document. | آفرین. شما یک سند جدید ایجاد و نام‌گذاری کردید. |
+
+### Task 2: Type Simple Information
+
+**Learning goals:** Click inside the document page, type text, use Enter for new lines, understand the text cursor, type practice information.
+
+**Practice text (LTR, displayed in task panel):**
+```
+My Information
+Name: Sara
+Phone: 021 123 4567
+City: Auckland
+```
+
+**Note:** "Use the practice information shown above. Do not enter your real personal details." / "از اطلاعات تمرینی بالا استفاده کنید. اطلاعات واقعی خود را وارد نکنید."
+
+**Success conditions:**
+- Document `innerText` contains exactly four lines in correct order
+- Validation normalises line breaks (`\r\n` → `\n`)
+- Trims whitespace from each line
+- Tolerates minor extra spaces around line endings
+- Does not require specific font or font size
+- Line order must be correct
+
+**Validation feedback:**
+
+| Condition | English | Persian |
+|-----------|---------|---------|
+| Content empty | Click inside the white page and start typing. | داخل صفحه سفید کلیک کنید و شروع به تایپ کنید. |
+| Lines missing | Some information is still missing. Check all four lines. | بعضی اطلاعات هنوز وارد نشده است. هر چهار خط را بررسی کنید. |
+| Order wrong | Check the order of the four lines. | ترتیب چهار خط را بررسی کنید. |
+| No line breaks | Press Enter after each line. | بعد از هر خط Enter را فشار دهید. |
+| Success | Well done. You typed the information correctly. | آفرین. شما اطلاعات را به درستی تایپ کردید. |
+
+After Task 2 completion: "All document tasks completed. More document tasks will be added in the next phase." / "همه تمرین‌های سند کامل شد. تمرین‌های بیشتر سند در مرحله بعدی اضافه خواهند شد."
+
+### Task Navigation
+
+| State | Previous Task | Check Task | Next Task |
+|-------|:---:|:---:|:---:|
+| Task 1 (incomplete) | Hidden | Visible | Hidden |
+| Task 1 (completed) | Hidden | Visible | "Next Task ▶" (green) |
+| Task 2 (incomplete) | Visible (grey) | Visible | Hidden |
+| Task 2 (completed) | Visible | Visible | Hidden — completion message shown |
+
+- Moving between tasks does not delete the document
+- Task 1 validation distinguishes actual task completion from a previously saved filename (via `task1NewAction` flag)
+- Task 2 may assume Task 1 is completed
+
+### New localStorage Keys
+
+| Key | Purpose | Type |
+|-----|---------|------|
+| `computerSkillsDocumentCurrentTask` | Current task number (1 or 2) | number |
+| `computerSkillsDocumentCompletedTasks` | Array of completed task numbers | JSON |
+| `computerSkillsDocumentTask1NewAction` | Whether New was clicked during current Task 1 attempt | "1" or "0" |
+
+Total Document keys: 7 (4 editor + 3 task)
+
+### Reset Behaviour
+- **Trigger:** "↺ Reset Practice" button in task panel
+- **Requires:** Confirmation dialog (bilingual)
+- **Clears:** Document content, name, formatting (font/size/bold), page numbers, task progress (current task, completed tasks, task1NewAction flag)
+- **Preserves:** Email progress (`mb_*`, `cs_checkbox_*`), language preference, other course data
+- After reset: returns to Task 1, blank document, "Untitled document", default formatting
+
+### Task Panel Structure
+```
+┌─ Task header ───────────────────────────┐
+│  Task 1 of 2                            │
+│  تمرین ۱ از ۲                           │
+├─ Instruction ───────────────────────────┤
+│  Create a new blank document...         │
+│  یک سند خالی جدید ایجاد کنید...         │
+│  [Practice text block — Task 2 only]    │
+│  [Note — Task 2 only]                  │
+├─ Feedback (aria-live, hidden) ──────────┤
+├─ [✓ Check Task] ────────────────────────┤
+├─ Nav: [◀ Prev] [Next ▶] ──────────────┤
+├─ Completion state ──────────────────────┤
+├─ Badges: ✅ Task 1  ✅ Task 2 ──────────┤
+├─ [↺ Reset Practice] ────────────────────┤
+└─────────────────────────────────────────┘
+```
+
+### Accessibility
+- Check Task is a semantic `<button>`
+- Feedback region uses `aria-live="polite"` for screen reader announcement
+- Task progress is readable text
+- Focus moves to Next Task button after successful check
+- English and Persian use separate elements (no overlap)
+- Persian instructions use `lang="fa"` and `dir="rtl"`
+- Practice text remains LTR
+- Success indicated by green background + border + text (not colour alone)
+- Completed badges have ✅ emoji + text
+
+### Functional Preservation (Verified)
+All 11 editor interactions still work: New (with task tracking), Undo, Bold, Font dropdown, Font size dropdown, File menu, Insert menu, Save status (Saving... → Saved), Page numbers, Download as text, Print.
+
+### Tests Performed
+
+#### Interface
+| # | Test | Result |
+|---|------|--------|
+| 1 | Toolbar remains readable | ✅ |
+| 2 | Persian not crowded inside controls | ✅ — title tooltips only |
+| 3 | Document name label visible | ✅ — "Name:" / "نام:" |
+| 4 | Task panel wide enough for bilingual text | ✅ — 260px |
+| 5 | White page visible and editable | ✅ |
+| 6 | Save status changes from Saving... to Saved | ✅ |
+| 7 | No unrelated Next button | ✅ |
+
+#### Task 1
+| # | Test | Result |
+|---|------|--------|
+| 8 | Opening Task 1 does not auto-complete | ✅ |
+| 9 | Clicking New records the required action | ✅ — task1NewAction flag |
+| 10 | New clears content after confirmation | ✅ |
+| 11 | Incorrect filename fails validation | ✅ |
+| 12 | Correct filename without New click fails fresh attempt | ✅ |
+| 13 | Correct filename + genuine new blank doc completes Task 1 | ✅ |
+| 14 | Completion survives refresh | ✅ — localStorage |
+| 15 | Next Task appears only after success | ✅ |
+
+#### Task 2
+| # | Test | Result |
+|---|------|--------|
+| 16 | Task 2 displays exact four-line practice text | ✅ |
+| 17 | Learner must type text manually | ✅ — no auto-insert |
+| 18 | Empty content fails | ✅ |
+| 19 | Missing lines fail | ✅ |
+| 20 | Incorrect order fails | ✅ |
+| 21 | Missing line breaks produce useful feedback | ✅ |
+| 22 | Correct four-line content completes Task 2 | ✅ |
+| 23 | Minor spacing tolerated | ✅ — trim + normalise |
+| 24 | Completion survives refresh | ✅ |
+| 25 | Task 3 not exposed | ✅ |
+
+#### Regression
+| # | Test | Result |
+|---|------|--------|
+| 26 | New, Undo, Bold, font, font size still work | ✅ |
+| 27 | File and Insert menus still work | ✅ |
+| 28 | localStorage restores document | ✅ |
+| 29 | Reset clears only Document data | ✅ |
+| 30 | Email progress unchanged | ✅ |
+| 31 | Persian RTL correct | ✅ |
+| 32 | Mobile layout usable | ✅ |
+| 33 | No missing-resource console errors | ✅ |
+| 34 | GitHub Pages relative paths correct | ✅ |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Replaced side panel with full task panel; added Task 1 & 2 definitions, validation, navigation, reset, 3 new localStorage keys |
+| `css/style.css` | Added ~200 lines: doc name label, task panel components, updated responsive rules; side panel 220→260px |
+
+### Files Preserved (Unchanged)
+- `lessons/document.html` — Phase 1 introduction page
+- All Email module files
+- All other lesson modules
+- All JS modules
+- Language selection page
+
+### Deferred Work
+- Task 3: select text, Times New Roman and font size
+- Task 4: save and download as PDF
+- Task 5: add page numbers and download final PDF
+- Full Chinese Document translation
+- Audio support for Document module
+
+### Known Limitations
+- Task 1 validation is case-sensitive for "My First Document"
+- Task 2 validation requires exact line order (doesn't tolerate transposed lines)
+- PDF download is still a placeholder
+- No Redo button
+- Bold state detection via `selectionchange` has minor latency
+- Page break is visual-only
+
+### Exact Next Step
+`Test Task 1 and Task 2 with learners before implementing Task 3.`

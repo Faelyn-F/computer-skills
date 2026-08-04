@@ -31,7 +31,11 @@
 
       <span class="doc-tb-sep"></span>
 
-      <!-- Document name (in toolbar) -->
+      <!-- Document name label + input -->
+      <label class="doc-name-label" for="doc-name-input">
+        <span class="doc-name-label-en">Name:</span>
+        <span class="doc-name-label-fa" lang="fa" dir="rtl">نام:</span>
+      </label>
       <input type="text" class="doc-name-input" id="doc-name-input" value="Untitled document" aria-label="Document name" dir="ltr" title="Document name — نام سند">
 
       <span class="doc-tb-sep"></span>
@@ -124,31 +128,61 @@
 
     </div>
 
-    <!-- Persian helper bar -->
-    <div class="doc-persian-help" lang="fa" dir="rtl">
-      <span>راهنما:</span>
-      <span>جدید</span> ·
-      <span>نام سند</span> ·
-      <span>برگردان</span> ·
-      <span>پررنگ</span> ·
-      <span>قلم</span> ·
-      <span>اندازه قلم</span> ·
-      <span>فایل</span> ·
-      <span>درج</span>
-    </div>
-
     <!-- ============================================================
-         Editor Layout: Side Panel + Document Area
+         Editor Layout: Task Panel + Document Area
          ============================================================ -->
     <div class="doc-editor-layout">
 
-      <!-- Side panel (future tasks) -->
+      <!-- Task Panel -->
       <aside class="doc-side-panel" aria-label="Tasks panel">
-        <div class="doc-side-placeholder">
-          <span aria-hidden="true" class="doc-side-icon">📋</span>
-          <p class="doc-side-en">Practice tasks will be added in the next phase.</p>
-          <p class="doc-side-fa" lang="fa" dir="rtl">تمرین‌ها در مرحله بعد اضافه می‌شوند.</p>
+
+        <!-- Task header -->
+        <div class="doc-task-header">
+          <span class="doc-task-num" id="task-num">Task 1 of 2</span>
+          <span class="doc-task-num-fa" lang="fa" dir="rtl" id="task-num-fa">تمرین ۱ از ۲</span>
         </div>
+
+        <!-- Task instruction -->
+        <div class="doc-task-instruction" id="task-instruction">
+          <p class="doc-task-en" id="task-en"></p>
+          <p class="doc-task-fa" lang="fa" dir="rtl" id="task-fa"></p>
+          <div class="doc-task-practice-text" id="task-practice-text" hidden>
+            <pre class="doc-task-pre" id="task-pre"></pre>
+          </div>
+          <p class="doc-task-note-en" id="task-note-en" hidden></p>
+          <p class="doc-task-note-fa" lang="fa" dir="rtl" id="task-note-fa" hidden></p>
+        </div>
+
+        <!-- Feedback (aria-live region) -->
+        <div class="doc-task-feedback" id="task-feedback" aria-live="polite" hidden>
+          <p class="doc-feedback-en" id="feedback-en"></p>
+          <p class="doc-feedback-fa" lang="fa" dir="rtl" id="feedback-fa"></p>
+        </div>
+
+        <!-- Check Task button -->
+        <button type="button" class="doc-task-check-btn" id="btn-check-task">✓ Check Task</button>
+
+        <!-- Task navigation -->
+        <div class="doc-task-nav" id="task-nav">
+          <button type="button" class="doc-task-nav-btn" id="btn-prev-task" hidden>◀ Previous Task</button>
+          <button type="button" class="doc-task-nav-btn" id="btn-next-task" hidden>Next Task ▶</button>
+        </div>
+
+        <!-- Completion state -->
+        <div class="doc-task-complete" id="task-complete" hidden>
+          <p class="doc-complete-en" id="complete-en"></p>
+          <p class="doc-complete-fa" lang="fa" dir="rtl" id="complete-fa"></p>
+        </div>
+
+        <!-- Completed tasks badges -->
+        <div class="doc-task-badges" id="task-badges" aria-label="Completed tasks">
+          <span class="doc-task-badge" id="badge-1" hidden>✅ Task 1</span>
+          <span class="doc-task-badge" id="badge-2" hidden>✅ Task 2</span>
+        </div>
+
+        <!-- Reset -->
+        <button type="button" class="doc-reset-btn" id="btn-reset" title="Reset Document Practice progress">↺ Reset Practice</button>
+
       </aside>
 
       <!-- Document area -->
@@ -189,9 +223,7 @@
 
     </div>
 
-    <!-- ============================================================
-         Toast
-         ============================================================ -->
+    <!-- Toast -->
     <div class="doc-toast" id="doc-toast" aria-live="polite" hidden></div>
 
   </main>
@@ -211,8 +243,7 @@
   <script src="../js/main.js"></script>
   <script>
   /* ============================================================
-     Document Practice — Virtual Editor
-     Phase 2: Editor framework, no tasks yet
+     Document Practice — Virtual Editor + Tasks 1 & 2
      ============================================================ */
   (function() {
     'use strict';
@@ -222,7 +253,10 @@
       NAME: 'computerSkillsDocumentName',
       CONTENT: 'computerSkillsDocumentContent',
       SETTINGS: 'computerSkillsDocumentSettings',
-      PAGE_NUMBERS: 'computerSkillsDocumentPageNumbers'
+      PAGE_NUMBERS: 'computerSkillsDocumentPageNumbers',
+      CURRENT_TASK: 'computerSkillsDocumentCurrentTask',
+      COMPLETED_TASKS: 'computerSkillsDocumentCompletedTasks',
+      TASK1_NEW_ACTION: 'computerSkillsDocumentTask1NewAction'
     };
 
     /* ---- DOM refs ---- */
@@ -237,12 +271,120 @@
     var pageNumberBottom = document.getElementById('page-number-bottom');
     var pageFooterNum = document.getElementById('page-footer-num');
 
-    /* ---- State ---- */
+    /* ---- Task DOM refs ---- */
+    var taskNum = document.getElementById('task-num');
+    var taskNumFa = document.getElementById('task-num-fa');
+    var taskEn = document.getElementById('task-en');
+    var taskFa = document.getElementById('task-fa');
+    var taskPracticeText = document.getElementById('task-practice-text');
+    var taskPre = document.getElementById('task-pre');
+    var taskNoteEn = document.getElementById('task-note-en');
+    var taskNoteFa = document.getElementById('task-note-fa');
+    var taskFeedback = document.getElementById('task-feedback');
+    var feedbackEn = document.getElementById('feedback-en');
+    var feedbackFaEl = document.getElementById('feedback-fa');
+    var btnCheckTask = document.getElementById('btn-check-task');
+    var btnPrevTask = document.getElementById('btn-prev-task');
+    var btnNextTask = document.getElementById('btn-next-task');
+    var taskComplete = document.getElementById('task-complete');
+    var completeEn = document.getElementById('complete-en');
+    var completeFa = document.getElementById('complete-fa');
+    var badge1 = document.getElementById('badge-1');
+    var badge2 = document.getElementById('badge-2');
+    var btnReset = document.getElementById('btn-reset');
+    var taskNav = document.getElementById('task-nav');
+
+    /* ---- Editor state ---- */
     var currentFont = 'Arial';
     var currentFontSize = '11';
     var boldActive = false;
     var saveTimer = null;
-    var pageNumberPos = 'none'; // 'top' | 'bottom' | 'none'
+    var pageNumberPos = 'none';
+
+    /* ---- Task state ---- */
+    var currentTask = 1;
+    var completedTasks = [];
+    var task1NewAction = false;
+
+    /* ---- Task definitions ---- */
+    var TASKS = {
+      1: {
+        en: 'Create a new blank document. Change the document name to <strong>"My First Document"</strong>.',
+        fa: 'یک سند خالی جدید ایجاد کنید. نام سند را به <strong>"My First Document"</strong> تغییر دهید.',
+        targetName: 'My First Document'
+      },
+      2: {
+        en: 'Type the following information in the document:',
+        fa: 'اطلاعات زیر را در سند تایپ کنید:',
+        practiceText: 'My Information\nName: Sara\nPhone: 021 123 4567\nCity: Auckland',
+        noteEn: 'Use the practice information shown above. Do not enter your real personal details.',
+        noteFa: 'از اطلاعات تمرینی بالا استفاده کنید. اطلاعات واقعی خود را وارد نکنید.',
+        expectedLines: ['My Information', 'Name: Sara', 'Phone: 021 123 4567', 'City: Auckland']
+      }
+    };
+
+    /* ---- Persistence ---- */
+
+    function persistAll() {
+      try {
+        localStorage.setItem(KEYS.NAME, docNameInput.value);
+        localStorage.setItem(KEYS.CONTENT, docContent.innerHTML);
+        localStorage.setItem(KEYS.SETTINGS, JSON.stringify({
+          font: currentFont,
+          fontSize: currentFontSize,
+          boldActive: boldActive
+        }));
+        localStorage.setItem(KEYS.PAGE_NUMBERS, JSON.stringify({
+          position: pageNumberPos
+        }));
+        localStorage.setItem(KEYS.CURRENT_TASK, currentTask);
+        localStorage.setItem(KEYS.COMPLETED_TASKS, JSON.stringify(completedTasks));
+        localStorage.setItem(KEYS.TASK1_NEW_ACTION, task1NewAction ? '1' : '0');
+      } catch (e) {}
+    }
+
+    function restoreAll() {
+      try {
+        var name = localStorage.getItem(KEYS.NAME);
+        if (name !== null && name !== '') {
+          docNameInput.value = name;
+        }
+        var content = localStorage.getItem(KEYS.CONTENT);
+        if (content !== null) {
+          docContent.innerHTML = content;
+        }
+        var settings = localStorage.getItem(KEYS.SETTINGS);
+        if (settings) {
+          var s = JSON.parse(settings);
+          currentFont = s.font || 'Arial';
+          currentFontSize = s.fontSize || '11';
+          boldActive = s.boldActive || false;
+          applyFontToEditor(currentFont);
+          applyFontSizeToEditor(currentFontSize);
+          updateBoldState();
+          updateFontLabel();
+          updateFontSizeLabel();
+        }
+        var pn = localStorage.getItem(KEYS.PAGE_NUMBERS);
+        if (pn) {
+          var p = JSON.parse(pn);
+          pageNumberPos = p.position || 'none';
+          updatePageNumberDisplay();
+        }
+        // Restore task state
+        var savedTask = localStorage.getItem(KEYS.CURRENT_TASK);
+        if (savedTask) {
+          currentTask = parseInt(savedTask, 10) || 1;
+        }
+        var savedCompleted = localStorage.getItem(KEYS.COMPLETED_TASKS);
+        if (savedCompleted) {
+          completedTasks = JSON.parse(savedCompleted);
+          if (!Array.isArray(completedTasks)) completedTasks = [];
+        }
+        var savedNewAction = localStorage.getItem(KEYS.TASK1_NEW_ACTION);
+        task1NewAction = (savedNewAction === '1');
+      } catch (e) {}
+    }
 
     /* ---- Helpers ---- */
 
@@ -285,69 +427,12 @@
       }, duration);
     }
 
-    /* ---- Persistence ---- */
-
-    function persistAll() {
-      try {
-        localStorage.setItem(KEYS.NAME, docNameInput.value);
-        localStorage.setItem(KEYS.CONTENT, docContent.innerHTML);
-        localStorage.setItem(KEYS.SETTINGS, JSON.stringify({
-          font: currentFont,
-          fontSize: currentFontSize,
-          boldActive: boldActive
-        }));
-        localStorage.setItem(KEYS.PAGE_NUMBERS, JSON.stringify({
-          position: pageNumberPos
-        }));
-      } catch (e) {
-        // localStorage full or unavailable
-      }
-    }
-
-    function restoreAll() {
-      try {
-        var name = localStorage.getItem(KEYS.NAME);
-        if (name !== null && name !== '') {
-          docNameInput.value = name;
-        }
-
-        var content = localStorage.getItem(KEYS.CONTENT);
-        if (content !== null) {
-          docContent.innerHTML = content;
-        }
-
-        var settings = localStorage.getItem(KEYS.SETTINGS);
-        if (settings) {
-          var s = JSON.parse(settings);
-          currentFont = s.font || 'Arial';
-          currentFontSize = s.fontSize || '11';
-          boldActive = s.boldActive || false;
-          applyFontToEditor(currentFont);
-          applyFontSizeToEditor(currentFontSize);
-          updateBoldState();
-          updateFontLabel();
-          updateFontSizeLabel();
-        }
-
-        var pn = localStorage.getItem(KEYS.PAGE_NUMBERS);
-        if (pn) {
-          var p = JSON.parse(pn);
-          pageNumberPos = p.position || 'none';
-          updatePageNumberDisplay();
-        }
-      } catch (e) {
-        // ignore
-      }
-    }
-
     /* ---- Font & Formatting ---- */
 
     function applyFontToEditor(font) {
       currentFont = font;
       docContent.style.fontFamily = font;
-      try {
-        document.execCommand('fontName', false, font);
-      } catch (e) {}
+      try { document.execCommand('fontName', false, font); } catch (e) {}
       updateFontLabel();
     }
 
@@ -391,9 +476,7 @@
 
     function toggleBold() {
       boldActive = !boldActive;
-      try {
-        document.execCommand('bold');
-      } catch(e) {}
+      try { document.execCommand('bold'); } catch(e) {}
       updateBoldState();
       debounceSave();
       docContent.focus();
@@ -433,7 +516,7 @@
           'Start a new document? Current content will be lost.\n\n' +
           'یک سند جدید شروع کنید؟ محتوای فعلی از بین می‌رود.'
         )) {
-          return;
+          return false;
         }
       }
       docContent.innerHTML = '';
@@ -453,9 +536,20 @@
       if (saveTimer) clearTimeout(saveTimer);
       saveTimer = setTimeout(function() { showSaved(); }, 400);
       docContent.focus();
+      return true;
     }
 
-    /* ---- Download as text ---- */
+    /* ---- Task 1: New document tracking ---- */
+
+    function onNewDocumentClicked() {
+      var result = newDocument();
+      if (result && currentTask === 1 && !isTaskCompleted(1)) {
+        task1NewAction = true;
+        persistAll();
+      }
+    }
+
+    /* ---- Downloads / Print ---- */
 
     function downloadAsText() {
       var text = docContent.innerText || '';
@@ -463,42 +557,25 @@
       var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = url;
-      a.download = name + '.txt';
+      a.href = url; a.download = name + '.txt';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast(
-        'Downloaded as text file.',
-        'فایل متنی دانلود شد.',
-        2000
-      );
+      showToast('Downloaded as text file.', 'فایل متنی دانلود شد.', 2000);
     }
-
-    /* ---- Download as PDF (placeholder) ---- */
 
     function downloadAsPDF() {
-      showToast(
-        'PDF download will be added in a later phase.',
-        'دانلود PDF در مرحله بعدی اضافه خواهد شد.',
-        3000
-      );
+      showToast('PDF download will be added in a later phase.', 'دانلود PDF در مرحله بعدی اضافه خواهد شد.', 3000);
     }
-
-    /* ---- Print ---- */
 
     function printDocument() {
       window.print();
     }
 
-    /* ---- Insert Date ---- */
-
     function insertDate() {
       var now = new Date();
-      var dateStr = now.toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
+      var dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       docContent.focus();
       try {
         document.execCommand('insertText', false, dateStr);
@@ -514,8 +591,6 @@
       debounceSave();
       showToast('Date inserted.', 'تاریخ درج شد.', 1500);
     }
-
-    /* ---- Insert Page Break (placeholder) ---- */
 
     function insertPageBreak() {
       docContent.focus();
@@ -554,30 +629,23 @@
         closeAllDropdowns();
         menu.hidden = false;
         openDropdown = { menu: menu, btn: btn };
-        positionSubmenus(menu);
+        var submenus = menu.querySelectorAll('.doc-tb-dropdown-submenu');
+        submenus.forEach(function(sub) { sub.hidden = true; });
       } else {
         menu.hidden = true;
         openDropdown = null;
       }
     }
 
-    function positionSubmenus(menu) {
-      var submenus = menu.querySelectorAll('.doc-tb-dropdown-submenu');
-      submenus.forEach(function(sub) {
-        sub.hidden = true;
-      });
-    }
-
     /* ---- Menu action dispatcher ---- */
 
     function handleMenuAction(action) {
       switch(action) {
-        case 'new': newDocument(); break;
+        case 'new': onNewDocumentClicked(); break;
         case 'save': persistAll(); showSaved(); showToast('Document saved.', 'سند ذخیره شد.', 1500); break;
         case 'download-txt': downloadAsText(); break;
         case 'download-pdf': downloadAsPDF(); break;
         case 'print': printDocument(); break;
-        case 'page-numbers': /* handled by submenu hover */ break;
         case 'pn-top': setPageNumberPosition('top'); showToast('Page number: top of page.', 'شماره صفحه: بالای صفحه.', 1500); break;
         case 'pn-bottom': setPageNumberPosition('bottom'); showToast('Page number: bottom of page.', 'شماره صفحه: پایین صفحه.', 1500); break;
         case 'pn-none': setPageNumberPosition('none'); showToast('Page number removed.', 'شماره صفحه حذف شد.', 1500); break;
@@ -587,17 +655,347 @@
       closeAllDropdowns();
     }
 
-    /* ---- Event Listeners ---- */
+    /* ================================================================
+       TASK SYSTEM
+       ================================================================ */
 
-    // New document
-    btnNew.addEventListener('click', newDocument);
+    function isTaskCompleted(num) {
+      return completedTasks.indexOf(num) !== -1;
+    }
+
+    function completeTask(num) {
+      if (!isTaskCompleted(num)) {
+        completedTasks.push(num);
+      }
+      persistAll();
+      updateBadges();
+    }
+
+    function updateBadges() {
+      if (isTaskCompleted(1)) { badge1.hidden = false; } else { badge1.hidden = true; }
+      if (isTaskCompleted(2)) { badge2.hidden = false; } else { badge2.hidden = true; }
+    }
+
+    function showFeedback(en, fa) {
+      feedbackEn.textContent = en;
+      feedbackFaEl.textContent = fa;
+      taskFeedback.hidden = false;
+    }
+
+    function hideFeedback() {
+      taskFeedback.hidden = true;
+      feedbackEn.textContent = '';
+      feedbackFaEl.textContent = '';
+    }
+
+    function showCompletionMessage() {
+      taskComplete.hidden = false;
+      if (isTaskCompleted(2)) {
+        completeEn.textContent = 'All document tasks completed. More document tasks will be added in the next phase.';
+        completeFa.textContent = 'همه تمرین‌های سند کامل شد. تمرین‌های بیشتر سند در مرحله بعدی اضافه خواهند شد.';
+      }
+    }
+
+    /* ---- Render task UI ---- */
+
+    function renderTask() {
+      var task = TASKS[currentTask];
+      hideFeedback();
+      taskComplete.hidden = true;
+
+      // Task number
+      taskNum.textContent = 'Task ' + currentTask + ' of 2';
+      taskNumFa.textContent = 'تمرین ' + currentTask + ' از ۲';
+
+      // Instruction
+      taskEn.innerHTML = task.en;
+      taskFa.innerHTML = task.fa;
+
+      // Practice text (Task 2 only)
+      if (task.practiceText) {
+        taskPre.textContent = task.practiceText;
+        taskPracticeText.hidden = false;
+      } else {
+        taskPracticeText.hidden = true;
+      }
+
+      // Note (Task 2 only)
+      if (task.noteEn) {
+        taskNoteEn.textContent = task.noteEn;
+        taskNoteEn.hidden = false;
+      } else {
+        taskNoteEn.hidden = true;
+      }
+      if (task.noteFa) {
+        taskNoteFa.textContent = task.noteFa;
+        taskNoteFa.hidden = false;
+      } else {
+        taskNoteFa.hidden = true;
+      }
+
+      // Navigation buttons
+      updateNavButtons();
+
+      // If task is already completed, show completion status
+      if (isTaskCompleted(currentTask)) {
+        showCompletedState();
+      }
+    }
+
+    function showCompletedState() {
+      if (currentTask === 1) {
+        completeEn.textContent = 'Well done. You created and named a new document.';
+        completeFa.textContent = 'آفرین. شما یک سند جدید ایجاد و نام‌گذاری کردید.';
+      } else if (currentTask === 2) {
+        completeEn.textContent = 'Well done. You typed the information correctly.';
+        completeFa.textContent = 'آفرین. شما اطلاعات را به درستی تایپ کردید.';
+      }
+      taskComplete.hidden = false;
+
+      if (isTaskCompleted(2)) {
+        // Show the "more coming" message after Task 2 completion
+        completeEn.textContent = 'Well done. You typed the information correctly.';
+        completeFa.textContent = 'آفرین. شما اطلاعات را به درستی تایپ کردید.';
+      }
+    }
+
+    function updateNavButtons() {
+      // Previous Task button
+      if (currentTask > 1) {
+        btnPrevTask.hidden = false;
+      } else {
+        btnPrevTask.hidden = true;
+      }
+
+      // Next Task button — only show after current task is completed
+      var canGoNext = isTaskCompleted(currentTask);
+      if (currentTask === 1 && canGoNext) {
+        btnNextTask.hidden = false;
+        btnNextTask.textContent = 'Next Task ▶';
+      } else if (currentTask === 2 && canGoNext) {
+        // Task 2 completed — show the "more coming" state but no Next button
+        btnNextTask.hidden = true;
+        showCompletionMessage();
+      } else if (currentTask === 2 && !canGoNext) {
+        btnNextTask.hidden = true;
+      } else {
+        btnNextTask.hidden = true;
+      }
+
+      // Show/hide task nav area
+      if (btnPrevTask.hidden && btnNextTask.hidden) {
+        taskNav.style.visibility = 'hidden';
+      } else {
+        taskNav.style.visibility = 'visible';
+      }
+    }
+
+    /* ---- Task 1 validation ---- */
+
+    function validateTask1() {
+      // Must have clicked New during this task attempt
+      if (!task1NewAction) {
+        showFeedback(
+          'Start by clicking New.',
+          'ابتدا روی New کلیک کنید.'
+        );
+        return false;
+      }
+
+      // Document must be blank
+      var text = docContent.innerText || '';
+      if (text.trim().length > 0) {
+        showFeedback(
+          'The new document should be blank. Click New to start fresh.',
+          'سند جدید باید خالی باشد. برای شروع روی New کلیک کنید.'
+        );
+        return false;
+      }
+
+      // Name must be exactly "My First Document"
+      var name = docNameInput.value.trim();
+      if (name !== 'My First Document') {
+        showFeedback(
+          'Change the document name to "My First Document".',
+          'نام سند را به "My First Document" تغییر دهید.'
+        );
+        return false;
+      }
+
+      return true;
+    }
+
+    /* ---- Task 2 validation ---- */
+
+    function validateTask2() {
+      var rawText = docContent.innerText || '';
+
+      // Normalize line breaks
+      var lines = rawText.split(/\r?\n/);
+
+      // Trim whitespace from each line
+      var trimmedLines = [];
+      for (var i = 0; i < lines.length; i++) {
+        var t = lines[i].trim();
+        if (t.length > 0) {
+          trimmedLines.push(t);
+        }
+      }
+
+      var expected = TASKS[2].expectedLines; // 4 lines
+
+      // Check if empty
+      if (trimmedLines.length === 0) {
+        showFeedback(
+          'Click inside the white page and start typing.',
+          'داخل صفحه سفید کلیک کنید و شروع به تایپ کنید.'
+        );
+        return false;
+      }
+
+      // Check line count
+      if (trimmedLines.length < expected.length) {
+        showFeedback(
+          'Some information is still missing. Check all four lines.',
+          'بعضی اطلاعات هنوز وارد نشده است. هر چهار خط را بررسی کنید.'
+        );
+        return false;
+      }
+
+      // Check for line breaks (if everything is on one line)
+      if (lines.length < expected.length) {
+        showFeedback(
+          'Press Enter after each line.',
+          'بعد از هر خط Enter را فشار دهید.'
+        );
+        return false;
+      }
+
+      // Check each expected line is present in the trimmed output
+      for (var j = 0; j < expected.length; j++) {
+        if (trimmedLines[j] !== expected[j]) {
+          // Check if lines are in wrong order or missing
+          var found = false;
+          for (var k = 0; k < trimmedLines.length; k++) {
+            if (trimmedLines[k] === expected[j]) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            showFeedback(
+              'Some information is still missing.',
+              'بعضی اطلاعات هنوز وارد نشده است.'
+            );
+          } else {
+            showFeedback(
+              'Check the order of the four lines.',
+              'ترتیب چهار خط را بررسی کنید.'
+            );
+          }
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    /* ---- Check Task button ---- */
+
+    function onCheckTask() {
+      hideFeedback();
+      var success = false;
+
+      if (currentTask === 1) {
+        success = validateTask1();
+        if (success) {
+          completeTask(1);
+          taskComplete.hidden = false;
+          completeEn.textContent = 'Well done. You created and named a new document.';
+          completeFa.textContent = 'آفرین. شما یک سند جدید ایجاد و نام‌گذاری کردید.';
+          updateNavButtons();
+          // Focus the Next Task button
+          if (!btnNextTask.hidden) {
+            btnNextTask.focus();
+          }
+        }
+      } else if (currentTask === 2) {
+        success = validateTask2();
+        if (success) {
+          completeTask(2);
+          taskComplete.hidden = false;
+          completeEn.textContent = 'Well done. You typed the information correctly.';
+          completeFa.textContent = 'آفرین. شما اطلاعات را به درستی تایپ کردید.';
+          completeFa.textContent = 'آفرین. شما اطلاعات را به درستی تایپ کردید.';
+          updateNavButtons();
+        }
+      }
+    }
+
+    /* ---- Task navigation ---- */
+
+    function goToTask(num) {
+      if (num < 1 || num > 2) return;
+      // Reset task1NewAction when switching tasks (only if not completed)
+      if (currentTask !== num && !isTaskCompleted(1)) {
+        task1NewAction = false;
+      }
+      currentTask = num;
+      persistAll();
+      renderTask();
+      updateBadges();
+    }
+
+    /* ---- Reset ---- */
+
+    function resetPractice() {
+      if (!confirm(
+        'Reset Document Practice?\n\n' +
+        'This clears the document content, name, formatting, and task progress.\n' +
+        'Email progress and language settings are not affected.\n\n' +
+        'بازنشانی تمرین سند؟\n\n' +
+        'این کار محتوای سند، نام، تنظیمات و پیشرفت تمرین را پاک می‌کند.\n' +
+        'پیشرفت ایمیل و تنظیمات زبان تحت تأثیر قرار نمی‌گیرند.'
+      )) {
+        return;
+      }
+      // Clear document data
+      docContent.innerHTML = '';
+      docNameInput.value = 'Untitled document';
+      currentFont = 'Arial';
+      currentFontSize = '11';
+      boldActive = false;
+      pageNumberPos = 'none';
+      currentTask = 1;
+      completedTasks = [];
+      task1NewAction = false;
+      applyFontToEditor('Arial');
+      applyFontSizeToEditor('11');
+      updateBoldState();
+      updatePageNumberDisplay();
+      hideFeedback();
+      taskComplete.hidden = true;
+      updateBadges();
+      renderTask();
+      showSaving();
+      persistAll();
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(function() { showSaved(); }, 400);
+      docContent.focus();
+      showToast('Practice reset.', 'تمرین بازنشانی شد.', 2000);
+    }
+
+    /* ================================================================
+       EVENT LISTENERS
+       ================================================================ */
+
+    // New document (with task tracking)
+    btnNew.addEventListener('click', onNewDocumentClicked);
 
     // Undo
     btnUndo.addEventListener('click', function() {
       docContent.focus();
-      try {
-        document.execCommand('undo');
-      } catch(e) {}
+      try { document.execCommand('undo'); } catch(e) {}
       debounceSave();
     });
 
@@ -654,8 +1052,7 @@
     document.getElementById('font-menu').addEventListener('click', function(e) {
       var opt = e.target.closest('[role="option"]');
       if (!opt) return;
-      var font = opt.getAttribute('data-value');
-      applyFontToEditor(font);
+      applyFontToEditor(opt.getAttribute('data-value'));
       closeAllDropdowns();
       docContent.focus();
       debounceSave();
@@ -669,8 +1066,7 @@
     document.getElementById('fontsize-menu').addEventListener('click', function(e) {
       var opt = e.target.closest('[role="option"]');
       if (!opt) return;
-      var size = opt.getAttribute('data-value');
-      applyFontSizeToEditor(size);
+      applyFontSizeToEditor(opt.getAttribute('data-value'));
       closeAllDropdowns();
       docContent.focus();
       debounceSave();
@@ -709,18 +1105,10 @@
     var pageNumbersMenuItem = document.querySelector('#insert-menu [data-action="page-numbers"]');
     var pageNumbersSubmenu = pageNumbersMenuItem ? pageNumbersMenuItem.querySelector('.doc-tb-dropdown-submenu') : null;
     if (pageNumbersMenuItem && pageNumbersSubmenu) {
-      pageNumbersMenuItem.addEventListener('mouseenter', function() {
-        pageNumbersSubmenu.hidden = false;
-      });
-      pageNumbersMenuItem.addEventListener('mouseleave', function() {
-        pageNumbersSubmenu.hidden = true;
-      });
-      pageNumbersSubmenu.addEventListener('mouseenter', function() {
-        pageNumbersSubmenu.hidden = false;
-      });
-      pageNumbersSubmenu.addEventListener('mouseleave', function() {
-        pageNumbersSubmenu.hidden = true;
-      });
+      pageNumbersMenuItem.addEventListener('mouseenter', function() { pageNumbersSubmenu.hidden = false; });
+      pageNumbersMenuItem.addEventListener('mouseleave', function() { pageNumbersSubmenu.hidden = true; });
+      pageNumbersSubmenu.addEventListener('mouseenter', function() { pageNumbersSubmenu.hidden = false; });
+      pageNumbersSubmenu.addEventListener('mouseleave', function() { pageNumbersSubmenu.hidden = true; });
     }
 
     // Close dropdowns: click outside
@@ -740,7 +1128,7 @@
       }
     });
 
-    // Keyboard shortcut: Ctrl+B for bold
+    // Keyboard shortcuts
     docContent.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
         e.preventDefault();
@@ -754,6 +1142,26 @@
       }
     });
 
+    // Task: Check Task
+    btnCheckTask.addEventListener('click', onCheckTask);
+
+    // Task: Previous
+    btnPrevTask.addEventListener('click', function() {
+      if (currentTask > 1) {
+        goToTask(currentTask - 1);
+      }
+    });
+
+    // Task: Next
+    btnNextTask.addEventListener('click', function() {
+      if (currentTask < 2) {
+        goToTask(currentTask + 1);
+      }
+    });
+
+    // Reset
+    btnReset.addEventListener('click', resetPractice);
+
     // Home button language
     var lang = document.documentElement.getAttribute('data-lang') || 'fa';
     var homeBtn = document.getElementById('home-btn');
@@ -763,6 +1171,8 @@
 
     /* ---- Init ---- */
     restoreAll();
+    renderTask();
+    updateBadges();
     showSaved();
 
   })();

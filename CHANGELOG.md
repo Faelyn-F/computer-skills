@@ -1,5 +1,70 @@
 # Computer Skills — Changelog
 
+## 2026-08-05 — Phase 3: Document Practice Tasks 1 & 2
+
+### Added
+- **Task 1: Create and rename a document** — learner must click New, confirm clear, and change the document name to "My First Document"
+  - Tracks whether learner actually used New during current attempt (`task1NewAction` flag)
+  - Validates: New was clicked, document is blank, name matches exactly (trimmed)
+  - Feedback: "Start by clicking New." / "The new document should be blank." / "Change the document name to 'My First Document'."
+  - Success message: "Well done. You created and named a new document." / "آفرین. شما یک سند جدید ایجاد و نام‌گذاری کردید."
+- **Task 2: Type simple information** — learner types four lines of practice information into the document
+  - Practice text: My Information / Name: Sara / Phone: 021 123 4567 / City: Auckland
+  - Validation: normalises line breaks (\r\n → \n), trims whitespace, requires correct order, tolerates minor spacing
+  - Includes note: "Use the practice information shown above. Do not enter your real personal details."
+  - Feedback: "Click inside the white page and start typing." / "Some information is still missing." / "Check the order of the four lines." / "Press Enter after each line."
+  - Success message: "Well done. You typed the information correctly." / "آفرین. شما اطلاعات را به درستی تایپ کردید."
+- **Task panel** (replaces placeholder): bilingual task header, instructions, practice text block, Check Task button, Previous/Next Task navigation, completion badges (✅ Task 1, ✅ Task 2), feedback area with `aria-live="polite"`
+- **Reset Practice** button: clears document content, name, formatting, and task progress only (not Email, language, or other course data); requires confirmation
+- **Document name label**: "Name:" / "نام:" label in toolbar next to the document name input
+- **Task progress localStorage keys**:
+  - `computerSkillsDocumentCurrentTask` — current task number (1 or 2)
+  - `computerSkillsDocumentCompletedTasks` — JSON array of completed task numbers
+  - `computerSkillsDocumentTask1NewAction` — whether New was clicked during current Task 1 attempt
+
+### Changed
+- Side panel: width 220px → 260px for better bilingual instruction readability
+- New document: now returns boolean success; File menu "New document" also triggers task tracking
+- Document name input: now has visible "Name:" / "نام:" label and border by default
+
+### Interface Refinements
+- Toolbar: English-only controls with Persian `title` tooltips (preserved)
+- Document page padding: 50px/60px on desktop (preserved)
+- No standalone "Next" navigation button (preserved)
+- Save status: Saving... → Saved with colored backgrounds (preserved)
+
+### Task Navigation Logic
+| State | Previous Task | Check Task | Next Task |
+|-------|:---:|:---:|:---:|
+| Task 1 (incomplete) | Hidden | Visible | Hidden |
+| Task 1 (completed) | Hidden | Visible | "Next Task ▶" |
+| Task 2 (incomplete) | Visible | Visible | Hidden |
+| Task 2 (completed) | Visible | Visible | Hidden — completion message shown |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Replaced side panel placeholder with full task panel; added task definitions, validation, navigation, reset, 3 new localStorage keys (~580 lines total JS) |
+| `css/style.css` | Added ~200 lines: document name label, task panel (header, instruction, practice text, feedback, buttons, completion, badges, reset), updated responsive rules; side panel 220→260px |
+
+### Preserved
+- All 11 editor interactions (New/Undo/Bold/Font/Size/File/Insert/Save/Page numbers/Download/Print)
+- All existing localStorage keys and persistence
+- Keyboard shortcuts (Ctrl+B, Ctrl+S, Ctrl+Z)
+- Accessibility features (55+ ARIA attributes, keyboard menus, Escape close, visible focus)
+- Document introduction page (`lessons/document.html`)
+- Email module (no files touched)
+- Language system and routing
+
+### Deferred
+- Task 3: select text, Times New Roman and font size
+- Task 4: save and download as PDF
+- Task 5: add page numbers and download final PDF
+- Full Chinese Document translation
+- Audio support for Document module
+
+---
+
 ## 2026-08-05 — Phase 2 Fix: Document Practice Editor Layout
 
 ### Root Cause
