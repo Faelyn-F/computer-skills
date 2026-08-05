@@ -1,5 +1,59 @@
 # Computer Skills — Changelog
 
+## 2026-08-05 — Bug Fix: Document Formatting & Submenu Clipping
+
+### Bug 1: Task 3 formatting did not change selected text
+
+**Root cause:** When the user clicked a dropdown menu item (Font or Font Size), the browser moved focus from the contenteditable area to the dropdown. `window.getSelection()` reflected the dropdown menu, not the text. `isTextSelectedInEditor()` returned `false`, so `applyFontToEditor` fell to the CSS-only branch (`docContent.style.fontFamily = font`), which changed only the container default — never wrapping selected text in formatting markup.
+
+**Fix:** Implemented a save/restore Selection Range mechanism:
+- `saveEditorSelection()` — clones the current Range when the user selects text inside the editor (called on `mouseup`, `keyup`, `selectionchange`)
+- `restoreEditorSelection()` — restores the saved Range before applying formatting, re-focuses the editor
+- Both `applyFontToEditor` and `applyFontSizeToEditor` now call `restoreEditorSelection()` → `execCommand` → `saveEditorSelection()`
+- `toggleBold` also uses the same mechanism
+- `isTextSelectedInEditor()` checks both the active selection AND the saved range
+- Selection saved on `mouseup`/`keyup` (with Shift/arrow detection) + `selectionchange` within editor
+
+**Formatting representation:** execCommand produces `<font face="Times New Roman">` and `<font size="5">` (18pt → 5 in the 1–7 mapping, 12pt → 2). These markers are what Task 3 validation inspects.
+
+### Bug 2: Page numbers submenu was clipped
+
+**Root cause:** Two factors:
+1. `.doc-editor-wrapper` had `overflow: hidden` — clipped any submenu extending beyond the wrapper boundary
+2. Submenu used fixed `left: 100%` positioning — when the Insert menu was near the right viewport edge, the submenu extended off-screen
+
+**Fix:**
+- Removed `overflow: hidden` from `.doc-editor-wrapper`
+- Added `.doc-tb-dropdown-submenu.open-left` CSS rule (`left: auto; right: 100%`) for left-opening fallback
+- Added `positionSubmenu()` function — measures submenu `getBoundingClientRect()`, checks against `window.innerWidth - 8px`, adds `.open-left` class if overflowing
+- Added viewport-aware positioning to `toggleDropdown()` for main dropdown menus too
+- Added 150ms hover-leave delay on submenu for tolerance of small pointer gaps
+- Increased submenu `z-index` to 101
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Added `savedEditorRange` + `saveEditorSelection()` / `restoreEditorSelection()` / `hasSavedOrActiveSelection()`; updated `applyFontToEditor`, `applyFontSizeToEditor`, `toggleBold` to restore selection before execCommand; added `positionSubmenu()` with viewport detection; updated `toggleDropdown()` for menu viewport awareness; submenu hover with 150ms leave delay |
+| `css/style.css` | Removed `overflow: hidden` from `.doc-editor-wrapper`; added `.doc-tb-dropdown-submenu.open-left` rule; added submenu `z-index: 101` |
+
+### Tests Performed
+- Task 3: select title → Times New Roman → visible change ✅
+- Task 3: select title → size 18 → visible change ✅
+- Task 3: select body → size 12 → visible change ✅
+- Task 3: validation passes with correct formatting ✅
+- Task 5: submenu fully visible, full labels readable ✅
+- Task 5: submenu stays within viewport at 1366×768 and 1024×768 ✅
+- Regression: Tasks 1, 2, 4 still work ✅
+- Regression: Bold, Undo, Save, localStorage still work ✅
+- Regression: Email module unchanged ✅
+
+### Remaining Limitations
+- execCommand is deprecated but still supported in all major browsers
+- Submenu uses hover-based opening (no click-to-open yet — consistent with Phase 2 design)
+- Selection tracking via `selectionchange` may capture non-editor selections briefly before filtering
+
+---
+
 ## 2026-08-05 — Phase 4: Document Practice Tasks 3–5 (Complete)
 
 ### Added

@@ -255,6 +255,7 @@
     var boldActive = false;
     var saveTimer = null;
     var pageNumberPos = 'none';
+    var savedEditorRange = null;
 
     /* ---- Task state ---- */
     var currentTask = 1;
@@ -402,7 +403,25 @@
 
     /* ---- Selection helper ---- */
 
-    function isTextSelectedInEditor() {
+    function saveEditorSelection() {
+      var sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return;
+      var range = sel.getRangeAt(0);
+      if (!docContent.contains(range.commonAncestorContainer)) return;
+      savedEditorRange = range.cloneRange();
+    }
+
+    function restoreEditorSelection() {
+      if (!savedEditorRange) return false;
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedEditorRange);
+      docContent.focus();
+      return true;
+    }
+
+    function hasSavedOrActiveSelection() {
+      if (savedEditorRange && !savedEditorRange.collapsed) return true;
       var sel = window.getSelection();
       if (!sel.rangeCount) return false;
       var range = sel.getRangeAt(0);
@@ -410,12 +429,23 @@
       return docContent.contains(range.commonAncestorContainer);
     }
 
+    function clearSavedSelection() {
+      savedEditorRange = null;
+    }
+
+    function isTextSelectedInEditor() {
+      return hasSavedOrActiveSelection();
+    }
+
     /* ---- Font & Formatting ---- */
 
     function applyFontToEditor(font) {
       currentFont = font;
-      if (isTextSelectedInEditor()) {
+      var hadSelection = restoreEditorSelection();
+      if (hadSelection) {
         try { document.execCommand('fontName', false, font); } catch (e) {}
+        saveEditorSelection();
+        docContent.focus();
       } else {
         docContent.style.fontFamily = font;
       }
@@ -424,11 +454,14 @@
 
     function applyFontSizeToEditor(size) {
       currentFontSize = size;
-      if (isTextSelectedInEditor()) {
+      var hadSelection = restoreEditorSelection();
+      if (hadSelection) {
         try {
           var map = {10:1, 11:1, 12:2, 14:3, 16:4, 18:5, 20:6, 24:7};
           document.execCommand('fontSize', false, map[size] || 3);
         } catch(e) {}
+        saveEditorSelection();
+        docContent.focus();
       } else {
         docContent.style.fontSize = size + 'pt';
       }
@@ -464,8 +497,10 @@
     }
 
     function toggleBold() {
+      restoreEditorSelection();
       boldActive = !boldActive;
       try { document.execCommand('bold'); } catch(e) {}
+      saveEditorSelection();
       updateBoldState();
       debounceSave();
       docContent.focus();
@@ -693,13 +728,39 @@
       openDropdown = null;
     }
 
+    function positionSubmenu(submenu, parentItem) {
+      // Reset
+      submenu.classList.remove('open-left');
+      submenu.hidden = false;
+      // Measure and reposition if overflowing right edge
+      var rect = submenu.getBoundingClientRect();
+      var viewportW = window.innerWidth;
+      if (rect.right > viewportW - 8) {
+        submenu.classList.add('open-left');
+      }
+      submenu.hidden = true; // will be shown by hover
+    }
+
     function toggleDropdown(menu, btn) {
       if (menu.hidden) {
         closeAllDropdowns();
         menu.hidden = false;
         openDropdown = { menu: menu, btn: btn };
+        // Viewport-aware: reposition if menu overflows right edge
+        menu.style.left = '';
+        menu.style.right = '';
+        var menuRect = menu.getBoundingClientRect();
+        var viewportW = window.innerWidth;
+        if (menuRect.right > viewportW - 8) {
+          menu.style.left = 'auto';
+          menu.style.right = '0';
+        }
+        // Position submenus with viewport awareness
         var submenus = menu.querySelectorAll('.doc-tb-dropdown-submenu');
-        submenus.forEach(function(sub) { sub.hidden = true; });
+        submenus.forEach(function(sub) {
+          sub.hidden = true;
+          sub.classList.remove('open-left');
+        });
       } else {
         menu.hidden = true;
         openDropdown = null;
@@ -1170,12 +1231,28 @@
       if (isBold !== boldActive) { boldActive = isBold; updateBoldState(); }
     });
 
+    // Save selection on mouseup/keyup within editor
+    docContent.addEventListener('mouseup', function() {
+      saveEditorSelection();
+    });
+    docContent.addEventListener('keyup', function(e) {
+      // Save on selection-changing keys (Shift+Arrow, etc.)
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+          e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+          e.key === 'Home' || e.key === 'End' ||
+          e.shiftKey) {
+        saveEditorSelection();
+      }
+    });
+
     document.addEventListener('selectionchange', function() {
       if (document.activeElement === docContent || docContent.contains(document.activeElement)) {
         try {
           var isBold = document.queryCommandState('bold');
           if (isBold !== boldActive) { boldActive = isBold; updateBoldState(); }
         } catch(e) {}
+        // Save selection on any change within editor
+        saveEditorSelection();
       }
     });
 
@@ -1241,14 +1318,26 @@
       }
     });
 
-    // Submenu hover (Page numbers)
+    // Submenu hover (Page numbers) with viewport-aware positioning
     var pageNumbersMenuItem = document.querySelector('#insert-menu [data-action="page-numbers"]');
     var pageNumbersSubmenu = pageNumbersMenuItem ? pageNumbersMenuItem.querySelector('.doc-tb-dropdown-submenu') : null;
     if (pageNumbersMenuItem && pageNumbersSubmenu) {
-      pageNumbersMenuItem.addEventListener('mouseenter', function() { pageNumbersSubmenu.hidden = false; });
-      pageNumbersMenuItem.addEventListener('mouseleave', function() { pageNumbersSubmenu.hidden = true; });
-      pageNumbersSubmenu.addEventListener('mouseenter', function() { pageNumbersSubmenu.hidden = false; });
-      pageNumbersSubmenu.addEventListener('mouseleave', function() { pageNumbersSubmenu.hidden = true; });
+      var submenuTimer = null;
+      pageNumbersMenuItem.addEventListener('mouseenter', function() {
+        clearTimeout(submenuTimer);
+        positionSubmenu(pageNumbersSubmenu, pageNumbersMenuItem);
+        pageNumbersSubmenu.hidden = false;
+      });
+      pageNumbersMenuItem.addEventListener('mouseleave', function() {
+        submenuTimer = setTimeout(function() { pageNumbersSubmenu.hidden = true; }, 150);
+      });
+      pageNumbersSubmenu.addEventListener('mouseenter', function() {
+        clearTimeout(submenuTimer);
+        pageNumbersSubmenu.hidden = false;
+      });
+      pageNumbersSubmenu.addEventListener('mouseleave', function() {
+        submenuTimer = setTimeout(function() { pageNumbersSubmenu.hidden = true; }, 150);
+      });
     }
 
     // Close dropdowns

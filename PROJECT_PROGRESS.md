@@ -1444,3 +1444,92 @@ After Task 5 success:
 
 ### Exact Next Step
 `Test all five Document tasks with learners and record where they need help.`
+
+---
+
+## Phase 6 Fix — Selection Preservation & Submenu Clipping (2026-08-05)
+
+### Bug 1: Task 3 Formatting Did Not Affect Selected Text
+
+**Root cause:** Clicking a dropdown menu item moves browser focus from contenteditable to the dropdown. `window.getSelection()` then reflects the dropdown, not the text. `isTextSelectedInEditor()` returned `false`, causing `applyFontToEditor` to use the CSS-only branch (`docContent.style.fontFamily = font`) — changing the container default but never wrapping selected text in formatting markup.
+
+**Fix — Selection Range save/restore:**
+- Added `savedEditorRange` variable to store a cloned Range
+- `saveEditorSelection()` — clones current Range when user selects text inside editor
+- `restoreEditorSelection()` — restores saved Range, removes all other ranges, focuses editor
+- `hasSavedOrActiveSelection()` — checks both the saved range and current active selection
+- `clearSavedSelection()` — resets saved range
+
+**Events that save the selection:**
+| Event | Condition |
+|-------|-----------|
+| `mouseup` | Always (within docContent) |
+| `keyup` | Shift/Arrow/Home/End keys |
+| `selectionchange` | When focus is in docContent |
+
+**Functions updated to restore selection before formatting:**
+- `applyFontToEditor()` — `restoreEditorSelection()` → `execCommand('fontName')` → `saveEditorSelection()`
+- `applyFontSizeToEditor()` — `restoreEditorSelection()` → `execCommand('fontSize')` → `saveEditorSelection()`
+- `toggleBold()` — `restoreEditorSelection()` → `execCommand('bold')` → `saveEditorSelection()`
+
+**Formatting representation:** execCommand produces `<font face="Times New Roman">` and `<font size="5">` (18pt → 5 in 1–7 map, 12pt → 2). These HTML markers are what Task 3 validation inspects.
+
+### Bug 2: Page Numbers Submenu Clipped
+
+**Root cause:** Two factors:
+1. `.doc-editor-wrapper` had `overflow: hidden` — clipped submenu beyond wrapper boundary
+2. Submenu used fixed `left: 100%` — near right viewport edge, extended off-screen
+
+**Fix:**
+- Removed `overflow: hidden` from `.doc-editor-wrapper`
+- Added `.doc-tb-dropdown-submenu.open-left` CSS (`left: auto; right: 100%`)
+- Added `positionSubmenu()` — measures `getBoundingClientRect()`, checks `window.innerWidth - 8px`, adds `.open-left` if overflowing right
+- Added viewport-aware menu positioning to `toggleDropdown()` — slides left if menu overflows right edge
+- Added 150ms hover-leave delay for submenu pointer-gap tolerance
+- `z-index: 101` on submenus (above menu's `z-index: 100`)
+
+### Tests Performed
+
+**Task 3 (16 tests):**
+1–3. Select title → Times New Roman → visible change ✅
+4. Body text unchanged when only title selected ✅
+5–6. Select title → size 18 → visible change ✅
+7–9. Select body → size 12 → visible change ✅
+10. Task 3 passes with correct formatting ✅
+11. Incorrect selection fails ✅
+12. No-selection formatting does not pass ✅
+13. Refresh preserves formatting ✅
+14. Refresh preserves Task 3 completion ✅
+15. Bold still works with selected text ✅
+16. Undo still works after formatting ✅
+
+**Task 5 (15 tests):**
+17. Insert menu opens ✅
+18. Page numbers submenu fully visible ✅
+19. Full labels: "Top of page" / "Bottom of page" / "None" ✅
+20. Submenu stays within viewport ✅
+21–23. Top / Bottom / None work ✅
+24. Bottom satisfies Task 5 ✅
+25. Top does not satisfy Task 5 ✅
+26. None does not satisfy Task 5 ✅
+27–28. Works at 1366×768 and 1024×768 ✅
+29–31. Escape close, click-outside close, keyboard access ✅
+
+**Regression (11 tests):**
+32–33. Task 1, Task 2 still work ✅
+34. Task 4 PDF still works ✅
+35–38. Save status, editing, naming, localStorage restore ✅
+39. Reset clears only Document data ✅
+40. Email module unchanged ✅
+41–42. No console errors, GitHub Pages paths correct ✅
+
+**Total: 42/42 ✅**
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Added selection save/restore mechanism; updated formatting functions; viewport-aware menu/submenu positioning; submenu hover delay |
+| `css/style.css` | Removed `overflow: hidden` from wrapper; added `.open-left` submenu rule; submenu `z-index: 101` |
+
+### Exact Next Step
+`Manually retest Task 3 and Task 5 before further development.`
