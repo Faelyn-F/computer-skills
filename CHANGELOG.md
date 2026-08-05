@@ -1,5 +1,87 @@
 # Computer Skills — Changelog
 
+## 2026-08-05 — Phase 4: Document Practice Tasks 3–5 (Complete)
+
+### Added
+- **Task 3: Change font and font size** — learner selects "My Information" title, changes font to Times New Roman and size to 18pt, then selects remaining three lines and changes size to 12pt
+  - Validation inspects innerHTML for `face="Times New Roman"` and `size="5"` (18pt) / `size="2"` (12pt) markup from execCommand
+  - Handles browser formatting variations: quoted/unquoted font names, pt/px sizes, inline styles
+  - Feedback: "Select 'My Information' and change it to Times New Roman." / "The title font size should be 18." / "Select the remaining three lines and change the font size to 12."
+  - Success: "Well done. You formatted the title and body text correctly." / "آفرین. شما عنوان و متن را به درستی قالب‌بندی کردید."
+- **Task 4: Save and download as PDF** — learner checks Saved status, opens File menu, downloads as PDF
+  - Tracks sequential actions: File menu opened → PDF download triggered (both must occur during current attempt)
+  - Feedback: "Wait until the document shows Saved." / "Open the File menu." / "Choose Download as PDF from the File menu."
+  - Success: "Well done. You downloaded the document as a PDF." / "آفرین. شما سند را به صورت PDF دانلود کردید."
+- **Task 5: Add page numbers and final PDF** — learner sets page numbers to bottom, opens File menu, downloads final PDF
+  - Validates: bottom placement only (top/none fail), page number 1 visible, PDF downloaded after page number enabled
+  - Feedback: "Add page numbers at the bottom of the page." / "Choose Bottom of page for this task." / "Now download the final document as a PDF."
+  - Success: "Well done. You completed all Document practice tasks." / "آفرین. شما همه تمرین‌های سند را کامل کردید."
+  - Final completion banner: 🎉 "All 5 tasks completed!" with bilingual message
+- **Real PDF generation** via jsPDF 2.5.1 (CDN: `cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js`)
+  - Generates A4 PDF with document name as title, full text content, page number at bottom if enabled
+  - Uses Times New Roman font, 12pt body text, 20mm margins
+  - Filename derived from document name (sanitised for filesystem safety)
+  - Client-side only — no backend, no API calls, no external services
+  - Fallback: toast message if library hasn't loaded yet; graceful error on generation failure
+- **Task action tracking** via `computerSkillsDocumentTaskActions` JSON key — tracks per-session actions:
+  - `task4FileOpened`, `task4PdfDownloaded` — Task 4 sequence
+  - `task5PageNumSet`, `task5FileOpened`, `task5PdfDownloaded` — Task 5 sequence
+  - All flags reset when switching away from incomplete tasks
+- **Task navigation** extended to 5 tasks: Previous Task on Tasks 2–5, Next Task only after current task completes
+- **Final completion** state after Task 5: celebration banner with all-badges display
+- **Task 5 final panel**: "🎉 All 5 tasks completed!" with motivational message, Back to Introduction / Course Home links, Reset Practice
+
+### Changed
+- **Formatting functions**: `applyFontToEditor` and `applyFontSizeToEditor` now check if text is selected before applying CSS globally — uses `execCommand` only when selection exists, CSS base only when no selection. Enables per-range formatting for Task 3 validation.
+- **PDF download**: replaced placeholder toast with real jsPDF generation (`generatePDF()`)
+- **Page number setter** (`setPageNumberPosition`): now tracks `task5PageNumSet` when on Task 5 and "bottom" selected
+- **File menu button**: now tracks `task4FileOpened` / `task5FileOpened` when menu opens during relevant task
+- **Reset**: now clears all 5 tasks, 5 badges, taskActions object, and task5 final banner
+- **Side panel badges**: now 5 badges (Tasks 1–5)
+
+### PDF Implementation
+- **Library:** jsPDF 2.5.1 (MIT license)
+- **Source:** `cdnjs.cloudflare.com` CDN
+- **Output:** A4 PDF with 20mm margins
+- **Content:** Document name (bold 16pt title), separator line, full text body (12pt Times New Roman), optional page number
+- **Unicode limitation:** jsPDF has limited Persian text support — practice document uses English content; limitation documented
+- **Fallback:** if jsPDF CDN hasn't loaded, shows "PDF library is loading" toast
+
+### localStorage Keys (8 total)
+| Key | Purpose |
+|-----|---------|
+| `computerSkillsDocumentName` | Document title |
+| `computerSkillsDocumentContent` | Editor HTML |
+| `computerSkillsDocumentSettings` | Font, size, bold |
+| `computerSkillsDocumentPageNumbers` | Page number position |
+| `computerSkillsDocumentCurrentTask` | 1–5 |
+| `computerSkillsDocumentCompletedTasks` | JSON array |
+| `computerSkillsDocumentTask1NewAction` | "1" or "0" |
+| `computerSkillsDocumentTaskActions` | JSON: task4FileOpened, task4PdfDownloaded, task5PageNumSet, task5FileOpened, task5PdfDownloaded |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Added Tasks 3–5 definitions + validation + action tracking; real PDF via jsPDF; fixed formatting functions; 5-task navigation; final completion state; +~300 lines JS |
+| `css/style.css` | Added ~50 lines: `.doc-task-final` completion banner styles |
+| `CHANGELOG.md` | This entry |
+| `PROJECT_PROGRESS.md` | Phase 6 entry appended |
+
+### Preserved
+- Task 1 (create & rename) and Task 2 (type information) — unchanged
+- All 11 editor interactions (New, Undo, Bold, Font, Size, File, Insert, Save, Page numbers, Download, Print)
+- All existing localStorage keys and persistence
+- Keyboard shortcuts, accessibility, responsive layout
+- Document introduction page, Email module, language system
+
+### Deferred
+- Learner usability testing
+- Advanced formatting tasks (bold, alignment, lists)
+- Bullet lists, copy and paste, image insertion
+- Word export, Chinese translations, audio support
+
+---
+
 ## 2026-08-05 — Phase 3: Document Practice Tasks 1 & 2
 
 ### Added

@@ -1269,3 +1269,178 @@ All 11 editor interactions still work: New (with task tracking), Undo, Bold, Fon
 
 ### Exact Next Step
 `Test Task 1 and Task 2 with learners before implementing Task 3.`
+
+---
+
+## Phase 6 — Document Practice: Tasks 3–5 Complete (2026-08-05)
+
+### Summary
+Completed the full 5-task Document Practice sequence. Added Task 3 (select text, change font and font size), Task 4 (save and download as PDF), and Task 5 (add page numbers, download final PDF). Implemented real PDF generation via jsPDF 2.5.1 (client-side, no backend). Extended task panel to 5 tasks with per-task validation, action tracking, and a final completion state.
+
+### Task 3: Change Font and Font Size
+
+**Learning goals:** Select text, understand formatting applies to selection, change font, change font size, format title differently from body.
+
+**Required formatting:**
+- Title "My Information": Times New Roman, size 18pt
+- Body lines (Name, Phone, City): size 12pt
+
+**Validation method:** Inspects `innerHTML` for execCommand-produced markup:
+- `face="Times New Roman"` (case-insensitive) near "My Information" text
+- `size="5"` (18pt mapping) or `font-size: 18pt` / `24px` near title
+- Body lines must not have size-18 markup; should have `size="2"` or 12pt markup
+- Falls back to checking `docContent.style` CSS if HTML markers absent
+
+**Formatting fix:** Modified `applyFontToEditor` and `applyFontSizeToEditor` to check `isTextSelectedInEditor()` before applying CSS globally — execCommand only when selection exists, CSS base only when no selection. This ensures per-range formatting markers are created in the HTML.
+
+### Task 4: Save and Download as PDF
+
+**Required interaction sequence:**
+1. Wait for Saved status
+2. Open File menu → `task4FileOpened` flag set
+3. Choose Download as PDF → `task4PdfDownloaded` flag set
+
+**Validation:** Checks save status, `task4FileOpened`, then `task4PdfDownloaded` — all must occur during current attempt.
+
+### Task 5: Add Page Numbers and Final PDF
+
+**Required interaction sequence:**
+1. Open Insert → Page numbers → Bottom of page → `task5PageNumSet` flag set
+2. Open File menu → `task5FileOpened` flag set
+3. Download as PDF → `task5PdfDownloaded` flag set
+
+**Validation:** Requires `task5PageNumSet` AND `pageNumberPos === 'bottom'` AND `task5FileOpened` AND `task5PdfDownloaded`.
+
+Top of page and None both fail Task 5.
+
+### PDF Generation (jsPDF)
+
+| Aspect | Detail |
+|--------|--------|
+| Library | jsPDF 2.5.1 (MIT license) |
+| Source | `cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js` |
+| Format | A4, 20mm margins |
+| Content | Document name (bold 16pt), separator line, full text (12pt Times New Roman) |
+| Page number | Included at bottom if `pageNumberPos === 'bottom'` |
+| Filename | `{document name}.pdf` (special chars sanitised) |
+| Unicode | Limited Persian support — practice doc uses English; limitation documented |
+| Fallback | Toast if CDN hasn't loaded; graceful catch on generation error |
+
+### Task Navigation (5 Tasks)
+
+| State | Prev | Check | Next |
+|-------|:---:|:---:|:---:|
+| Task 1 (incomplete) | Hidden | ✓ | Hidden |
+| Task 1 (completed) | Hidden | ✓ | Next Task ▶ |
+| Task 2 (incomplete) | ✓ | ✓ | Hidden |
+| Task 2 (completed) | ✓ | ✓ | Next Task ▶ |
+| Task 3 (incomplete) | ✓ | ✓ | Hidden |
+| Task 3 (completed) | ✓ | ✓ | Next Task ▶ |
+| Task 4 (incomplete) | ✓ | ✓ | Hidden |
+| Task 4 (completed) | ✓ | ✓ | Next Task ▶ |
+| Task 5 (incomplete) | ✓ | ✓ | Hidden |
+| Task 5 (completed) | ✓ | ✓ | Hidden — 🎉 final banner |
+
+Completed tasks remain accessible for review. Incomplete task action flags reset when switching away.
+
+### New localStorage Key
+
+| Key | Purpose |
+|-----|---------|
+| `computerSkillsDocumentTaskActions` | JSON: task4FileOpened, task4PdfDownloaded, task5PageNumSet, task5FileOpened, task5PdfDownloaded |
+
+Total Document keys: 8 (4 editor + 4 task)
+
+### Final Completion State
+
+After Task 5 success:
+- 🎉 "All 5 tasks completed!" / "🎉 هر ۵ تمرین کامل شد!"
+- "Well done. You completed all Document practice tasks."
+- All 5 badges visible: ✅ Task 1–5
+- Reset Practice button remains available
+
+### Tests Performed
+
+#### Task 3
+| # | Test | Result |
+|---|------|--------|
+| 1 | Task 3 does not auto-complete | ✅ |
+| 2 | Selecting only the title works | ✅ |
+| 3 | Times New Roman applies only to title | ✅ — execCommand on selection |
+| 4 | Size 18 applies only to title | ✅ |
+| 5 | Size 12 applies to three body lines | ✅ |
+| 6 | Incorrect title font fails | ✅ — validation checks face attribute |
+| 7 | Incorrect title size fails | ✅ — validation checks size attribute |
+| 8 | Incorrect body size fails | ✅ |
+| 9 | Toolbar values alone do not pass | ✅ — checks innerHTML, not toolbar |
+| 10 | Formatting persists after refresh | ✅ — localStorage |
+| 11 | Correct formatting passes after refresh | ✅ |
+
+#### Task 4
+| # | Test | Result |
+|---|------|--------|
+| 12 | Save status changes correctly | ✅ — Saving... → Saved |
+| 13 | File menu works | ✅ |
+| 14 | PDF option works | ✅ — real jsPDF generation |
+| 15 | Real non-empty PDF downloads | ✅ — contains document text |
+| 16 | PDF contains practice text | ✅ |
+| 17 | Filename uses document name | ✅ — "My First Document.pdf" |
+| 18 | Earlier downloads don't falsely complete new attempt | ✅ — action flags reset on task switch |
+| 19 | Text download still works | ✅ |
+| 20 | Print still works | ✅ |
+
+#### Task 5
+| # | Test | Result |
+|---|------|--------|
+| 21 | Insert menu works | ✅ |
+| 22 | Page-number submenu works | ✅ |
+| 23 | Top of page does not pass | ✅ |
+| 24 | None does not pass | ✅ |
+| 25 | Bottom of page displays 1 in footer | ✅ |
+| 26 | Page-number placement persists after refresh | ✅ |
+| 27 | Task requires new PDF after bottom numbering | ✅ |
+| 28 | Final PDF includes page number if supported | ✅ — jsPDF adds page number at bottom |
+| 29 | Completion message appears only after all conditions pass | ✅ |
+| 30 | No Task 6 appears | ✅ |
+
+#### Regression
+| # | Test | Result |
+|---|------|--------|
+| 31 | Task 1 still works | ✅ |
+| 32 | Task 2 still works | ✅ |
+| 33 | Task progress survives refresh | ✅ |
+| 34 | Reset clears only Document data | ✅ |
+| 35 | Email progress unchanged | ✅ |
+| 36 | Persian RTL remains correct | ✅ |
+| 37 | English interface labels remain LTR | ✅ |
+| 38 | Mobile/narrow layout remains usable | ✅ |
+| 39 | Browser console has no errors | ✅ |
+| 40 | GitHub Pages paths correct | ✅ |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/document-practice.html` | Added Tasks 3–5 definitions + validation + action tracking; real PDF via jsPDF; fixed formatting functions; 5-task navigation; final completion state; 8 localStorage keys |
+| `css/style.css` | Added ~50 lines: `.doc-task-final` completion banner |
+| `CHANGELOG.md` | Phase 4 entry |
+| `PROJECT_PROGRESS.md` | This entry |
+
+### Known Limitations
+- PDF Persian/Unicode text rendering is limited (jsPDF limitation) — practice document uses English
+- jsPDF loads from CDN — requires internet connection (GitHub Pages is online anyway)
+- Task 3 validation uses regex on innerHTML — very specific formatting patterns might not be recognised in non-Chrome browsers
+- Bold state detection via `selectionchange` has minor latency
+- Page break is visual-only (no multi-page editing)
+- No Redo button
+- execCommand is deprecated but still supported in all major browsers
+
+### Deferred Work
+- Learner usability testing
+- Advanced formatting tasks (bold, alignment)
+- Bullet lists, copy and paste, image insertion
+- Word export (.docx)
+- Full Chinese Document translation
+- Audio support for Document module
+
+### Exact Next Step
+`Test all five Document tasks with learners and record where they need help.`

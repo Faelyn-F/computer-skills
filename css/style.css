@@ -1859,6 +1859,52 @@ html[data-lang="zh"] .subtitle[lang="fa"] {
   direction: rtl;
 }
 
+/* Final completion (all 5 tasks done) */
+.doc-task-final {
+  background: #fff8e1;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--border-radius);
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.doc-task-final[hidden] {
+  display: none;
+}
+
+.doc-final-en {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-accent);
+  direction: ltr;
+  margin-bottom: 6px;
+}
+
+.doc-final-fa {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-accent);
+  font-family: var(--font-family-fa);
+  direction: rtl;
+  margin-bottom: 8px;
+}
+
+.doc-final-sub-en {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  direction: ltr;
+  margin-bottom: 4px;
+}
+
+.doc-final-sub-fa {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  font-family: var(--font-family-fa);
+  direction: rtl;
+}
+
 /* Completed task badges */
 .doc-task-badges {
   display: flex;
