@@ -4,10 +4,11 @@
 
 ### Changed
 - **Persian homepage (`fa/index.html`) reduced to three core modules**, in this order:
-  1. **Create a Document** — `../lessons/document.html` (unchanged)
-  2. **Email** — `../lessons/email.html` (unchanged)
+  1. **Create a Document** — `../lessons/document.html` (Persian title "ساختن سند")
+  2. **Email** — `../lessons/email.html`
   3. **Form Practice** — external SharePoint link (new tab)
 - Removed the **Google Drive**, **Internet Basics**, and **Keyboard & Mouse** cards from the homepage navigation only. Their lesson files and functionality remain in the repository.
+- Updated the **Create a Document** card's Persian title from "ایجاد سند" to "ساختن سند" (link and functionality unchanged).
 
 ### Added
 - **Form Practice external card** on the Persian homepage:
@@ -27,7 +28,7 @@
 | `css/style.css` | Added `height: 100%` to `.card`; added `.card-desc` / `.card-desc-fa` styles |
 
 ### Preserved
-- Document and Email modules unchanged (links, titles, functionality)
+- Document and Email module links and functionality unchanged (only the Document card's Persian title was updated)
 - Drive, Internet, and Keyboard lesson files remain in the repository
 - English (`en/`) and Chinese (`zh/`) homepages unchanged (out of scope)
 - RTL Persian layout and card design system preserved

@@ -1544,7 +1544,7 @@ Simplified the Persian homepage (`fa/index.html`) to three core modules in this 
 ### Final Module Order (Persian homepage)
 | # | Module | Persian title | Target |
 |---|--------|---------------|--------|
-| 1 | Create a Document | ایجاد سند | `../lessons/document.html` (unchanged) |
+| 1 | Create a Document | ساختن سند | `../lessons/document.html` (unchanged) |
 | 2 | Email | ایمیل | `../lessons/email.html` (unchanged) |
 | 3 | Form Practice | تمرین تکمیل فرم | External SharePoint URL (new tab) |
 
@@ -1558,14 +1558,15 @@ Simplified the Persian homepage (`fa/index.html`) to three core modules in this 
 - Kept the existing card design (`card-link` / `card` / `icon` / `en-title` / `fa-title`).
 - Added `height: 100%` to `.card` so the three cards fill their grid row equally and stay visually balanced.
 - Added `.card-desc` (English) and `.card-desc-fa` (Persian) styles for the Form Practice supporting text.
-- Document and Email modules unchanged (links, titles, and functionality preserved).
+- Email module unchanged (link, title, and functionality preserved).
+- Document module's link and functionality preserved; Persian title intentionally updated from "ایجاد سند" to "ساختن سند" (a deliberate exception to the "do not modify the Document module" instruction).
 - RTL Persian layout preserved (`lang="fa"` + `dir="rtl"`).
 - Responsive grid unchanged: three columns on desktop, single column at ≤480px.
 
 ### Files Modified
 | File | Change |
 |------|--------|
-| `fa/index.html` | Reordered to Document → Email → Form Practice; removed Drive/Internet/Keyboard cards; added external Form Practice card |
+| `fa/index.html` | Reordered to Document → Email → Form Practice; removed Drive/Internet/Keyboard cards; added external Form Practice card; updated Document Persian title from "ایجاد سند" to "ساختن سند" |
 | `css/style.css` | Added `height: 100%` to `.card`; added `.card-desc` / `.card-desc-fa` styles |
 
 ### Files Preserved (Unchanged)
