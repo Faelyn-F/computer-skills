@@ -1533,3 +1533,64 @@ After Task 5 success:
 
 ### Exact Next Step
 `Manually retest Task 3 and Task 5 before further development.`
+
+---
+
+## Homepage Simplification — Three Core Modules + External Form Practice (2026-09-09)
+
+### Summary
+Simplified the Persian homepage (`fa/index.html`) to three core modules in this order: **Create a Document**, **Email**, and **Form Practice**. Removed the Google Drive, Internet Basics, and Keyboard & Mouse cards from the homepage navigation only — their lesson files and functionality remain in the repository. Form Practice is currently hosted externally, so the homepage links directly to the SharePoint-hosted practice form.
+
+### Final Module Order (Persian homepage)
+| # | Module | Persian title | Target |
+|---|--------|---------------|--------|
+| 1 | Create a Document | ایجاد سند | `../lessons/document.html` (unchanged) |
+| 2 | Email | ایمیل | `../lessons/email.html` (unchanged) |
+| 3 | Form Practice | تمرین تکمیل فرم | External SharePoint URL (new tab) |
+
+### Form Practice (External Link)
+- **Status:** Hosted externally — no Form Practice page created in this repository.
+- **Target URL (exact):** `https://activeinstitute-my.sharepoint.com/:u:/g/personal/daisy_activeinstitute_co_nz/IQCwk95STArPSrfekmG7GxWGAVmhpQLgJoIpiv1smstYBj0?e=1NUOjW`
+- Opens in a new browser tab via `target="_blank"` and `rel="noopener noreferrer"`.
+- Card content: English title "Form Practice", supporting text "Learn how to understand and complete common forms.", Persian title "تمرین تکمیل فرم", and a short Persian supporting description.
+
+### Design Changes
+- Kept the existing card design (`card-link` / `card` / `icon` / `en-title` / `fa-title`).
+- Added `height: 100%` to `.card` so the three cards fill their grid row equally and stay visually balanced.
+- Added `.card-desc` (English) and `.card-desc-fa` (Persian) styles for the Form Practice supporting text.
+- Document and Email modules unchanged (links, titles, and functionality preserved).
+- RTL Persian layout preserved (`lang="fa"` + `dir="rtl"`).
+- Responsive grid unchanged: three columns on desktop, single column at ≤480px.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `fa/index.html` | Reordered to Document → Email → Form Practice; removed Drive/Internet/Keyboard cards; added external Form Practice card |
+| `css/style.css` | Added `height: 100%` to `.card`; added `.card-desc` / `.card-desc-fa` styles |
+
+### Files Preserved (Unchanged)
+- `lessons/drive.html`, `lessons/drive-practice.html` — Drive module (still on disk, no longer on homepage)
+- `lessons/internet.html`, `lessons/keyboard.html` — Internet and Keyboard modules (still on disk, no longer on homepage)
+- `lessons/document.html`, `lessons/document-practice.html` — Document module
+- `lessons/email.html`, `lessons/email-practice.html`, `lessons/email-app/` — Email module
+- `en/index.html`, `zh/index.html` — other language homepages (not in scope)
+- All JavaScript modules and locale files
+
+### Testing Performed
+| # | Test | Result |
+|---|------|--------|
+| 1 | Only three module cards on Persian homepage | ✅ |
+| 2 | Order is Create a Document → Email → Form Practice | ✅ |
+| 3 | Create a Document link still targets `../lessons/document.html` | ✅ |
+| 4 | Email link still targets `../lessons/email.html` | ✅ |
+| 5 | Form Practice uses the exact external URL | ✅ |
+| 6 | Form Practice opens in a new tab (`target="_blank"`) | ✅ |
+| 7 | Form Practice uses `rel="noopener noreferrer"` | ✅ |
+| 8 | Desktop layout shows three balanced cards | ✅ |
+| 9 | Mobile layout stacks the three cards | ✅ |
+| 10 | Persian RTL text renders correctly | ✅ |
+| 11 | No removed-module files deleted | ✅ |
+
+### Known Limitations
+- Form Practice content lives on the external SharePoint page — not editable from this repository.
+- The external link requires an internet connection.

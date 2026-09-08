@@ -140,6 +140,7 @@ p {
   border: 3px solid transparent;
   transition: border-color 0.2s ease, transform 0.2s ease;
   min-height: 180px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -176,6 +177,21 @@ p {
   color: var(--color-accent);
   direction: rtl;
   font-family: var(--font-family-fa);
+}
+
+.card .card-desc {
+  font-size: 15px;
+  color: #555;
+  direction: ltr;
+  line-height: 1.4;
+}
+
+.card .card-desc-fa {
+  font-size: 15px;
+  color: #888;
+  direction: rtl;
+  font-family: var(--font-family-fa);
+  line-height: 1.5;
 }
 
 /* --- Lesson Steps --- */

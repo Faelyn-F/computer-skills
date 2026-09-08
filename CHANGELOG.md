@@ -1,5 +1,39 @@
 # Computer Skills — Changelog
 
+## 2026-09-09 — Simplify Homepage & Link External Form Practice
+
+### Changed
+- **Persian homepage (`fa/index.html`) reduced to three core modules**, in this order:
+  1. **Create a Document** — `../lessons/document.html` (unchanged)
+  2. **Email** — `../lessons/email.html` (unchanged)
+  3. **Form Practice** — external SharePoint link (new tab)
+- Removed the **Google Drive**, **Internet Basics**, and **Keyboard & Mouse** cards from the homepage navigation only. Their lesson files and functionality remain in the repository.
+
+### Added
+- **Form Practice external card** on the Persian homepage:
+  - English title "Form Practice" + supporting text "Learn how to understand and complete common forms."
+  - Persian title "تمرین تکمیل فرم" + a short Persian supporting description
+  - Links directly to the SharePoint-hosted practice form (no in-repo Form Practice page created)
+  - Opens in a new tab with `target="_blank"` and `rel="noopener noreferrer"`
+- **CSS**: `height: 100%` on `.card` for balanced equal-height cards; `.card-desc` and `.card-desc-fa` styles for the card description.
+
+### Form Practice External URL (exact)
+`https://activeinstitute-my.sharepoint.com/:u:/g/personal/daisy_activeinstitute_co_nz/IQCwk95STArPSrfekmG7GxWGAVmhpQLgJoIpiv1smstYBj0?e=1NUOjW`
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `fa/index.html` | Reordered to Document → Email → Form Practice; removed Drive/Internet/Keyboard cards; added external Form Practice card |
+| `css/style.css` | Added `height: 100%` to `.card`; added `.card-desc` / `.card-desc-fa` styles |
+
+### Preserved
+- Document and Email modules unchanged (links, titles, functionality)
+- Drive, Internet, and Keyboard lesson files remain in the repository
+- English (`en/`) and Chinese (`zh/`) homepages unchanged (out of scope)
+- RTL Persian layout and card design system preserved
+
+---
+
 ## 2026-08-05 — Bug Fix: Document Formatting & Submenu Clipping
 
 ### Bug 1: Task 3 formatting did not change selected text
