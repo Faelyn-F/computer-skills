@@ -16,7 +16,7 @@ The website opens with a simple language selection page. Learners choose their p
 2. Go to **Settings** → **Pages**.
 3. Under **"Branch"**, select `master` (or `main`) and folder `/ (root)`.
 4. Click **Save**.
-5. Wait 1–2 minutes. The site will be live at `https://YOUR-USERNAME.github.io/computer-skills/`.
+5. Wait 1–2 minutes. The site will be live at `https://Faelyn-F.github.io/computer-skills/`.
 
 ---
 
