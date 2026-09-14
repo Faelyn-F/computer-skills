@@ -2,6 +2,7 @@
 
 A static website for teaching basic computer skills to Deaf adult learners.
 Supports three language modes: **English only**, **English + Persian (فارسی)**, and **English + Chinese (中文)**.
+The link of the website: https://tinyurl.com/pcfarsi
 
 The website opens with a simple language selection page. Learners choose their preferred language, and the site adapts to show or hide supporting translations.
 
