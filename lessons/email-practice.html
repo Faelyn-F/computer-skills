@@ -364,6 +364,38 @@
     }
     .mb-btn-success:hover { background: #27ae60; }
 
+    /* Task Panel — Sidebar placement (below Trash) */
+    .mb-sidebar .mb-task-panel {
+      border-bottom: none;
+      border-top: 1px solid var(--mb-border);
+      margin: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mb-sidebar .mb-task-header {
+      padding: 10px 12px;
+    }
+    .mb-sidebar .mb-task-title {
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      min-width: 0;
+    }
+    .mb-sidebar .mb-task-body {
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+    }
+    .mb-sidebar .mb-task-instructions {
+      flex: none;
+      min-width: 0;
+      width: 100%;
+    }
+    .mb-sidebar .mb-task-actions {
+      align-items: stretch;
+      width: 100%;
+    }
+
     /* Content area (email list or view) */
     .mb-content {
       flex: 1;
@@ -715,6 +747,7 @@
       .mb-sidebar .compose-btn { margin: 4px; padding: 8px 14px; font-size: 13px; }
       .mb-nav-item { font-size: 13px; padding: 6px 10px; margin: 0 2px; white-space: nowrap; }
       .mb-sidebar-label, .mb-sidebar-divider, .mb-settings-area { display: none; }
+      .mb-sidebar .mb-task-panel { display: none; }
       .mb-topbar { flex-wrap: wrap; height: auto; padding: 8px; }
       .mb-search-bar { max-width: 100%; margin: 4px 0; order: 3; }
     }
@@ -749,7 +782,6 @@
     <nav class="mb-sidebar" aria-label="Mail folders">
       <button class="compose-btn pulse" id="sidebar-compose" aria-label="Compose new email">
         <span class="plus">＋</span> Compose
-        <span class="mb-fa-label" style="display:block;font-size:11px;color:#666;">نوشتن ایمیل جدید</span>
       </button>
 
       <button class="mb-nav-item active" data-folder="inbox" aria-current="page">
@@ -786,23 +818,6 @@
         <span class="mb-fa-label">سطل زباله</span>
       </button>
 
-      <!-- Settings -->
-      <div class="mb-settings-area">
-        <button class="mb-persian-btn" id="persian-btn" aria-pressed="false">
-          نمایش فارسی &mdash; Show Persian support
-        </button>
-        <button class="mb-reset-btn" id="restart-task-btn" title="Restart current task from beginning">
-          🔄 Restart Current Task
-        </button>
-        <button class="mb-reset-btn" id="reset-all-btn" title="Reset all practice progress">
-          ⚠️ Reset Practice Progress
-        </button>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="mb-main" id="mb-main" tabindex="-1">
-
       <!-- Task Panel -->
       <div class="mb-task-panel" id="task-panel">
         <div class="mb-task-header" id="task-header" role="button" tabindex="0" aria-expanded="true" aria-label="Toggle task panel">
@@ -822,6 +837,23 @@
           </div>
         </div>
       </div>
+
+      <!-- Settings -->
+      <div class="mb-settings-area">
+        <button class="mb-persian-btn" id="persian-btn" aria-pressed="false">
+          نمایش فارسی &mdash; Show Persian support
+        </button>
+        <button class="mb-reset-btn" id="restart-task-btn" title="Restart current task from beginning">
+          🔄 Restart Current Task
+        </button>
+        <button class="mb-reset-btn" id="reset-all-btn" title="Reset all practice progress">
+          ⚠️ Reset Practice Progress
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="mb-main" id="mb-main" tabindex="-1">
 
       <!-- Email Content Area -->
       <div class="mb-content" id="mb-content">

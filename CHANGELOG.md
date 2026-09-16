@@ -1,5 +1,27 @@
 # Computer Skills — Changelog
 
+## 2026-09-17 — Email Practice: Move Task Panel to Sidebar
+
+### Changed
+- **Removed the Persian label next to the Compose button** (`lessons/email-practice.html`). The button now shows only "＋ Compose" in English; its size, icon, `aria-label`, styling, and pulse animation are otherwise unchanged.
+- **Moved the Tasks panel from the top of the main content area into the left sidebar**, placed directly below the Trash folder (above the settings area). The panel remains visible while completing tasks and no longer covers the email interface.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email-practice.html` | Removed Compose Persian label; relocated the `#task-panel` block into the sidebar below Trash; added sidebar-scoped task-panel CSS so it renders as a compact vertical card inside the 220px sidebar; hides the task panel in the ≤500px horizontal mobile nav strip |
+
+### Preserved
+- All task logic, task text, localStorage keys (`mb_*`), element IDs, and the minimize (－/＋) toggle
+- Compose button functionality and styling otherwise unchanged
+- Folder list, compose overlay, email list/view, search, and settings area unchanged
+- Persian "Show Persian support" toggle and all other Persian labels unchanged
+
+### Notes
+- On very small screens (≤500px) the sidebar becomes a horizontal navigation strip; the task panel is hidden there so it does not obstruct the strip. Desktop and tablet (left-sidebar) layouts are unaffected.
+
+---
+
 ## 2026-09-09 — Rename Form Practice to Fill in a Form
 
 ### Changed
