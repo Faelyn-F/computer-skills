@@ -1595,3 +1595,38 @@ Simplified the Persian homepage (`fa/index.html`) to three core modules in this 
 ### Known Limitations
 - Form Practice content lives on the external SharePoint page — not editable from this repository.
 - The external link requires an internet connection.
+
+---
+
+## Email Practice — Task Panel in Sidebar & English-Only (2026-09-17)
+
+### Summary
+Refined the Email Practice page (`lessons/email-practice.html`) in two steps: relocated the Tasks panel from the main content area into the left sidebar, then made the panel English-only and widened the sidebar for readability.
+
+### Change 1 — Task Panel Moved to Sidebar
+- Removed the Persian label next to the Compose button (kept "＋ Compose" in English; size, icon, `aria-label`, and pulse animation unchanged).
+- Moved the entire `#task-panel` block from the top of `.mb-main` into the left sidebar, directly below the Trash folder (above the settings area).
+- The main content area now contains only the email interface, so the task panel no longer covers or obstructs it.
+- Added sidebar-scoped CSS so the task panel renders as a compact vertical card (stacked title, instructions, and hint button) that fits the sidebar; removed the old `min-width: 250px` instruction constraint that would have overflowed the narrow column.
+- All element IDs unchanged, so task logic, minimize toggle, hints, and localStorage persistence continue to work.
+
+### Change 2 — English-Only Task Panel & Wider Sidebar
+- Removed all Persian text from the Tasks panel: deleted the Persian instruction element (`#task-fa`) and its `$taskFa` JavaScript wiring, and removed the Persian from the hint button (`💡 Need help?`) and hint toast.
+- Task instructions are now English-only; task content (`en`) and validation are unchanged. The Persian `fa`/`hintFa` strings remain in `TASK_DEFS` as unused data.
+- Widened the left sidebar for readable English instructions: desktop `--mb-sidebar-width` 220px → 300px, tablet (≤768px) 180px → 260px. The ≤500px horizontal-strip layout is unchanged.
+- The Tasks panel remains below Trash in the sidebar.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email-practice.html` | Removed Compose Persian label; moved task panel into sidebar; added sidebar task-panel CSS; removed task-panel Persian; widened sidebar |
+
+### Preserved
+- Task logic, validation, minimize toggle, localStorage keys (`mb_*`), and element IDs
+- Congratulation overlay Persian (`تبریک!`) — outside the Tasks panel, left as-is
+- Main email interface, folder list, compose overlay, search, and settings
+- All other lesson modules, language system, and `email-app/` files
+
+### Known Limitations
+- On phones (≤500px) the sidebar becomes a horizontal navigation strip; the task panel is hidden there to avoid obstructing the strip.
+- The `.inst-fa` CSS rule is now unused (no element carries the class).
