@@ -1,5 +1,23 @@
 # Computer Skills — Changelog
 
+## 2026-09-17 — Email Practice: English-Only Task Panel & Wider Sidebar
+
+### Changed
+- **Removed all Persian text from the Tasks panel** (`lessons/email-practice.html`): deleted the Persian instruction line and its JavaScript wiring (`$taskFa`), and removed the Persian from the hint button and hint toast. Task instructions and all task logic remain in English, unchanged.
+- **Widened the left sidebar** so the English task instructions fit without being cut off: desktop width 220px → 300px, tablet (≤768px) 180px → 260px. The Tasks panel stays below Trash.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `lessons/email-practice.html` | Removed task-panel Persian (instruction element, hint button/toast, `$taskFa` wiring); increased sidebar width (300px desktop / 260px tablet) |
+
+### Preserved
+- Task content (English), validation, minimize toggle, and localStorage keys
+- Congratulation overlay Persian (`تبریک!`) left as-is (outside the Tasks panel)
+- Main email interface, folder list, compose, search, and settings unchanged
+
+---
+
 ## 2026-09-17 — Email Practice: Move Task Panel to Sidebar
 
 ### Changed

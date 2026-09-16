@@ -21,7 +21,7 @@
       --mb-accent: #f0a500;
       --mb-success: #2ecc71;
       --mb-danger: #ea4335;
-      --mb-sidebar-width: 220px;
+      --mb-sidebar-width: 300px;
       --mb-topbar-height: 56px;
     }
 
@@ -726,7 +726,7 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .mb-sidebar { width: 180px; }
+      .mb-sidebar { width: 260px; }
       .mb-sidebar .compose-btn { padding: 10px 16px; font-size: 14px; }
       .mb-nav-item { font-size: 13px; padding: 8px 12px; }
       .mb-search-bar { max-width: 250px; }
@@ -830,10 +830,9 @@
         <div class="mb-task-body" id="task-body">
           <div class="mb-task-instructions">
             <p class="inst-en" id="task-en"></p>
-            <p class="inst-fa" id="task-fa" lang="fa"></p>
           </div>
           <div class="mb-task-actions">
-            <button class="mb-btn-hint" id="hint-btn" style="display:none;">💡 Need help? / راهنمایی</button>
+            <button class="mb-btn-hint" id="hint-btn" style="display:none;">💡 Need help?</button>
           </div>
         </div>
       </div>
@@ -944,7 +943,6 @@
     var $congratsMsg = document.getElementById('congrats-msg');
     var $congratsBtn = document.getElementById('congrats-btn');
     var $taskEn = document.getElementById('task-en');
-    var $taskFa = document.getElementById('task-fa');
     var $taskLabel = document.getElementById('task-label');
     var $taskProgressText = document.getElementById('task-progress-text');
     var $taskPanel = document.getElementById('task-panel');
@@ -1330,7 +1328,6 @@
       var task = TASK_DEFS[ct];
       if (task) {
         $taskEn.innerHTML = task.en;
-        $taskFa.innerHTML = task.fa;
       }
       updateTaskLabel();
 
@@ -1609,7 +1606,6 @@
         // All done — return to inbox
         renderFolder('inbox');
         $taskEn.innerHTML = '<strong>🎉 All 5 tasks completed!</strong> Great work!';
-        $taskFa.innerHTML = '<strong>🎉 هر ۵ کار کامل شد!</strong> آفرین!';
         $hintBtn.style.display = 'none';
         $sidebarCompose.classList.remove('pulse');
       } else {
@@ -1630,7 +1626,7 @@
       var ct = getCurrentTask();
       var task = TASK_DEFS[ct];
       if (task && task.hint) {
-        showToast('💡 ' + task.hint + ' / ' + task.hintFa, 'info');
+        showToast('💡 ' + task.hint, 'info');
       }
     });
 
